@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+set -e
+set -o nounset
+set -o pipefail
+
+script_dir=$(cd "$(dirname "$0")" ; pwd -P)
+base_url="https://www.ncdc.noaa.gov/cdo-web/api/v2/"
+
+
+goal_datasets() {
+  pushd "${script_dir}" > /dev/null
+    curl https://meta.icos-cp.eu/sparql -X POST --data-urlencode "query=$(cat ${script_dir}/icos/sparkql-list-objects.txt)" | jq -r .results.bindings[].fileName.value
+  popd > /dev/null
+}
+
+goal_download() {
+    pushd "${script_dir}" > /dev/null
+      date=$(date +%s)
+      curl -v \
+        -o "${script_dir}/tmp/${date}.zip" \
+        -H "accept:text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" \
+        -H "accept-encoding: gzip, deflate, br" \
+        --http0.9 \
+        --data "ids=%5B%22mno0zQNA6cq26ntP7UqCufwZ%22%2C%22L-5klycsb_8W5Nq35W2zdIaQ%22%2C%222OMjrmxxwMg4y5wxlC4ONHEZ%22%5D&fileName=${date}&licenceOk=true" \
+        https://data.icos-cp.eu/objects
+        sleep 5
+        cd "${script_dir}/tmp"
+        unzip "${date}.zip" -d ${date}
+        cd "${date}"
+        for i in $(ls *.zip); do
+          unzip $i
+        done
+    popd > /dev/null
+}
+
+TARGET=${1:-}
+if type -t "goal_${TARGET}" &>/dev/null; then
+  "goal_${TARGET}" ${@:2}
+else
+  echo "Usage: $0 <goal>
+
+goal:
+    datasets            - Describes all datasets
+    download            - Downloads
+"
+  exit 1
+fi
