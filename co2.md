@@ -33,7 +33,7 @@ Visualise CO2 trend from the Hohenpeissenberg station and calculate linear regre
     
 ## Other
 * [Comparison of Continuous In-Situ CO2 Measurements with Co-Located Column-Averaged XCO2 TCCON/Satellite Observations and CarbonTracker Model Over the Zugspitze Region](https://mediatum.ub.tum.de/doc/1546480/1546480.pdf)
-    * Get inspiredThey list their sources and basic methodology
+    * Get inspired! They list their sources and basic methodology
     * [Carbon Tracker](https://www.carbontracker.eu/overview.shtml)
 * DWD is the current authority of Climate stuff in Germany
     * [List of data sources](https://www.dwd.de/DE/klimaumwelt/cdc/klinfo_systeme/klinfo_systeme.html?nn=17626) - but does not have CO2 data
