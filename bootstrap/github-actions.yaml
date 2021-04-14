@@ -1,0 +1,33 @@
+Description: "TWDU Germany Role for Github Actions"
+Resources:
+  Role:
+    Type: AWS::IAM::Role
+    DeletionPolicy: Retain
+    Properties:
+      RoleName: "twdu-germany-github-actions"
+      Tags:
+        - Key: Project
+          Value: "twdu-germany"
+      AssumeRolePolicyDocument:
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": "160071257600"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        }
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/PowerUserAccess"
+Outputs:
+  RoleName:
+    Description: RoleName
+    Value: !Ref Role
+    Export:
+      Name: !Sub '${AWS::StackName}-RoleName'
+
