@@ -1,4 +1,4 @@
-name: 'Terraform'
+name: 'Data Ingestion'
 
 on:
   push:
@@ -20,6 +20,9 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+
+    - name: Assume Role
+      run: assume-role twdu-germany-github-runner-aws
 
     - name: Terraform Init
       run: |
