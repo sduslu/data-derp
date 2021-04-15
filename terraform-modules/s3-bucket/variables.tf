@@ -20,3 +20,8 @@ variable "access-identifiers" {
   type = list
   default = null
 }
+
+variable "private" {
+  type = bool
+  default = true
+}
