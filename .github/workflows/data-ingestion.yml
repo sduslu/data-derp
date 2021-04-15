@@ -32,10 +32,10 @@ jobs:
     - name: Terraform Plan
       run: |
         cd data-ingestion && \
-        terraform plan
+        terraform plan -var-file=variables.tfvars
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/master' && github.event_name == 'push'
       run: |
         cd data-ingestion && \
-        terraform apply -auto-approve
+        terraform apply -var-file=variables.tfvars -auto-approve
