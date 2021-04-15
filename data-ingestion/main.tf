@@ -1,9 +1,9 @@
 resource "aws_glue_job" "this" {
-  name     = "${var.project-name}-${var.module-name}"
+  name     = "${var.project-name}-${var.module-name}-data-ingestion"
   role_arn = aws_iam_role.this.arn
 
   command {
-    script_location = "s3://${module.s3-bucket.bucket-name}/main.py"
+    script_location = "s3://${data.aws_s3_bucket.this.bucket}/data-ingestion-etl/main.py"
   }
 
   default_arguments = {
@@ -11,8 +11,12 @@ resource "aws_glue_job" "this" {
   }
 }
 
+data "aws_s3_bucket" "this" {
+  bucket = "${var.project-name}-${var.module-name}"
+}
+
 resource "aws_iam_role" "this" {
-  name = "${var.project-name}-${var.module-name}-lambda-execution"
+  name = "${var.project-name}-${var.module-name}-data-ingestion"
   permissions_boundary = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/twdu-germany/twdu-germany-delegated-boundary"
   force_detach_policies = true
   assume_role_policy = <<EOF
@@ -30,11 +34,4 @@ resource "aws_iam_role" "this" {
     ]
 }
 EOF
-}
-
-module "s3-bucket" {
-  source = "../terraform-modules/s3-bucket"
-
-  bucket-name = "${var.project-name}-${var.module-name}-data-ingestion"
-  force-destroy = true
 }
