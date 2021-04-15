@@ -465,7 +465,7 @@ Resources:
     Type: AWS::IAM::ManagedPolicy
     DeletionPolicy: Retain
     Properties:
-      ManagedPolicyName: !Sub "${ProjectName}${ModuleName}DelegatedBoundary"
+      ManagedPolicyName: !Sub "${ProjectName}-delegated-boundary"
       Path: !Sub "/${ProjectName}/"
       PolicyDocument:
         Version: 2012-10-17
