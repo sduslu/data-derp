@@ -55,11 +55,11 @@ jobs:
     name: 'Terraform'
     runs-on: self-hosted
     environment: production
-#    container:
-#      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
-#      credentials:
-#        username: ${{ github.actor }}
-#        password: ${{ secrets.GITHUB_TOKEN }}
+    container:
+      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
     # Checkout the repository to the GitHub Actions runner

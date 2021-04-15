@@ -1,6 +1,7 @@
 terraform {
   backend "s3" {
-    key    = "twdu-germany-infra-state"
+    bucket = "twdu-germany-infra-state"
+    key    = "data-ingestion"
     region = "eu-central-1"
     dynamodb_table = "terraform-lock"
     workspace_key_prefix = "pl-km-test"
