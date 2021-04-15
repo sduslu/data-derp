@@ -399,7 +399,7 @@ Resources:
   InstanceRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub "${ProjectName}-${ModuleName}-github-runner"
+      RoleName: !Sub "${ProjectName}-github-runner"
       Tags:
         - Key: Module
           Value: !Ref ModuleName
@@ -421,7 +421,6 @@ Resources:
         }
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-        - "arn:aws:iam::aws:policy/PowerUserAccess"
       Policies:
         - PolicyName: !Sub "${ProjectName}-${ModuleName}-get-parameter"
           PolicyDocument:
@@ -462,3 +461,158 @@ Resources:
     Properties:
       Roles:
         - !Ref InstanceRole
+  Boundary:
+    Type: AWS::IAM::ManagedPolicy
+    DeletionPolicy: Retain
+    Properties:
+      ManagedPolicyName: !Sub "${ProjectName}${ModuleName}DelegatedBoundary"
+      Path: !Sub "/${ProjectName}/"
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            NotAction:
+              - "iam:*"
+              - "organizations:*"
+              - "account:*"
+              - "billing:*"
+            Resource:
+              - "*"
+          - Effect: Allow
+            Action:
+              - "iam:PassRole"
+            Resource:
+              - "*"
+            Condition:
+              ForAnyValue:StringLike:
+                iam:PassedToService: "ecs-tasks.amazonaws.com"
+  Role:
+    Type: AWS::IAM::Role
+    DeletionPolicy: Retain
+    Properties:
+      RoleName: !Sub "${ProjectName}-github-runner-aws"
+      Tags:
+        - Key: Module
+          Value: !Ref ModuleName
+        - Key: Project
+          Value: !Ref ProjectName
+      AssumeRolePolicyDocument:
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": !GetAtt InstanceRole.Arn
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        }
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/PowerUserAccess"
+      Policies:
+        - PolicyName: !Sub "${ProjectName}${ModuleName}DenyInPath"
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Deny
+                Action:
+                  - "*"
+                Resource:
+                  - !Sub "arn:aws:iam::*:group/${ProjectName}/*"
+                  - !Sub "arn:aws:iam::*:instance-profile/${ProjectName}/*"
+                  - !Sub "arn:aws:iam::*:policy/${ProjectName}/*"
+                  - !Sub "arn:aws:iam::*:role/${ProjectName}/*"
+                  - !Sub "arn:aws:iam::*:user/${ProjectName}/*"
+        - PolicyName: !Sub "${ProjectName}${ModuleName}AllowManagingRolesWithBoundary"
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "iam:AttachRolePolicy"
+                  - "iam:CreateRole"
+                  - "iam:DeleteRolePolicy"
+                  - "iam:DetachRolePolicy"
+                  - "iam:PutRolePermissionsBoundary"
+                  - "iam:DeleteRolePermissionsBoundary"
+                  - "iam:PutRolePolicy"
+                Resource:
+                  - "*"
+                Condition:
+                  ForAnyValue:StringEquals:
+                    iam:PermissionsBoundary: !Ref Boundary
+              - Effect: Allow
+                Action:
+                  - "iam:AttachUserPolicy"
+                  - "iam:CreateUser"
+                  - "iam:DetachUserPolicy"
+                  - "iam:PutUserPermissionsBoundary"
+                  - "iam:PutUserPolicy"
+                Resource:
+                  - "*"
+                Condition:
+                  ForAnyValue:StringEquals:
+                    iam:PermissionsBoundary: !Ref Boundary
+              - Effect: Allow
+                Action:
+                  - "iam:DeleteRole"
+                  - "iam:GetRole"
+                  - "iam:GetRolePolicy"
+                  - "iam:ListAttachedRolePolicies"
+                  - "iam:ListInstanceProfilesForRole"
+                  - "iam:ListRolePolicies"
+                  - "iam:ListRoleTags"
+                  - "iam:ListRoles"
+                  - "iam:PassRole"
+                  - "iam:TagRole"
+                  - "iam:UntagRole"
+                  - "iam:UpdateAssumeRolePolicy"
+                  - "iam:UpdateRole"
+                  - "iam:UpdateRoleDescription"
+                Resource:
+                  - "*"
+              - Effect: Allow
+                Action:
+                  - "iam:AddUserToGroup"
+                  - "iam:CreateAccessKey"
+                  - "iam:DeleteAccessKey"
+                  - "iam:DeleteUser"
+                  - "iam:GetUser"
+                  - "iam:GetUserPolicy"
+                  - "iam:ListAccessKeys"
+                  - "iam:ListAttachedUserPolicies"
+                  - "iam:ListGroupsForUser"
+                  - "iam:ListUsers"
+                  - "iam:ListUserPolicies"
+                  - "iam:TagUser"
+                  - "iam:UntagUser"
+                Resource:
+                  - "*"
+              - Effect: Allow
+                Action:
+                  - "iam:CreatePolicy"
+                  - "iam:CreatePolicyVersion"
+                  - "iam:DeletePolicy"
+                  - "iam:DeletePolicyVersion"
+                  - "iam:GetPolicy"
+                  - "iam:GetPolicyVersion"
+                  - "iam:ListEntitiesForPolicy"
+                  - "iam:ListPolicies"
+                  - "iam:ListPolicyVersions"
+                  - "iam:SetDefaultPolicyVersion"
+                Resource:
+                  - "*"
+              - Effect: Allow
+                Action:
+                  - "iam:AddRoleToInstanceProfile"
+                  - "iam:CreateInstanceProfile"
+                  - "iam:DeleteInstanceProfile"
+                  - "iam:GetInstanceProfile"
+                  - "iam:ListInstanceProfiles"
+                  - "iam:RemoveRoleFromInstanceProfile"
+                  - "iam:GetServiceLinkedRoleDeletionStatus"
+                Resource:
+                  - "*"
