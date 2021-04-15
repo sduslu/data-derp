@@ -5,5 +5,6 @@ module "s3-bucket" {
   force-destroy = true
 
   // Remove this later!
+  bucket-acl = "public-read"
   private = false
 }
