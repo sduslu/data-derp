@@ -1,0 +1,68 @@
+Parameters:
+  ProjectName:
+    Type: String
+    Description: Name of the project
+    Default: "twdu-germany"
+  BucketBaseName:
+    Type: String
+    Description: Bucket name
+    Default: "twdu-germany-infra-state"
+  TableName:
+    Type: String
+    Description: Name of table
+    Default: "terraform-lock"
+
+Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: "Private"
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: "AES256"
+      BucketName: !Sub "${BucketBaseName}-${AWS::AccountId}"
+      Tags:
+        - Key: Project
+          Value: !Ref ProjectName
+      VersioningConfiguration:
+        Status: "Enabled"
+      PublicAccessBlockConfiguration:
+        BlockPublicPolicy: true
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      AttributeDefinitions:
+        - AttributeName: "LockID"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "LockID"
+          KeyType: "HASH"
+      TableName: !Ref TableName
+      Tags:
+        - Key: Project
+          Value: !Ref ProjectName
+
+Outputs:
+  BucketARN:
+    Description: Bucket ARN
+    Value: !GetAtt Bucket.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-Arn'
+  BucketS3Uri:
+    Description: S3 Uri
+    Value: !Sub "s3://${BucketBaseName}-${AWS::AccountId}"
+    Export:
+      Name: !Sub '${AWS::StackName}-S3Uri'
+  RoleName:
+    Description: DynamoDB table name
+    Value: !Ref Table
+    Export:
+      Name: !Sub '${AWS::StackName}-TableName'
+
