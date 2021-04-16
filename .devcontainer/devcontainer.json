@@ -1,0 +1,9 @@
+{
+    "context": "..",
+    "image": "pawaritl/twdu-germany:latest",
+    "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter"
+    ]
+}  
