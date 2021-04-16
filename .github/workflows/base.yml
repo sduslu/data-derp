@@ -29,10 +29,15 @@ jobs:
     - name: Assume Role
       run: assume-role twdu-germany-github-runner-aws
 
+    - name: Create a Terraform Workspace if not exists
+      run: |
+        cd base && \
+        TF_WORKSPACE=default terraform init && \
+        terraform workspace select $TF_WORKSPACE || terraform workspace new $TF_WORKSPACE
+
     - name: Terraform Init & Apply
       run: |
         cd base && \
-        $(terraform workspace list | grep ${TF_WORKSPACE}) || terraform workspace new ${TF_WORKSPACE} \
         terraform init && \
         terraform apply -var-file=variables.tfvars -auto-approve
 #  data-ingestion:
