@@ -1,4 +1,4 @@
-name: 'Base'
+name: 'PL/KM'
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
         terraform init && \
         terraform apply -var-file=variables.tfvars -auto-approve
   data-ingestion:
-    name: 'Data Ingestion Terraform'
+    name: 'Data Ingestion'
     runs-on: self-hosted
     environment: production
     needs: ["base"]
