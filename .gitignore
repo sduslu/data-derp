@@ -1,4 +1,5 @@
 .idea
 /tmp
 *.ipynb_checkpoints
+*DS_Store*
 *local-outputs*
