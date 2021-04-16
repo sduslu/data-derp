@@ -39,8 +39,9 @@ jobs:
     - name: Terraform Init & Apply
       run: |
         cd base && \
-        terraform init && \
-        terraform apply -var "project-name=${PROJECT_NAME}" -var "module-name=${MODULE_NAME}" -auto-approve
+        echo "THE WORKSPACE: ${TF_WORKSPACE}"
+#        terraform init && \
+#        terraform apply -var "project-name=${PROJECT_NAME}" -var "module-name=${MODULE_NAME}" -auto-approve
 
 #  data-ingestion:
 #    name: 'Data Ingestion'
