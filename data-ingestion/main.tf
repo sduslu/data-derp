@@ -3,6 +3,7 @@ resource "aws_glue_job" "this" {
   role_arn = aws_iam_role.this.arn
 
   number_of_workers = 2
+  glue_version = "2.0"
 
   command {
     script_location = "s3://${data.aws_s3_bucket.this.bucket}/data-ingestion-etl/main.py"
