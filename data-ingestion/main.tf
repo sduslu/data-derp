@@ -4,6 +4,7 @@ resource "aws_glue_job" "this" {
 
   number_of_workers = 2
   glue_version = "2.0"
+  worker_type = "STANDARD"
 
   command {
     script_location = "s3://${data.aws_s3_bucket.this.bucket}/data-ingestion-etl/main.py"
