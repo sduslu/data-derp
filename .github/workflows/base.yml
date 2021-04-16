@@ -35,61 +35,73 @@ jobs:
 #        TF_WORKSPACE=default terraform init && \
 #        terraform workspace select $TF_WORKSPACE || terraform workspace new $TF_WORKSPACE
 
-    - name: Terraform Init & Destroy
-      run: |
-        cd base && \
-        terraform init && \
-        terraform destroy -var-file=variables.tfvars -auto-approve
+#    - name: Terraform Init & Destroy
+#      run: |
+#        cd base && \
+#        terraform init && \
+#        terraform destroy -var-file=variables.tfvars -auto-approve
 
     - name: Terraform Init & Apply
       run: |
         cd base && \
         terraform init && \
         terraform apply -var-file=variables.tfvars -auto-approve
-#  data-ingestion:
-#    name: 'Data Ingestion'
-#    runs-on: self-hosted
-#    environment: production
-#    needs: ["base"]
-#    container:
-#      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
-#      credentials:
-#        username: ${{ github.actor }}
-#        password: ${{ secrets.GITHUB_TOKEN }}
-#
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#
-#      - name: Assume Role
-#        run: assume-role twdu-germany-github-runner-aws
-#
-#      - name: Terraform Init & Apply
-#        run: |
-#          cd data-ingestion && \
-#          terraform init && \
-#          terraform apply -var-file=variables.tfvars -auto-approve
-#
-#  data-transformation:
-#    name: 'Data Transformation'
-#    runs-on: self-hosted
-#    environment: production
-#    needs: [ "base" ]
-#    container:
-#      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
-#      credentials:
-#        username: ${{ github.actor }}
-#        password: ${{ secrets.GITHUB_TOKEN }}
-#
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#
-#      - name: Assume Role
-#        run: assume-role twdu-germany-github-runner-aws
-#
-#      - name: Terraform Init & Apply
-#        run: |
-#          cd data-transformation && \
-#          terraform init && \
-#          terraform apply -var-file=variables.tfvars -auto-approve
+  data-ingestion:
+    name: 'Data Ingestion'
+    runs-on: self-hosted
+    environment: production
+    needs: ["base"]
+    container:
+      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Assume Role
+        run: assume-role twdu-germany-github-runner-aws
+
+      - name: Terraform Init & Destroy
+        run: |
+          cd data-ingestion && \
+          TF_WORKSPACE=default terraform init && \
+          TF_WORKSPACE=default terraform destroy -var-file=variables.tfvars -auto-approve
+
+      - name: Terraform Init & Apply
+        run: |
+          cd data-ingestion && \
+          terraform init && \
+          terraform apply -var-file=variables.tfvars -auto-approve
+
+  data-transformation:
+    name: 'Data Transformation'
+    runs-on: self-hosted
+    environment: production
+    needs: [ "base" ]
+    container:
+      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Assume Role
+        run: assume-role twdu-germany-github-runner-aws
+
+      - name: Terraform Init & Destroy
+        run: |
+          cd data-ingestion && \
+          TF_WORKSPACE=default terraform init && \
+          TF_WORKSPACE=default terraform destroy -var-file=variables.tfvars -auto-approve
+
+      - name: Terraform Init & Apply
+        run: |
+          cd data-transformation && \
+          terraform init && \
+          terraform apply -var-file=variables.tfvars -auto-approve
