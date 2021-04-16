@@ -31,8 +31,10 @@ jobs:
     - name: Assume Role
       run: assume-role twdu-germany-github-runner-aws
 
-    - uses: ./.github/composite-action/terraform-setup-workspace
-    - uses: ./.github/composite-action/terraform-init-apply
+    - name: Terraform Setup Workspace
+      uses: ./.github/composite-actions/terraform-setup-workspace
+    - name: Terraform Init & Apply
+      uses: ./.github/composite-actions/terraform-init-apply
 
 #    - name: Create a Terraform Workspace if not exists
 #      run: |
