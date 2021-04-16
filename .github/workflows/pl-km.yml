@@ -57,6 +57,13 @@ jobs:
       - name: Assume Role
         run: assume-role twdu-germany-github-runner-aws
 
+      - name: Upload scripts
+        run: |
+          aws s3 cp ./data-ingestion/lab/ingestion.py s3://${PROJECT_NAME}-${MODULE_NAME}/ingestion.py
+          zip -r ./data-ingestion/lab/config.zip ./data-ingestion/lab/config
+          aws s3 cp ./data-ingestion/lab/config.zip s3://${PROJECT_NAME}-${MODULE_NAME}/ingestion_config.zip
+          rm ./data-ingestion/lab/config.zip
+
       - name: Terraform Setup Workspace
         uses: ./.github/composite-actions/terraform-setup-workspace
 
