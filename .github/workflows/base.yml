@@ -33,83 +33,61 @@ jobs:
 
     - name: Terraform Setup Workspace
       uses: ./.github/composite-actions/terraform-setup-workspace
+      
     - name: Terraform Init & Apply
-      uses: ./.github/composite-actions/terraform-init-apply
+      uses: ./.github/composite-actions/terraform-apply
 
-#    - name: Create a Terraform Workspace if not exists
-#      run: |
-#        set -ex
-#        cd base && \
-#        TF_WORKSPACE=default terraform init && \
-#        terraform workspace new $TF_WORKSPACE || echo "Workspace already exists"
-#
-#    - name: Terraform Init & Apply
-#      run: |
-#        cd base && \
-#        terraform init && \
-#        terraform apply -var "project-name=${PROJECT_NAME}" -var "module-name=${MODULE_NAME}" -auto-approve
+  data-ingestion:
+    name: 'Data Ingestion'
+    runs-on: self-hosted
+    environment: production
+    env:
+      SUBDIR: data-ingestion
+    needs: ["base"]
+    container:
+      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
-#  data-ingestion:
-#    name: 'Data Ingestion'
-#    runs-on: self-hosted
-#    environment: production
-#    needs: ["base"]
-#    container:
-#      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
-#      credentials:
-#        username: ${{ github.actor }}
-#        password: ${{ secrets.GITHUB_TOKEN }}
-#
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#
-#      - name: Assume Role
-#        run: assume-role twdu-germany-github-runner-aws
-#
-#      - name: Create a Terraform Workspace if not exists
-#        run: |
-#          set -ex
-#          cd data-ingestion && \
-#          TF_WORKSPACE=default terraform init && \
-#          terraform workspace new $TF_WORKSPACE || echo "Workspace already exists"
-#
-#      - name: Terraform Init & Apply
-#        run: |
-#          cd data-ingestion && \
-#          terraform init && \
-#          terraform apply -var "project-name=${PROJECT_NAME}" -var "module-name=${MODULE_NAME}" -auto-approve
-#
-#  data-transformation:
-#    name: 'Data Transformation'
-#    runs-on: self-hosted
-#    environment: production
-#    needs: [ "base" ]
-#    container:
-#      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
-#      credentials:
-#        username: ${{ github.actor }}
-#        password: ${{ secrets.GITHUB_TOKEN }}
-#
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#
-#      - name: Assume Role
-#        run: assume-role twdu-germany-github-runner-aws
-#
-#      - name: Create a Terraform Workspace if not exists
-#        run: |
-#          set -ex
-#          cd data-transformation && \
-#          TF_WORKSPACE=default terraform init && \
-#          terraform workspace new $TF_WORKSPACE || echo "Workspace already exists"
-#
-#      - name: Terraform Init & Apply
-#        run: |
-#          cd data-transformation && \
-#          terraform init && \
-#          terraform apply -var "project-name=${PROJECT_NAME}" -var "module-name=${MODULE_NAME}" -auto-approve
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Assume Role
+        run: assume-role twdu-germany-github-runner-aws
+
+      - name: Terraform Setup Workspace
+        uses: ./.github/composite-actions/terraform-setup-workspace
+
+      - name: Terraform Init & Apply
+        uses: ./.github/composite-actions/terraform-apply
+
+  data-transformation:
+    name: 'Data Transformation'
+    runs-on: self-hosted
+    environment: production
+    env:
+      SUBDIR: data-transformation
+    needs: [ "base" ]
+    container:
+      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Assume Role
+        run: assume-role twdu-germany-github-runner-aws
+
+      - name: Terraform Setup Workspace
+        uses: ./.github/composite-actions/terraform-setup-workspace
+
+      - name: Terraform Init & Apply
+        uses: ./.github/composite-actions/terraform-apply
 
 #  destroy:
 #    name: 'Destroy all'
