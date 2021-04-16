@@ -4,7 +4,7 @@ terraform {
     key    = "base"
     region = "eu-central-1"
     dynamodb_table = "terraform-lock"
-    workspace_key_prefix = "pl-km-test"
+//    workspace_key_prefix = "pl-km-test"
   }
 }
 

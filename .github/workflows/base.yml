@@ -3,6 +3,7 @@ name: 'PL/KM'
 env:
   PROJECT_NAME: twdu-germany
   MODULE_NAME: pl-km-test
+  TF_WORKSPACE: pl-km-test
 
 on:
   push:
@@ -31,7 +32,7 @@ jobs:
     - name: Terraform Init & Apply
       run: |
         cd base && \
-        terraform init -backend-config="workspaces=[{name=\"${MODULE_NAME}\"}]" && \
+        terraform init && \
         terraform apply -var-file=variables.tfvars -auto-approve
   data-ingestion:
     name: 'Data Ingestion'
