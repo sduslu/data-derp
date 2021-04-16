@@ -34,7 +34,7 @@ jobs:
         set -ex
         cd base && \
         TF_WORKSPACE=default terraform init && \
-        if [ ! $(terraform workspace select $TF_WORKSPACE) ]; then terraform workspace new $TF_WORKSPACE; fi
+        terraform workspace new $TF_WORKSPACE || echo "Workspace already exists"
 
 #    - name: Terraform Init & Destroy
 #      run: |
