@@ -3,7 +3,7 @@ name: 'PL/KM'
 env:
   PROJECT_NAME: twdu-germany
   MODULE_NAME: pl-km
-  TF_WORKSPACE: ${MODULE_NAME}
+  TF_WORKSPACE: ${{MODULE_NAME}}
 
 on:
   push:
