@@ -29,11 +29,11 @@ jobs:
     - name: Assume Role
       run: assume-role twdu-germany-github-runner-aws
 
-    - name: Create a Terraform Workspace if not exists
-      run: |
-        cd base && \
-        TF_WORKSPACE=default terraform init && \
-        terraform workspace select $TF_WORKSPACE || terraform workspace new $TF_WORKSPACE
+#    - name: Create a Terraform Workspace if not exists
+#      run: |
+#        cd base && \
+#        TF_WORKSPACE=default terraform init && \
+#        terraform workspace select $TF_WORKSPACE || terraform workspace new $TF_WORKSPACE
 
     - name: Terraform Init & Destroy
       run: |
