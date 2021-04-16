@@ -17,9 +17,8 @@ resource "aws_glue_job" "this" {
     "--enable-continuous-log-filter"     = "true"
     "--enable-metrics"                   = ""
     "--TempDir"                          = "s3://${data.aws_s3_bucket.this.bucket}/data-ingestion/temp/"
-    '--enable-spark-ui'                  =  'true',
-    '--spark-event-logs-path'             = 's3://${data.aws_s3_bucket.this.bucket}/data-ingestion/spark-event-logs-path/'
-
+    "--enable-spark-ui"                  =  "true"
+    "--spark-event-logs-path"             = "s3://${data.aws_s3_bucket.this.bucket}/data-ingestion/spark-event-logs-path/"
   }
 }
 
