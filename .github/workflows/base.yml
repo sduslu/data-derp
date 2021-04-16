@@ -2,8 +2,8 @@ name: 'PL/KM'
 
 env:
   PROJECT_NAME: twdu-germany
-  MODULE_NAME: pl-km-test
-  TF_WORKSPACE: pl-km-test
+  MODULE_NAME: pl-km
+  TF_WORKSPACE: pl-km
 
 on:
   push:
@@ -36,22 +36,79 @@ jobs:
         TF_WORKSPACE=default terraform init && \
         terraform workspace new $TF_WORKSPACE || echo "Workspace already exists"
 
-    - name: Terraform Init & Destroy
+    - name: Terraform Init & Apply
       run: |
         cd base && \
         terraform init && \
-        terraform destroy -var-file=variables.tfvars -auto-approve
+        terraform apply -var "project-name=${PROJECT_NAME} -var "module-name=${MODULE_NAME}" -auto-approve
 
-#    - name: Terraform Init & Apply
-#      run: |
-#        cd base && \
-#        terraform init && \
-#        terraform apply -var-file=variables.tfvars -auto-approve
-#  data-ingestion:
-#    name: 'Data Ingestion'
+  data-ingestion:
+    name: 'Data Ingestion'
+    runs-on: self-hosted
+    environment: production
+    needs: ["base"]
+    container:
+      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Assume Role
+        run: assume-role twdu-germany-github-runner-aws
+
+      - name: Create a Terraform Workspace if not exists
+        run: |
+          set -ex
+          cd data-ingestion && \
+          TF_WORKSPACE=default terraform init && \
+          terraform workspace new $TF_WORKSPACE || echo "Workspace already exists"
+
+      - name: Terraform Init & Apply
+        run: |
+          cd data-ingestion && \
+          terraform init && \
+          terraform apply -var "project-name=${PROJECT_NAME} -var "module-name=${MODULE_NAME}" -auto-approve
+
+  data-transformation:
+    name: 'Data Transformation'
+    runs-on: self-hosted
+    environment: production
+    needs: [ "base" ]
+    container:
+      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Assume Role
+        run: assume-role twdu-germany-github-runner-aws
+
+      - name: Create a Terraform Workspace if not exists
+        run: |
+          set -ex
+          cd data-transformation && \
+          TF_WORKSPACE=default terraform init && \
+          terraform workspace new $TF_WORKSPACE || echo "Workspace already exists"
+
+      - name: Terraform Init & Apply
+        run: |
+          cd data-transformation && \
+          terraform init && \
+          terraform apply -var "project-name=${PROJECT_NAME} -var "module-name=${MODULE_NAME}" -auto-approve
+
+#  destroy:
+#    name: 'Destroy all'
 #    runs-on: self-hosted
 #    environment: production
-#    needs: ["base"]
+#    needs: [ "base", "data-ingestion", "data-transformation" ]
 #    container:
 #      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
 #      credentials:
@@ -65,58 +122,20 @@ jobs:
 #      - name: Assume Role
 #        run: assume-role twdu-germany-github-runner-aws
 #
-#      - name: Create a Terraform Workspace if not exists
-#        run: |
-#          set -ex
-#          cd data-ingestion && \
-#          TF_WORKSPACE=default terraform init && \
-#          terraform workspace new $TF_WORKSPACE || echo "Workspace already exists"
-#
-##      - name: Terraform Init & Destroy
-##        run: |
-##          cd data-ingestion && \
-##          TF_WORKSPACE=default terraform init && \
-##          TF_WORKSPACE=default terraform destroy -var-file=variables.tfvars -auto-approve
-#
-#      - name: Terraform Init & Apply
-#        run: |
-#          cd data-ingestion && \
-#          terraform init && \
-#          terraform apply -var-file=variables.tfvars -auto-approve
-#
-#  data-transformation:
-#    name: 'Data Transformation'
-#    runs-on: self-hosted
-#    environment: production
-#    needs: [ "base" ]
-#    container:
-#      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
-#      credentials:
-#        username: ${{ github.actor }}
-#        password: ${{ secrets.GITHUB_TOKEN }}
-#
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#
-#      - name: Assume Role
-#        run: assume-role twdu-germany-github-runner-aws
-#
-#      - name: Create a Terraform Workspace if not exists
-#        run: |
-#          set -ex
-#          cd data-transformation && \
-#          TF_WORKSPACE=default terraform init && \
-#          terraform workspace new $TF_WORKSPACE || echo "Workspace already exists"
-#
-##      - name: Terraform Init & Destroy
-##        run: |
-##          cd data-ingestion && \
-##          TF_WORKSPACE=default terraform init && \
-##          TF_WORKSPACE=default terraform destroy -var-file=variables.tfvars -auto-approve
-#
-#      - name: Terraform Init & Apply
+#      - name: Terraform Init & Destroy (Data Transformation)
 #        run: |
 #          cd data-transformation && \
 #          terraform init && \
-#          terraform apply -var-file=variables.tfvars -auto-approve
+#          terraform destroy -var "project-name=${PROJECT_NAME} -var "module-name=${MODULE_NAME}" -auto-approve
+#
+#      - name: Terraform Init & Destroy (Data Ingestion)
+#        run: |
+#          cd data-ingestion && \
+#          terraform init && \
+#          terraform destroy -var "project-name=${PROJECT_NAME} -var "module-name=${MODULE_NAME}"  -auto-approve
+#
+#      - name: Terraform Init & Destroy (Base)
+#        run: |
+#          cd base && \
+#          terraform init && \
+#          terraform destroy -var "project-name=${PROJECT_NAME} -var "module-name=${MODULE_NAME}"  -auto-approve
