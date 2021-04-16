@@ -7,7 +7,7 @@ resource "aws_glue_job" "this" {
   glue_version = "2.0"
 
   command {
-    script_location = "s3://${data.aws_s3_bucket.this.bucket}/data-ingestion-etl/main.py"
+    script_location = "s3://${data.aws_s3_bucket.this.bucket}/ingestion.py"
   }
 
   default_arguments = {
@@ -16,6 +16,10 @@ resource "aws_glue_job" "this" {
     "--enable-continuous-cloudwatch-log" = "true"
     "--enable-continuous-log-filter"     = "true"
     "--enable-metrics"                   = ""
+    "--TempDir"                          = "s3://${data.aws_s3_bucket.this.bucket}/data-ingestion/temp/"
+    '--enable-spark-ui'                  =  'true',
+    '--spark-event-logs-path'             = 's3://${data.aws_s3_bucket.this.bucket}/data-ingestion/spark-event-logs-path/'
+
   }
 }
 
