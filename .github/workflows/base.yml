@@ -33,6 +33,7 @@ jobs:
       run: |
         cd base && \
         TF_WORKSPACE=default terraform init && \
+        terraform workspace list && \
         terraform workspace select $TF_WORKSPACE || terraform workspace new $TF_WORKSPACE
 
 #    - name: Terraform Init & Destroy
