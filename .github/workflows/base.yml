@@ -31,9 +31,11 @@ jobs:
 
     - name: Create a Terraform Workspace if not exists
       run: |
+        set -ex
         cd base && \
         TF_WORKSPACE=default terraform init && \
         terraform workspace list && \
+        terraform workspace select $TF_WORKSPACE && echo $? && \
         terraform workspace select $TF_WORKSPACE || terraform workspace new $TF_WORKSPACE
 
 #    - name: Terraform Init & Destroy
