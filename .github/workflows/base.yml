@@ -73,6 +73,6 @@ jobs:
 
       - name: Terraform Init & Apply
         run: |
-          cd data-ingestion && \
+          cd data-transformation && \
           terraform init && \
           terraform apply -var-file=variables.tfvars -auto-approve
