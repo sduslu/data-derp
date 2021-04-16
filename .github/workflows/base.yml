@@ -1,5 +1,9 @@
 name: 'PL/KM'
 
+env:
+  PROJECT_NAME: twdu-germany
+  MODULE_NAME: pl-km-test
+
 on:
   push:
     branches:
@@ -27,7 +31,7 @@ jobs:
     - name: Terraform Init & Apply
       run: |
         cd base && \
-        terraform init && \
+        terraform init -backend-config="workspace_key_prefix=${MODULE_NAME}" && \
         terraform apply -var-file=variables.tfvars -auto-approve
   data-ingestion:
     name: 'Data Ingestion'
