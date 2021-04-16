@@ -1,0 +1,11 @@
+name: Terraform Destroy
+description: Terraform Destroys in SUBDIRS
+runs:
+  using: "composite"
+  steps:
+    - run: |
+          cd $SUBDIR
+          terraform init
+          terraform destroy -var "project-name=${PROJECT_NAME}" -var "module-name=${MODULE_NAME}" -auto-approve
+        done
+      shell: bash
