@@ -1,6 +1,6 @@
 {
     "context": "..",
-    "image": "docker.pkg.github.com/kelseymok/twdu-germany/dev-container",
+    "image": "twdu-dev-container",
     "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance",

@@ -20,6 +20,13 @@ goal_pull-dev-container() {
     echo ${token} | docker login https://docker.pkg.github.com -u ${username} --password-stdin
 
     docker pull docker.pkg.github.com/kelseymok/twdu-germany/dev-container:latest
+    docker tag docker.pkg.github.com/kelseymok/twdu-germany/dev-container:latest twdu-dev-container:latest
+  popd > /dev/null
+}
+
+goal_build-dev-container() {
+  pushd "${script_dir}" > /dev/null
+    docker build -t twdu-dev-container .
   popd > /dev/null
 }
 
@@ -31,6 +38,7 @@ else
 
 goal:
     pull-dev-container            - Pulls dev container (Usage: Username GithubToken)
+    build-dev-container           - Builds dev container (Usage: Username GithubToken)
 "
   exit 1
 fi
