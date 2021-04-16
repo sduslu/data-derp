@@ -61,3 +61,22 @@ resource "aws_iam_role_policy_attachment" "s3-full-access" {
   role       = aws_iam_role.this.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
+
+data "aws_iam_policy_document" "kms" {
+  statement {
+    actions = [
+      "kms:Decrypt",
+      "kms:GenerateDataKey"
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "kms" {
+  policy = data.aws_iam_policy_document.kms.json
+}
+
+resource "aws_iam_role_policy_attachment" "kms" {
+  role       = aws_iam_role.this.id
+  policy_arn = aws_iam_policy.kms.arn
+}
