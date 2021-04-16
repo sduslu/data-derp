@@ -7,3 +7,4 @@ runs:
         cd ${SUBDIR} && \
         TF_WORKSPACE=default terraform init && \
         terraform workspace new $TF_WORKSPACE || echo "Workspace already exists"
+      shell: bash
