@@ -32,7 +32,7 @@ jobs:
     - name: Terraform Init & Apply
       run: |
         cd base && \
-#        terraform workspace select ${TF_WORKSPACE} || terraform workspace new ${TF_WORKSPACE} \
+        $(terraform workspace list | grep ${TF_WORKSPACE}) || terraform workspace new ${TF_WORKSPACE} \
         terraform init && \
         terraform apply -var-file=variables.tfvars -auto-approve
 #  data-ingestion:
