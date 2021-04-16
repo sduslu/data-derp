@@ -1,6 +1,6 @@
 Description:  Deploys a VPC, with a public and private subnet in on AZ,
   along with an IG, NAT, Route Tables, VPCEndIt deploys an internet gateway.
-  Also deploys a Github Runner.
+  Also deploys a Github Runner (EC2 Instance).
 
 Parameters:
   ProjectName:
