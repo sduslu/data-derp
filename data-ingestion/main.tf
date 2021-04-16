@@ -8,7 +8,16 @@ resource "aws_glue_job" "this" {
 
   default_arguments = {
     "--job-language" = "python"
+    "--continuous-log-logGroup"          = aws_cloudwatch_log_group.this.name
+    "--enable-continuous-cloudwatch-log" = "true"
+    "--enable-continuous-log-filter"     = "true"
+    "--enable-metrics"                   = ""
   }
+}
+
+resource "aws_cloudwatch_log_group" "this" {
+  name              = "${var.project-name}-${var.module-name}-data-ingestion/glue"
+  retention_in_days = 14
 }
 
 data "aws_s3_bucket" "this" {
@@ -34,4 +43,14 @@ resource "aws_iam_role" "this" {
     ]
 }
 EOF
+}
+
+resource "aws_iam_role_policy_attachment" "glue-service-role" {
+  role       = aws_iam_role.this.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
+}
+
+resource "aws_iam_role_policy_attachment" "s3-full-access" {
+  role       = aws_iam_role.this.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
