@@ -61,10 +61,16 @@ jobs:
 
       - name: Upload scripts
         run: |
-          aws s3 cp ./data-ingestion/lab/ingestion.py s3://${PROJECT_NAME}-${MODULE_NAME}/ingestion.py
+          aws s3 cp ./data-ingestion/lab/main.py s3://${PROJECT_NAME}-${MODULE_NAME}/main.py
           zip -r ./data-ingestion/lab/config.zip ./data-ingestion/lab/config
           aws s3 cp ./data-ingestion/lab/config.zip s3://${PROJECT_NAME}-${MODULE_NAME}/ingestion_config.zip
+          mkdir ./data-ingestion/lab/ingestion
+          cp ./data-ingestion/lab/ingestion.py ./data-ingestion/lab/ingestion/ingestion.py
+          zip -r ./data-ingestion/lab/ingestion.zip ./data-ingestion/lab/ingestion
+          aws s3 cp ./data-ingestion/lab/config.zip s3://${PROJECT_NAME}-${MODULE_NAME}/ingestion.zip
           rm ./data-ingestion/lab/config.zip
+          rm ./data-ingestion/lab/ingestion.zip
+          rm -rf ./data-ingestion/lab/ingestion
 
       - name: Terraform Setup Workspace
         uses: ./.github/composite-actions/terraform-setup-workspace

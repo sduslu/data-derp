@@ -5,6 +5,7 @@ import pyspark.sql.functions as F
 from pyspark.sql.types import *
 
 import pandas as pd
+from ingestion import Ingestion
 
 # ---------- Part I: Job Setup ---------- #
 
@@ -41,12 +42,7 @@ spark = SparkSession \
 
 # ---------- Part II: Business Logic ---------- #
 
-co2_df = pd.read_csv(job_parameters["co2_uri"])
-co2_df.columns = [x.lower().replace(" ", "_") for x in co2_df.columns]
-# print(co2_df)
-
-co2_spark = spark.createDataFrame(co2_df).select(*co2_df.columns[:3]).limit(1000)
-co2_spark.write.format("parquet").save(path=job_parameters["co2_output_dir"], mode="overwrite")
+Ingestion(spark, job_parameters).ingest()
 
 # NOTE: to read s3 straight outta pandas, install s3fs first
 # temp_countries_df = pd.read_csv("s3://twdu-germany-data-source/GlobalLandTemperaturesByCountry.csv")
