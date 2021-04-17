@@ -69,7 +69,7 @@ jobs:
           cd data-ingestion/lab
           python setup.py bdist_egg
           filename=$(ls dist)
-          aws s3 cp dist/${filename} s3://${PROJECT_NAME}-${MODULE_NAME}/data_ingestion-0.1-py3.egg
+          aws s3 cp dist/${filename} s3://${PROJECT_NAME}-${MODULE_NAME}/twdu_ingestion-0.1-py3.egg
 
       - name: Terraform Setup Workspace
         uses: ./.github/composite-actions/terraform-setup-workspace

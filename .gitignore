@@ -2,9 +2,9 @@
 /tmp
 *.ipynb_checkpoints
 *DS_Store*
-*local-outputs*
 *.zip
-__pycache__
+*__pycache__*
+*ignore_this*
 data-ingestion/lab/build/**/*
 data-ingestion/lab/dist/**/*
 data-ingestion/lab/*.egg-info

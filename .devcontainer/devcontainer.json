@@ -5,5 +5,13 @@
         "ms-python.python",
         "ms-python.vscode-pylance",
         "ms-toolsai.jupyter"
-    ]
-}  
+    ],
+    "settings": {
+        "jupyter.alwaysTrustNotebooks": true,
+        "jupyter.ignoreVscodeTheme": true,
+        "editor.acceptSuggestionOnEnter": "off",
+        "files.autoSave": "afterDelay",
+        "python.analysis.useImportHeuristic": true,
+        // "python.analysis.extraPaths": ["data-ingestion/lab/twdu_ingestion"]
+    }
+}
