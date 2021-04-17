@@ -346,7 +346,7 @@ Resources:
           tar xzf ./actions-runner-linux-x64-2.277.1.tar.gz
 
           get-token() {
-              key="/twdu-germany/github-reg-token"
+              key="/twdu-germany/github-runner-reg-token"
               aws ssm get-parameters --name ${!key} --region eu-central-1 --with-decryption | jq -r .Parameters[0].Value
           }
 

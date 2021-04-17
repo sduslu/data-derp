@@ -49,14 +49,14 @@ create-update-ssm-parameter() {
     if [[ ! $(AWS_PROFILE=default aws ssm get-parameter --name "${parameter}" --region eu-central-1) ]]; then
       echo "Parameter (${parameter}) does not exist. Creating..."
       AWS_PROFILE=default aws ssm put-parameter \
-        --name /twdu-germany/github-runner-reg-token \
+        --name "${parameter}" \
         --value "${token}" \
         --type SecureString \
         --region eu-central-1
     else
       echo "Parameter (${parameter}) exists. Updating..."
       AWS_PROFILE=default aws ssm put-parameter \
-        --name /twdu-germany/github-runner-reg-token \
+        --name "${parameter}" \
         --value "${token}" \
         --overwrite \
         --region eu-central-1
@@ -97,7 +97,7 @@ switch-to-admin() {
 
   response=$(AWS_PROFILE=${PROJECT} aws sts assume-role \
   --role-arn "arn:aws:iam::${account}:role/federated-admin" \
-  --role-session-name "bootstrap/${arn}")
+  --role-session-name "bootstrap-$(echo $arn | cut -d '/' -f 3)")
 
   aws configure set aws_access_key_id $(echo $response | jq -r '.Credentials.AccessKeyId') --profile default
   aws configure set aws_secret_access_key $(echo $response | jq -r '.Credentials.SecretAccessKey') --profile default
