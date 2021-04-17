@@ -5,13 +5,14 @@ set -o nounset
 set -o pipefail
 
 script_dir=$(cd "$(dirname "$0")" ; pwd -P)
+PROJECT="twdu-germany"
 
 goal_pull-dev-container() {
   pushd "${script_dir}" > /dev/null
     username=${1}
 
     if [ -z "${username}" ]; then
-      echo "USERNAME not set. Usage TOKEN USERNAME"
+      echo "USERNAME not set. Usage USERNAME"
       exit 1
     fi
 
@@ -30,6 +31,52 @@ goal_build-dev-container() {
   popd > /dev/null
 }
 
+goal_switch-to-admin-role() {
+  pushd "${script_dir}" > /dev/null
+    identity=$(AWS_PROFILE=${PROJECT} aws sts get-caller-identity)
+    account=$(echo $identity | jq -r '.Account')
+    arn=$(echo $identity | jq -r '.Arn')
+
+    response=$(AWS_PROFILE=${PROJECT} aws sts assume-role \
+    --role-arn "arn:aws:iam::${account}:role/federated-admin" \
+    --role-session-name "bootstrap/${arn}")
+
+    aws configure set aws_access_key_id $(echo $response | jq -r '.Credentials.AccessKeyId') --profile default
+    aws configure set aws_secret_access_key $(echo $response | jq -r '.Credentials.SecretAccessKey') --profile default
+    aws configure set aws_session_token $(echo $response | jq -r '.Credentials.SessionToken') --profile default
+  popd > /dev/null
+}
+
+goal_setup() {
+  if [[ ! $(crowbar) ]]; then
+    brew install moritzheiber/tap/crowbar
+  else
+    echo "Crowbar installed. Nothing to do here!"
+  fi
+
+  if [[ !$(pyenv) ]]; then
+    brew install pyenv
+  else
+    echo "Pyenv installed. Nothing to do here!"
+  fi
+
+  if [[ ! $(aws) ]]; then
+    pip install awscli
+  else
+    echo "AWS cli installed. Nothing to do here!"
+  fi
+
+  echo "Setting up Crowbar profile (${PROJECT})"
+  read  -p "Enter OKTA username (before @): " -s okta_username
+
+  crowbar profiles add "${PROJECT}" -u $okta_username -p okta --url "https://thoughtworks.okta.com/home/amazon_aws/0oa1kzdqca8OEU6ju0h8/272"
+  if [[ $(AWS_PROFILE=twdu-germany aws s3 ls --region eu-central-1) ]]; then
+    echo "Crowbar profile successfully created and connected to AWS"
+  else
+    echo "Crowbar profile could not connect to AWS resources. Did you enter the right username/password?"
+  fi
+}
+
 TARGET=${1:-}
 if type -t "goal_${TARGET}" &>/dev/null; then
   "goal_${TARGET}" ${@:2}
@@ -37,8 +84,9 @@ else
   echo "Usage: $0 <goal>
 
 goal:
-    pull-dev-container            - Pulls dev container (Usage: Username GithubToken)
-    build-dev-container           - Builds dev container (Usage: Username GithubToken)
+    pull-dev-container            - Pulls dev container (Usage: GithubUsername)
+    build-dev-container           - Builds dev container
+    setup                         - Installs Crowbar and AWS CLI if not exists
 "
   exit 1
 fi
