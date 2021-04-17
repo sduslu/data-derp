@@ -7,6 +7,7 @@ resource "aws_glue_job" "this" {
   glue_version = "2.0"
 
   command {
+    name = "pythonshell"
     script_location = "s3://${data.aws_s3_bucket.this.bucket}/${var.script-path}"
   }
 
