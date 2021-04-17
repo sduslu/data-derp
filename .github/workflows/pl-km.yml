@@ -70,7 +70,7 @@ jobs:
         run: |
           cd data-ingestion/lab
           python setup.py bdist_wheel
-          aws s3 cp dist/ingestion-0.1-py3-none-any.whl s3://${PROJECT_NAME}-${MODULE_NAME}/ingestion-0.1-py3-none-any.whl
+          aws s3 cp dist/data_ingestion-0.1-py3-none-any.whl s3://${PROJECT_NAME}-${MODULE_NAME}/data_ingestion-0.1-py3-none-any.whl
 
       - name: Terraform Setup Workspace
         uses: ./.github/composite-actions/terraform-setup-workspace

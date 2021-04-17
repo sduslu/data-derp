@@ -1,6 +1,6 @@
 from setuptools import setup
 setup(
-    name="ingestion",
+    name="data_ingestion",
     version="0.1",
-    packages=['ingestion']
+    packages=['data_ingestion']
 )
