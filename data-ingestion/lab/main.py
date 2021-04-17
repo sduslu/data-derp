@@ -5,7 +5,7 @@ import pyspark.sql.functions as F
 from pyspark.sql.types import *
 
 import pandas as pd
-from ingestion import Ingestion
+from ingestion import ingestion
 
 # ---------- Part I: Job Setup ---------- #
 
@@ -42,7 +42,7 @@ spark = SparkSession \
 
 # ---------- Part II: Business Logic ---------- #
 
-Ingestion(spark, job_parameters).ingest()
+ingestion.Ingestion(spark, job_parameters).ingest()
 
 # NOTE: to read s3 straight outta pandas, install s3fs first
 # temp_countries_df = pd.read_csv("s3://twdu-germany-data-source/GlobalLandTemperaturesByCountry.csv")

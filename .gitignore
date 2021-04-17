@@ -5,3 +5,7 @@
 *local-outputs*
 *.zip
 __pycache__
+data-ingestion/lab/build/**/*
+data-ingestion/lab/dist/**/*
+data-ingestion/lab/data_ingestion.egg-info
+.pytest_cache
