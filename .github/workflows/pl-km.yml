@@ -59,6 +59,11 @@ jobs:
       - name: Assume Role
         run: assume-role twdu-germany-github-runner-aws
 
+      - name: Upload Main.py
+        run: |
+          cd data-ingestion/lab
+          aws s3 cp main.py s3://${PROJECT_NAME}-${MODULE_NAME}/main.py
+
       - name: Upload Data Ingestion lib
         run: |
           cd data-ingestion/lab

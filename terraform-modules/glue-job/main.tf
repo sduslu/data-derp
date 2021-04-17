@@ -70,6 +70,21 @@ data "aws_iam_policy_document" "kms" {
     ]
     resources = ["*"]
   }
+
+  statement {
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = ["arn:aws:logs:*:*:/aws-glue/*"]
+  }
+
+  statement {
+    actions = [
+      "s3:GetObject", "s3:PutObject", "s3:DeleteObject"
+    ]
+  }
 }
 
 resource "aws_iam_policy" "kms" {
