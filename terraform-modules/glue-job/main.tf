@@ -10,7 +10,7 @@ resource "aws_glue_job" "this" {
     script_location = "s3://${data.aws_s3_bucket.this.bucket}/${var.script-path}"
   }
 
-  default_arguments = {
+  default_arguments = merge({
     "--job-language" = "python"
     "--continuous-log-logGroup"          = aws_cloudwatch_log_group.this.name
     "--enable-continuous-cloudwatch-log" = "true"
@@ -19,7 +19,7 @@ resource "aws_glue_job" "this" {
     "--TempDir"                          = "s3://${data.aws_s3_bucket.this.bucket}/${var.submodule-name}/temp/"
     "--enable-spark-ui"                  =  "true"
     "--spark-event-logs-path"             = "s3://${data.aws_s3_bucket.this.bucket}/${var.submodule-name}/spark-event-logs-path/"
-  }
+  },var.additional-params)
 }
 
 resource "aws_cloudwatch_log_group" "this" {
