@@ -14,94 +14,38 @@ on:
       - '.github/workflow/build-push-dev-container.yml'
 
 jobs:
-  base:
-    name: 'Base Terraform'
-    runs-on: self-hosted
-    environment: production
-    env:
-      SUBDIR: base
-    container:
-      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Assume Role
-      run: assume-role twdu-germany-github-runner-aws
-
-    - name: Terraform Setup Workspace
-      uses: ./.github/composite-actions/terraform-setup-workspace
-
-    - name: Terraform Init & Apply
-      uses: ./.github/composite-actions/terraform-apply
-
-  data-ingestion:
-    name: 'Data Ingestion'
-    runs-on: self-hosted
-    environment: production
-    env:
-      SUBDIR: data-ingestion
-    needs: ["base"]
-    container:
-      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Assume Role
-        run: assume-role twdu-germany-github-runner-aws
-
-      - name: Upload scripts
-        run: |
-          aws s3 cp ./data-ingestion/lab/ingestion.py s3://${PROJECT_NAME}-${MODULE_NAME}/ingestion.py
-          zip -r ./data-ingestion/lab/config.zip ./data-ingestion/lab/config
-          aws s3 cp ./data-ingestion/lab/config.zip s3://${PROJECT_NAME}-${MODULE_NAME}/ingestion_config.zip
-          rm ./data-ingestion/lab/config.zip
-
-      - name: Terraform Setup Workspace
-        uses: ./.github/composite-actions/terraform-setup-workspace
-
-      - name: Terraform Init & Apply
-        uses: ./.github/composite-actions/terraform-apply
-
-  data-transformation:
-    name: 'Data Transformation'
-    runs-on: self-hosted
-    environment: production
-    env:
-      SUBDIR: data-transformation
-    needs: [ "base" ]
-    container:
-      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Assume Role
-        run: assume-role twdu-germany-github-runner-aws
-
-      - name: Terraform Setup Workspace
-        uses: ./.github/composite-actions/terraform-setup-workspace
-
-      - name: Terraform Init & Apply
-        uses: ./.github/composite-actions/terraform-apply
-
-#  destroy:
-#    name: 'Destroy all'
+#  base:
+#    name: 'Base Terraform'
 #    runs-on: self-hosted
 #    environment: production
+#    env:
+#      SUBDIR: base
+#    container:
+#      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
+#      credentials:
+#        username: ${{ github.actor }}
+#        password: ${{ secrets.GITHUB_TOKEN }}
+#
+#    steps:
+#    - name: Checkout
+#      uses: actions/checkout@v2
+#
+#    - name: Assume Role
+#      run: assume-role twdu-germany-github-runner-aws
+#
+#    - name: Terraform Setup Workspace
+#      uses: ./.github/composite-actions/terraform-setup-workspace
+#
+#    - name: Terraform Init & Apply
+#      uses: ./.github/composite-actions/terraform-apply
+#
+#  data-ingestion:
+#    name: 'Data Ingestion'
+#    runs-on: self-hosted
+#    environment: production
+#    env:
+#      SUBDIR: data-ingestion
+#    needs: ["base"]
 #    container:
 #      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
 #      credentials:
@@ -115,17 +59,73 @@ jobs:
 #      - name: Assume Role
 #        run: assume-role twdu-germany-github-runner-aws
 #
-#      - name: Terraform Init & Destroy (Data Transformation)
-#        env:
-#          SUBDIR: data-transformation
-#        uses: ./.github/composite-actions/terraform-destroy
+#      - name: Upload scripts
+#        run: |
+#          aws s3 cp ./data-ingestion/lab/ingestion.py s3://${PROJECT_NAME}-${MODULE_NAME}/ingestion.py
+#          zip -r ./data-ingestion/lab/config.zip ./data-ingestion/lab/config
+#          aws s3 cp ./data-ingestion/lab/config.zip s3://${PROJECT_NAME}-${MODULE_NAME}/ingestion_config.zip
+#          rm ./data-ingestion/lab/config.zip
 #
-#      - name: Terraform Init & Destroy (Data Ingestion)
-#        env:
-#          SUBDIR: data-ingestion
-#        uses: ./.github/composite-actions/terraform-destroy
+#      - name: Terraform Setup Workspace
+#        uses: ./.github/composite-actions/terraform-setup-workspace
+#
+#      - name: Terraform Init & Apply
+#        uses: ./.github/composite-actions/terraform-apply
+#
+#  data-transformation:
+#    name: 'Data Transformation'
+#    runs-on: self-hosted
+#    environment: production
+#    env:
+#      SUBDIR: data-transformation
+#    needs: [ "base" ]
+#    container:
+#      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
+#      credentials:
+#        username: ${{ github.actor }}
+#        password: ${{ secrets.GITHUB_TOKEN }}
+#
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#
+#      - name: Assume Role
+#        run: assume-role twdu-germany-github-runner-aws
+#
+#      - name: Terraform Setup Workspace
+#        uses: ./.github/composite-actions/terraform-setup-workspace
+#
+#      - name: Terraform Init & Apply
+#        uses: ./.github/composite-actions/terraform-apply
 
-#      - name: Terraform Init & Destroy (Base)
-#        env:
-#          SUBDIR: base
-#        uses: ./.github/composite-actions/terraform-destroy
+  destroy:
+    name: 'Destroy all'
+    runs-on: self-hosted
+    environment: production
+    container:
+      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Assume Role
+        run: assume-role twdu-germany-github-runner-aws
+
+      - name: Terraform Init & Destroy (Data Transformation)
+        env:
+          SUBDIR: data-transformation
+        uses: ./.github/composite-actions/terraform-destroy
+
+      - name: Terraform Init & Destroy (Data Ingestion)
+        env:
+          SUBDIR: data-ingestion
+        uses: ./.github/composite-actions/terraform-destroy
+
+      - name: Terraform Init & Destroy (Base)
+        env:
+          SUBDIR: base
+        uses: ./.github/composite-actions/terraform-destroy
