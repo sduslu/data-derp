@@ -91,11 +91,13 @@ create-update-github-runner-stack() {
 }
 
 switch-to-admin() {
-  account=$(AWS_PROFILE=${PROJECT} aws sts get-caller-identity | jq -r '.Account')
+  identity=$(AWS_PROFILE=${PROJECT} aws sts get-caller-identity)
+  account=$(echo $identity | jq -r '.Account')
+  arn=$(echo $identity | jq -r '.Arn')
 
   response=$(AWS_PROFILE=${PROJECT} aws sts assume-role \
   --role-arn "arn:aws:iam::${account}:role/federated-admin" \
-  --role-session-name "bootstrap")
+  --role-session-name "bootstrap/${arn}")
 
   aws configure set aws_access_key_id $(echo $response | jq -r '.Credentials.AccessKeyId') --profile default
   aws configure set aws_secret_access_key $(echo $response | jq -r '.Credentials.SecretAccessKey') --profile default
