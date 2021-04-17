@@ -24,6 +24,12 @@ goal_terraform-state() {
   popd > /dev/null
 }
 
+goal_data-source() {
+  pushd "${script_dir}" > /dev/null
+    ./create-update-source.sh
+  popd > /dev/null
+}
+
 TARGET=${1:-}
 if type -t "goal_${TARGET}" &>/dev/null; then
   "goal_${TARGET}" ${@:2}
