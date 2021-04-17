@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-push-image:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     name: Docker Build, Tag, Push
     steps:
       - name: Checkout
