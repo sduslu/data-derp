@@ -5,6 +5,7 @@ from pyspark.sql.types import *
 
 from data_ingestion import ingestion
 
+
 # ---------- Part I: Job Setup ---------- #
 
 # By sticking with standard Spark, we can avoid having to deal with Glue-specific locally

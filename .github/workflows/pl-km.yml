@@ -62,8 +62,9 @@ jobs:
       - name: Upload Data Ingestion lib
         run: |
           cd data-ingestion/lab
-          python setup.py bdist_wheel
-          aws s3 cp dist/data_ingestion-0.1-py3-none-any.whl s3://${PROJECT_NAME}-${MODULE_NAME}/data_ingestion-0.1-py3-none-any.whl
+          python setup.py bdist_egg
+          filename=$(ls dist)
+          aws s3 cp dist/${filename} s3://${PROJECT_NAME}-${MODULE_NAME}/data_ingestion-0.1-py3.egg
 
       - name: Terraform Setup Workspace
         uses: ./.github/composite-actions/terraform-setup-workspace
