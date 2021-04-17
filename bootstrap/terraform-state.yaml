@@ -6,7 +6,7 @@ Parameters:
   BucketBaseName:
     Type: String
     Description: Bucket name
-    Default: "twdu-germany-infra-state"
+    Default: "twdu-germany-terraform-state"
   TableName:
     Type: String
     Description: Name of table
