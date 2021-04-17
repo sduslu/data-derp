@@ -1,10 +1,8 @@
 import sys
 
 from pyspark.sql import SparkSession
-import pyspark.sql.functions as F
 from pyspark.sql.types import *
 
-import pandas as pd
 from data_ingestion import ingestion
 
 # ---------- Part I: Job Setup ---------- #
