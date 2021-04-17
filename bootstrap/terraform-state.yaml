@@ -20,7 +20,7 @@ Resources:
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
-              SSEAlgorithm: "AES256"
+              SSEAlgorithm: "aws:kms"
       BucketName: !Sub "${BucketBaseName}"
       Tags:
         - Key: Project

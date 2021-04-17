@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+set -e
+set -o nounset
+set -o pipefail
+
+script_dir=$(cd "$(dirname "$0")" ; pwd -P)
+goal_githubrunner() {
+  pushd "${script_dir}" > /dev/null
+    username="${1}"
+
+    if [ -z "${username}" ]; then
+      echo "GITHUB_USERNAME not set. Usage <func> GITHUB_USERNAME"
+      exit 1
+    fi
+
+    ./create-update-github-runner.sh "${username}"
+  popd > /dev/null
+}
+
+goal_terraform-state() {
+  pushd "${script_dir}" > /dev/null
+    ./create-update-terraform-state.sh
+  popd > /dev/null
+}
+
+TARGET=${1:-}
+if type -t "goal_${TARGET}" &>/dev/null; then
+  "goal_${TARGET}" ${@:2}
+else
+  echo "Usage: $0 <goal>
+
+goal:
+    githabrunner           - Deploys Githabrunner (Usage: Username)
+    terraform-state        - Creates stack for terraform-state
+"
+  exit 1
+fi
