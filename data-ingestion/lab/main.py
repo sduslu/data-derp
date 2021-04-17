@@ -14,9 +14,9 @@ ENVIRONMENT = "local" # DO NOT MODIFY: CD pipeline will replace "local" with "aw
 if ENVIRONMENT == "local":
     job_parameters = {
         "temperature_uri": "https://raw.githubusercontent.com/owid/owid-datasets/master/datasets/Berkley%20Land-Ocean%20Temperature%20Anomaly/Berkley%20Land-Ocean%20Temperature%20Anomaly.csv",
-        "temperature_output_dir": "s3://twdu-germany/temperature-output-parquet/",
+        "temperature_output_dir": "s3://twdu-germany-pl-km/temperature-output-parquet/",
         "co2_uri": "https://raw.githubusercontent.com/owid/owid-datasets/master/datasets/CO2%20emissions%20(Aggregate%20dataset%20(2021))/CO2%20emissions%20(Aggregate%20dataset%20(2021)).csv",
-        "co2_output_dir": "s3://twdu-germany-pl-km-test/co2-output-parquet/",
+        "co2_output_dir": "s3://twdu-germany-pl-km/co2-output-parquet/",
     }
 elif ENVIRONMENT == "aws":
     from awsglue.utils import getResolvedOptions
