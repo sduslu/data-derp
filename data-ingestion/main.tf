@@ -6,6 +6,6 @@ module "glue-job" {
   submodule-name = "data-ingestion"
   script-path = "main.py"
   additional-params = {
-    "--extra-py-files": "s3://${var.project-name}-${var.module-name}/ingestion_config.zip,s3://${var.project-name}-${var.module-name}/ingestion.zip"
+    "--extra-py-files": "s3://${var.project-name}-${var.module-name}/ingestion_config.zip,s3://${var.project-name}-${var.module-name}/ingestion.zip,s3://${var.project-name}-${var.module-name}/ingestion.py"
     }
 }
