@@ -7,5 +7,5 @@
 __pycache__
 data-ingestion/lab/build/**/*
 data-ingestion/lab/dist/**/*
-data-ingestion/lab/data_ingestion.egg-info
+data-ingestion/lab/*.egg-info
 .pytest_cache
