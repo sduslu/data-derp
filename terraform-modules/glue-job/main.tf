@@ -77,7 +77,10 @@ data "aws_iam_policy_document" "kms" {
       "logs:CreateLogStream",
       "logs:PutLogEvents"
     ]
-    resources = ["arn:aws:logs:*:*:/aws-glue/*"]
+    resources = [
+      "arn:aws:logs:*:*:/aws-glue/*",
+      aws_cloudwatch_log_group.this.arn
+    ]
   }
 }
 
