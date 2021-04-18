@@ -97,6 +97,18 @@ jobs:
       - name: Assume Role
         run: assume-role twdu-germany-github-runner-aws
 
+      - name: Upload Main.py
+        run: |
+          cd data-transformation/lab
+          aws s3 cp main.py s3://${PROJECT_NAME}-${MODULE_NAME}/main.py
+
+      - name: Upload Data Transformation lib
+        run: |
+          cd data-transformation/lab
+          python setup.py bdist_egg
+          filename=$(ls dist)
+          aws s3 cp dist/${filename} s3://${PROJECT_NAME}-${MODULE_NAME}/data_transformation-0.1-py3.egg
+
       - name: Terraform Setup Workspace
         uses: ./.github/composite-actions/terraform-setup-workspace
 
