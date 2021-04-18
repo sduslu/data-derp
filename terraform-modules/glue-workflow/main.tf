@@ -25,6 +25,6 @@ resource "aws_glue_trigger" "transformation" {
   }
 
   actions {
-    job_name = "${var.project-name}-${var.module-name}-data-ingestion"
+    job_name = "${var.project-name}-${var.module-name}-data-transformation"
   }
 }
