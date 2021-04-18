@@ -4,7 +4,7 @@ from pyspark.sql.types import *
 
 import pandas as pd
 
-# ---------- Part II: Business Logic (for Part I, see twdu_ingestion/config.py) ---------- #
+# ---------- Part II: Business Logic (for Part I, see data_ingestion/config.py) ---------- #
 
 class Ingestion:
     """TWDU Ingestion Python Class"""

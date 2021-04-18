@@ -25,3 +25,6 @@ class PySparkTest(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.spark.stop()
+
+if __name__ == '__main__':
+    unittest.main()

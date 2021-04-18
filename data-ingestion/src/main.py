@@ -3,7 +3,7 @@ from pyspark.sql import SparkSession
 from data_ingestion.config import job_parameters
 from data_ingestion.ingestion import Ingestion
 
-# ---------- Part III: Run Da Ting (for Part II, see twdu_ingestion/ingestion.py) ---------- #
+# ---------- Part III: Run Da Ting (for Part II, see data_ingestion/ingestion.py) ---------- #
 
 spark = SparkSession \
     .builder \
