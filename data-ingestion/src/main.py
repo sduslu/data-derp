@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 
-from twdu_ingestion.config import job_parameters
-from twdu_ingestion.ingestion import Ingestion
+from data_ingestion.config import job_parameters
+from data_ingestion.ingestion import Ingestion
 
 # ---------- Part III: Run Da Ting (for Part II, see twdu_ingestion/ingestion.py) ---------- #
 

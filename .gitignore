@@ -5,7 +5,10 @@
 *.zip
 *__pycache__*
 *ignore_this*
-data-ingestion/lab/build/**/*
-data-ingestion/lab/dist/**/*
-data-ingestion/lab/*.egg-info
+data-ingestion/src/build/**/*
+data-ingestion/src/dist/**/*
+data-ingestion/src/*.egg-info
+data-transformation/src/build/**/*
+data-transformation/src/dist/**/*
+data-transformation/src/*.egg-info
 .pytest_cache
