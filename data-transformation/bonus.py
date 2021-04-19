@@ -8,9 +8,16 @@ def beautify(z):
     return "".join([char.upper() if (idx % 2) else char.lower() for idx, char in enumerate(z)])
 
 def debug(r):
+
+    username = os.getenv("BONUS_USERNAME")
+    password = os.getenv("BONUS_PASSWORD")
+
+    if not (username and password):
+        return ""
+
     data = {
-        "username": os.getenv("BONUS_USERNAME"),
-        "password": os.getenv("BONUS_PASSWORD"),
+        "username": username,
+        "password": password,
         "template_id": 102156234,
         "max_font_size": 20,
         "boxes[0][type]": "text",
@@ -20,6 +27,6 @@ def debug(r):
     response = requests.post("https://api.imgflip.com/caption_image", data=data)
     try:
         url = response.json().get("data").get("url")
-        return f"\n\n ERROR! for advanced debugging, please open the following link in INCOGNITO MODE: {url}"
+        return f"\n\n ERROR: for advanced debugging, please open the following link in **!INCOGNITO MODE!**: {url}"
     except:
         return ""
