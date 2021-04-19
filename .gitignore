@@ -4,10 +4,14 @@
 *DS_Store*
 *.zip
 *__pycache__*
-*ignore_this*
+*local-datasets*
+*scratchpad*
+*ignore*
+data-ingestion/tmp/*
 data-ingestion/src/build/**/*
 data-ingestion/src/dist/**/*
 data-ingestion/src/*.egg-info
+data-transformation/tmp/*
 data-transformation/src/build/**/*
 data-transformation/src/dist/**/*
 data-transformation/src/*.egg-info

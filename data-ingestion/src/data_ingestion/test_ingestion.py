@@ -14,7 +14,7 @@ class TestIngestion(PySparkTest):
     def setUp(self):
         self.parameters = {
             'co2_uri': 'https://some-co2-uri.com',
-            'co2_output_dir': './data-ingestion/tmp'
+            'co2_output_dir': './data-ingestion/tmp/test-data/'
         }
         self.ingestion = Ingestion(self.spark, self.parameters)
 
@@ -26,6 +26,8 @@ class TestIngestion(PySparkTest):
             os.rmdir(output_dir)
 
     def test_replace_spaces_with_underscores(self):
+        # BEWARE: dictionaries in Python do not necessarily enforce order. 
+        # To check column names, always use sorted()
         df = pd.DataFrame(
             {
                 'My Awesome Column': pd.Series(["Germany", "New Zealand", "Australia", "UK"]),
@@ -58,11 +60,8 @@ class TestIngestion(PySparkTest):
             }
         )
         result = self.ingestion.write_co2(df)
-
         files = os.listdir(self.parameters["co2_output_dir"])
-
         self.assertTrue(True if "_SUCCESS" in files else False)
-        # self.assertEqual(len(files), 4) # by default, 4 parquet partitions are written. but it's not a real requirement 
 
     @patch('pandas.read_csv')
     def test_run(self, mock_read_csv):
@@ -72,12 +71,9 @@ class TestIngestion(PySparkTest):
                 'Some Year': pd.Series(["1900", "1901", "1902", "1903"])
              }
         )
-
         result = self.ingestion.run()
         files = os.listdir(self.parameters["co2_output_dir"])
-
         self.assertTrue(True if "_SUCCESS" in files else False)
-        # self.assertEqual(len(files), 4) # by default, 4 parquet partitions are written. but it's not a real requirement 
 
 if __name__ == '__main__':
     unittest.main()
