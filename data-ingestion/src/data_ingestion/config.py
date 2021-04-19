@@ -6,7 +6,7 @@ from pyspark.sql import SparkSession
 
 # ---------- Part I: Job Setup ---------- #
 
-# By sticking with standard Spark, we can avoid having to deal with Glue-specific locally
+# By sticking with standard Spark, we can avoid having to deal with Glue dependencies locally
 # If developing outside of the TWDU Dev Container, don't forget to set the environment variable: TWDU_ENVIRONMENT=local
 ENVIRONMENT = os.getenv(key="TWDU_ENVIRONMENT", default="aws")
 
