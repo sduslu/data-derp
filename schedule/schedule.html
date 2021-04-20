@@ -27,65 +27,63 @@
 
     function drawChart() {
 
-      var otherData = new google.visualization.DataTable();
-      otherData.addColumn('string', 'Task ID');
-      otherData.addColumn('string', 'Task Name');
-      otherData.addColumn('string', 'Resource');
-      otherData.addColumn('date', 'Start');
-      otherData.addColumn('date', 'End');
-      otherData.addColumn('number', 'Duration');
-      otherData.addColumn('number', 'Percent Complete');
-      otherData.addColumn('string', 'Dependencies');
+      var baseData = new google.visualization.DataTable();
+      baseData.addColumn('string', 'Task ID');
+      baseData.addColumn('string', 'Task Name');
+      baseData.addColumn('string', 'Resource');
+      baseData.addColumn('date', 'Start');
+      baseData.addColumn('date', 'End');
+      baseData.addColumn('number', 'Duration');
+      baseData.addColumn('number', 'Percent Complete');
+      baseData.addColumn('string', 'Dependencies');
 
-      dayOne = [
+      dayOneSchedule = [
         ['welcome', 'Welcome to TWDU Germany: Expectations, Goals', 'welcome', new Date(2021, 3, 26, 9, 0, 0), null, welcomeTime, 0, null],
         ['deNutshell', 'What is Data Engineering and what problems does it solve?', 'deNutshell', null, null, deNutshellTime, 0, 'welcome'],
         ['dayonelunch', 'Lunch', 'lunch', null, null, lunchTime, 0, 'deNutshell'],
         ['understandingDe', 'Understanding Data Engineering', 'understandingDe', null, null, understandingDeTime, 0, 'dayonelunch'],
       ]
-      dayTwo = [
+      dayTwoSchedule = [
         ['realLifeSlice', 'Real Life Slice', 'realLifeSlice', new Date(2021, 3, 27, 9, 0, 0), null, realLifeSliceTime, 0, null],
         ['dataIngestion', 'Data Ingestion', 'dataIngestion', null, null, dataIngestionTime, 0, 'realLifeSlice'],
         ['daytwolunch', 'Lunch', 'lunch', null, null, lunchTime, 0, 'dataIngestion'],
         ['dataTransformationPart1', 'Data Transformation Part 1', 'dataTransformation', null, null, dataTransformationTime = dataTransformationTime-hoursToMilliseconds(4), 0, 'daytwolunch'],
       ]
 
-      dayThree = [
+      dayThreeSchedule = [
         ['dataTransformationPart2', 'Data Transformation Part 2', 'dataTransformation', new Date(2021, 3, 28, 9, 0, 0), null, dataTransformationTime, 0, null],
         ['daythreelunch', 'Lunch', 'lunch', null, null, lunchTime, 0, 'dataTransformationPart2'],
         ['dataVisualisation', 'Data Visualisation', 'dataVisualisation', null, null, dataVisualisationTime, 0, 'daythreelunch'],
       ]
 
-      dayFour = [
+      dayFourSchedule = [
         ['statisticsDataScience', 'Statistics And Data Science', 'statisticsDataScience',  new Date(2021, 3, 29, 9, 0, 0), null, statisticsDataScienceTime, 0, null],
         ['dayFourLunch', 'Lunch', 'lunch', null, null, lunchTime, 0, 'statisticsDataScience'],
         ['streaming', 'Streaming', 'streaming', null, null, streamingTime, 0, 'dayFourLunch'],
       ]
 
-      dayFive = [
+      dayFiveSchedule = [
         ['dataMesh', 'Data Mesh', 'dataMesh',  new Date(2021, 3, 30, 9, 0, 0), null, dataMeshTime, 0, null]
       ]
 
-
-      otherData.addRows(
-        dayOne.concat(
-                dayTwo,
-                dayThree,
-                dayFour,
-                dayFive
-        )
+      baseData.addRows(
+              dayOneSchedule
+              // dayTwoSchedule
+              // dayThreeSchedule
+              // dayFourSchedule
+              // dayFiveSchedule
       );
 
       var options = {
-        height: 800,
+        height: 300,
         gantt: {
           defaultStartDateMillis: new Date(2021, 3, 26, 9, 0, 0)
         }
       };
 
       var chart = new google.visualization.Gantt(document.getElementById('chart_div'));
+      chart.draw(baseData, options);
 
-      chart.draw(otherData, options);
     }
   </script>
 </head>
