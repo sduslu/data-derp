@@ -7,7 +7,7 @@ This repository creates an AWS Glue job using the logic in the `/src` directory
 * Deploy: simply push the code, Github Actions will deploy using the workflow for your branch
 * [Run the AWS Glue job](https://docs.aws.amazon.com/glue/latest/dg/console-jobs.html)
 
-## Output
+## Expected Example Output
 | year | country | CO2 (ppm) | country temp (C) | global temp (C) |
 | --- | --- | --- | --- | --- |
 | 2020 | Germany | 190 | 14 | 21 |
