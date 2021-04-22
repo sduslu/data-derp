@@ -7,7 +7,11 @@ This repository creates an AWS Glue job using the logic in the `/src` directory
 * Deploy: simply push the code, Github Actions will deploy using the workflow for your branch
 * [Run the AWS Glue job](https://docs.aws.amazon.com/glue/latest/dg/console-jobs.html)
 
-## Expected Example Output
+## Goal of Exercise
+Transform the ingested files that resulted from the AWS Glue Job in `../data-ingestion`. Don't forget your tests!
+
+### Expected Example Output
+Process the ingested files
 | year | country | CO2 (ppm) | country temp (C) | global temp (C) |
 | --- | --- | --- | --- | --- |
 | 2020 | Germany | 190 | 14 | 21 |
