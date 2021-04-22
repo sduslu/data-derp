@@ -1,20 +1,8 @@
-* 1 S3 bucket per user
-    * /config (dir)
-        * berkley-temperpature-global.txt
-        * berkley-temperature-country.txt
-        * owid-co2-country.txt
-    * /ingested (dir) (where we ingest to)
-        * berkley-temperpature-global
-        * berkley-temperature-country
-        * owid-co2-country
-* Glue job for ingestion
-  * params
-    * config
-      * berkley-temperpature-global 
-      * berkley-temperature-country
-      * owid-co2-country
-  * Python
-  * reading url from config
-  * saving as parquet  
+# Data Ingestion
+This repository creates an AWS Glue job using the logic in the `/src` directory
 
-s3fs
+## Quickstart
+* Set up your [development environment](../development-environment.md)
+* Run tests `cd data-ingestion/src && pytest`
+* Deploy: simply push the code, Github Actions will deploy using the workflow for your branch
+* [Run the AWS Glue job](https://docs.aws.amazon.com/glue/latest/dg/console-jobs.html)

@@ -1,21 +1,12 @@
-* 1 S3 bucket per user
-    * /sink (dir) (where we put transformed data)
-        * co2-temp-country
-        * co2-temp-global
-        * ...
-* Glue job for transformation
-  * params
-    * config
-      * berkley-temperpature-global 
-      * berkley-temperature-country
-      * owid-co2-country
-  * [output](#output)
-  * Python
-  * reading url for datasets from config
-  * saving as parquet  
-  * tradeoffs conversation
-    * how much pre-aggregation
-    
+# Data Transformation
+This repository creates an AWS Glue job using the logic in the `/src` directory
+
+## Quickstart
+* Set up your [development environment](../development-environment.md)
+* Run tests `cd data-transformation/src && pytest`
+* Deploy: simply push the code, Github Actions will deploy using the workflow for your branch
+* [Run the AWS Glue job](https://docs.aws.amazon.com/glue/latest/dg/console-jobs.html)
+
 ## Output
 | year | country | CO2 (ppm) | country temp (C) | global temp (C) |
 | --- | --- | --- | --- | --- |
