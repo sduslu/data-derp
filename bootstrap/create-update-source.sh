@@ -41,8 +41,12 @@ create-update-stack() {
 
 upload_data() {
   pushd "${script_dir}" > /dev/null
-    AWS_PROFILE=default aws s3 cp GlobalLandTemperaturesByCountry.csv s3://twdu-germany-data-source/GlobalLandTemperaturesByCountry.csv
-    AWS_PROFILE=default aws s3 cp GlobalTemperatures.csv s3://twdu-germany-data-source/GlobalTemperatures.csv
+
+    AWS_PROFILE=default aws s3 cp "GlobalLandTemperaturesByCountry.csv" "s3://twdu-germany-data-source/GlobalLandTemperaturesByCountry.csv"
+    AWS_PROFILE=default aws s3 cp "TemperaturesByCountryDesanitized.csv" "s3://twdu-germany-data-source/TemperaturesByCountryDesanitized.csv"
+    AWS_PROFILE=default aws s3 cp "GlobalTemperatures.csv" "s3://twdu-germany-data-source/GlobalTemperatures.csv"
+    AWS_PROFILE=default aws s3 cp "CO2 emissions (Aggregate dataset (2021)).csv" "s3://twdu-germany-data-source/CO2 emissions (Aggregate dataset (2021)).csv"
+
   popd > /dev/null
 }
 

@@ -36,10 +36,12 @@ if ENVIRONMENT == "aws":
 elif  ENVIRONMENT == "local":
 
     job_parameters = {
-        "temperature_uri": "https://raw.githubusercontent.com/owid/owid-datasets/master/datasets/Berkley%20Land-Ocean%20Temperature%20Anomaly/Berkley%20Land-Ocean%20Temperature%20Anomaly.csv",
-        "temperature_output_dir": "./data-ingestion/tmp/output-data/temperature.parquet",
-        "co2_uri": "https://raw.githubusercontent.com/owid/owid-datasets/master/datasets/CO2%20emissions%20(Aggregate%20dataset%20(2021))/CO2%20emissions%20(Aggregate%20dataset%20(2021)).csv",
-        "co2_output_dir": "./data-ingestion/tmp/output-data/co2.parquet",
+        "temperature_uri": "s3://twdu-germany-data-source/TemperaturesByCountry.csv",
+        "temperature_output_dir": "./data-ingestion/tmp/output-data/TemperaturesByCountry.parquet",
+        "temperature_uri": "s3://twdu-germany-data-source/TemperaturesByCountry.csv",
+        "temperature_output_dir": "./data-ingestion/tmp/output-data/TemperaturesByCountry.parquet",
+        "co2_uri": "s3://twdu-germany-data-source/ingestion-challenge/CO2 emissions (Aggregate dataset (2021)).csv",
+        "co2_output_dir": "./data-ingestion/tmp/output-data/EmissionsByCountry.parquet",
     }
 
     def replace_invalid_chars(column_name):
