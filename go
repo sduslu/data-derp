@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
-set -o nounset
-set -o pipefail
-
+set -ex
 script_dir=$(cd "$(dirname "$0")" ; pwd -P)
 PROJECT="twdu-germany"
 
@@ -44,6 +41,25 @@ goal_switch-to-admin-role() {
     aws configure set aws_access_key_id $(echo $response | jq -r '.Credentials.AccessKeyId') --profile default
     aws configure set aws_secret_access_key $(echo $response | jq -r '.Credentials.SecretAccessKey') --profile default
     aws configure set aws_session_token $(echo $response | jq -r '.Credentials.SessionToken') --profile default
+  popd > /dev/null
+}
+
+goal_setup-workflow() {
+  pushd "${script_dir}" > /dev/null
+    workflow_name=$1
+    if [ -z "${workflow_name}" ]; then
+      echo "WORKFLOW_NAME not set. Usage <workflow-name: ab-cd-ef>"
+      exit 1
+    fi
+    git checkout master
+    echo "Creating branch: ${workflow_name}"
+    git checkout -B "${workflow_name}"
+    echo "Branch (${workflow_name}) created."
+
+    cp .github/workflows/example.yml.tpl ".github/workflows/${workflow_name}.yml"
+    sed -i '' -e s/example1\-example2/foo\-bar/g ./.github/workflows/foo-bar.yml
+    git add .github/workflows/${workflow_name}.yml
+    git commit -m "auto: creating branch (${workflow_name}) and github actions workflow"
   popd > /dev/null
 }
 
