@@ -12,17 +12,39 @@ class Ingestion:
     def __init__(self, spark, parameters):
         self.spark = spark
         self.parameters = parameters
-        self.replace_spaces_with_underscores = lambda x: x.lower().replace(" ", "_")
+        return
+
+    @staticmethod
+    def replace_invalid_chars(column_name):
+        """Replace prohibited characters in column names to be compatiable with Apache Parquet"""
+        INVALID_CHARS = [" ", ",", ";", "\n", "\t", "=", "-", "{", "}", "(", ")"] 
+        UNDERSCORE_CANDIDATES = [" ", ",", ";", "\n", "\t", "=", "-"] # let's replace these with underscores
+        for char in INVALID_CHARS:
+            replacement = "_" if char in UNDERSCORE_CANDIDATES else ""
+            column_name = column_name.replace(char, replacement)
+        return column_name
+
+    def fix_columns(self, df):
+        """Clean up a Spark DataFrame's column names"""
+        df = df.select([F.col(x).alias(self.replace_invalid_chars(x)) for x in df.columns])
+        return df
 
     def run(self):
-        self.write_co2(self.read_co2())
+        """You can of course reduce the code repetition below.
+           However, this is a clear way for a beginner to see what the job is doing.
+        """
+        kwargs = {"format": "csv", "sep": ",", "inferSchema": "true", "header": "true"}
 
-    def read_co2(self):
-        """NOTE: to read from S3 straight from pd.read_csv, make sure you've already pip installed s3fs"""
-        co2_df = pd.read_csv(self.parameters["co2_uri"])
-        co2_df.columns = [self.replace_spaces_with_underscores(x) for x in co2_df.columns]
-        return co2_df
+        co2_df = self.spark.read.load(self.parameters["co2_input_path"], **kwargs) # kwargs = keyword arguments. Python pro tip ;)
+        co2_fixed= self.fix_columns(co2_df).coalesce(1)
+        co2_fixed.write.format("parquet").mode("overwrite").save(self.parameters["co2_output_path"])
 
-    def write_co2(self, df):
-        co2_spark = self.spark.createDataFrame(df).select(*df.columns[:3]).limit(1000)
-        co2_spark.write.format("parquet").save(path=self.parameters["co2_output_dir"], mode="overwrite")
+        country_temps_df = self.spark.read.load(self.parameters["temperatures_country_input_path"], **kwargs)
+        country_temps_fixed = self.fix_columns(country_temps_df).coalesce(1)
+        country_temps_fixed.write.format("parquet").mode("overwrite").save(self.parameters["temperatures_country_output_path"])
+
+        global_temps_df = self.spark.read.load(self.parameters["temperatures_global_input_path"], **kwargs)
+        global_temps_fixed = self.fix_columns(global_temps_df).coalesce(1)
+        global_temps_fixed.write.format("parquet").mode("overwrite").save(self.parameters["temperatures_global_output_path"])
+        
+        return

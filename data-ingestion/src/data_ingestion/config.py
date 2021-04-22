@@ -1,8 +1,6 @@
 import sys
 import os
-
 import pandas as pd
-from pyspark.sql import SparkSession
 
 # ---------- Part I: Job Setup ---------- #
 
@@ -10,17 +8,23 @@ from pyspark.sql import SparkSession
 # If developing outside of the TWDU Dev Container, don't forget to set the environment variable: TWDU_ENVIRONMENT=local
 ENVIRONMENT = os.getenv(key="TWDU_ENVIRONMENT", default="aws")
 
-if ENVIRONMENT == "aws":
+
+if ENVIRONMENT not in ["local", "aws"]:
+    raise ValueError("""ENVIRONMENT must be "local" or "aws" only""")
+
+elif ENVIRONMENT == "aws":
     try:
         from awsglue.utils import getResolvedOptions
         # Provide these parameters in your AWS Glue Job/JobRun definition
         job_parameters = getResolvedOptions(
             sys.argv, 
             [
-                "temperatures_uri",
-                "temperature_output_dir",
-                "co2_uri",
-                "co2_output_dir"
+                "temperatures_country_input_path",
+                "temperatures_country_output_path",
+                "temperatures_global_input_path",
+                "temperatures_global_output_path",
+                "co2_input_path",
+                "co2_output_path"
             ]
         )
     except ModuleNotFoundError:
@@ -33,49 +37,31 @@ if ENVIRONMENT == "aws":
         """)
 
 # EDIT HERE - set the output paths for your local Spark jobs as desired
-elif  ENVIRONMENT == "local":
+elif ENVIRONMENT == "local":
 
     job_parameters = {
-        "temperature_uri": "s3://twdu-germany-data-source/TemperaturesByCountry.csv",
-        "temperature_output_dir": "./data-ingestion/tmp/output-data/TemperaturesByCountry.parquet",
-        "temperature_uri": "s3://twdu-germany-data-source/TemperaturesByCountry.csv",
-        "temperature_output_dir": "./data-ingestion/tmp/output-data/TemperaturesByCountry.parquet",
-        "co2_uri": "s3://twdu-germany-data-source/ingestion-challenge/CO2 emissions (Aggregate dataset (2021)).csv",
-        "co2_output_dir": "./data-ingestion/tmp/output-data/EmissionsByCountry.parquet",
+        "temperatures_country_input_path":  "/workspaces/twdu-germany/data-ingestion/tmp/input-data/TemperaturesByCountry.csv",
+        "temperatures_country_output_path": "/workspaces/twdu-germany/data-ingestion/tmp/output-data/TemperaturesByCountry.parquet",
+        "temperatures_global_input_path":   "/workspaces/twdu-germany/data-ingestion/tmp/input-data/GlobalTemperatures.csv",
+        "temperatures_global_output_path":  "/workspaces/twdu-germany/data-ingestion/tmp/output-data/GlobalTemperatures.parquet",
+        "co2_input_path":                   "/workspaces/twdu-germany/data-ingestion/tmp/input-data/EmissionsByCountry.csv",
+        "co2_output_path":                  "/workspaces/twdu-germany/data-ingestion/tmp/output-data/EmissionsByCountry.parquet",
     }
 
-    def replace_invalid_chars(column_name):
-        INVALID_CHARS = " ,;{}()\\n\\t=" # characters not allowed by Spark SQL
-        UNDERSCORE_CANDIDATES = [" ", ",", ";", "="]
-        for char in INVALID_CHARS:
-            replacement = "_" if char in UNDERSCORE_CANDIDATES else ""
-            column_name = column_name.replace(char, replacement)
-        return column_name.lower() # return as lowercase
+    def download(path):
+        """Anonymously downloads csv from S3 to a custom (potentially non-existent) destination"""
+        if ("/" not in path) or (".csv" not in path):
+            raise ValueError("path should be of format ./.../<filename>.csv")
 
-    def download_and_convert(uri, local_path):
-        pandas_df = pd.read_csv(uri)
-        pandas_df.columns = [replace_invalid_chars(x) for x in pandas_df.columns]
+        filename = path.split("/")[-1]
+        folder = path.replace(filename, "")
 
-        csv_path, parquet_path = [f"{local_path}.{extension}" for extension in ["csv", "parquet"]]
-        pandas_df.to_csv(csv_path, index=False)
+        s3_path = "s3://twdu-germany-data-source/" + filename
+        pandas_df = pd.read_csv(s3_path) # NOTE: to read from S3 straight from pd.read_csv, make sure you've already pip installed s3fs"
 
-        spark \
-            .read.format("csv").load(csv_path) \
-            .write.format("parquet").mode("overwrite").save(parquet_path)
-        os.remove(csv_path)
+        # create destination folder(s) if doesn't exist so that Pandas can successfully write the csv into the folder
+        if not os.path.exists(folder): 
+            os.makedirs(folder)
 
-    spark = SparkSession.builder.getOrCreate()
-
-    input_dir = "./data-ingestion/tmp/input-data/"
-    output_dir = "./data-ingestion/tmp/output-data/"
-    temperature_path = "./data-ingestion/tmp/input-data/temperature"
-    co2_path = "./data-ingestion/tmp/input-data/co2"
-
-    for dir in [input_dir, output_dir]:
-        if not os.path.exists(dir): os.makedirs(dir)
-
-    download_and_convert(job_parameters["temperature_uri"], temperature_path)
-    download_and_convert(job_parameters["co2_uri"], co2_path)
-
-else:
-    raise ValueError("""ENVIRONMENT must be "local" or "aws" only""")
+        pandas_df.to_csv(path, index=False) # download as csv to local storage (for local development only)
+        return

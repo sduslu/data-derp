@@ -1,79 +1,79 @@
 import unittest
 from unittest.mock import Mock, patch
 import os
+from shutil import rmtree
 from test_spark_helper import PySparkTest
 
 import pandas as pd
 import numpy as np
 
+from config import download
 from ingestion import Ingestion
 
 
 class TestIngestion(PySparkTest):
 
-    def setUp(self):
+    def setUp(self): # runs before each and every test
         self.parameters = {
-            'co2_uri': 'https://some-co2-uri.com',
-            'co2_output_dir': './data-ingestion/tmp/test-data/'
+            "temperatures_country_input_path":  "/workspaces/twdu-germany/data-ingestion/tmp/input-data/TemperaturesByCountry.csv",
+            "temperatures_country_output_path": "/workspaces/twdu-germany/data-ingestion/tmp/test/output-data/TemperaturesByCountry.parquet",
+            "temperatures_global_input_path":   "/workspaces/twdu-germany/data-ingestion/tmp/input-data/GlobalTemperatures.csv",
+            "temperatures_global_output_path":  "/workspaces/twdu-germany/data-ingestion/tmp/test/output-data/GlobalTemperatures.parquet",
+            "co2_input_path":                   "/workspaces/twdu-germany/data-ingestion/tmp/input-data/EmissionsByCountry.csv",
+            "co2_output_path":                  "/workspaces/twdu-germany/data-ingestion/tmp/test/output-data/EmissionsByCountry.parquet",
         }
         self.ingestion = Ingestion(self.spark, self.parameters)
+        return
 
-    def tearDown(self):
-        output_dir = self.parameters["co2_output_dir"]
-        if os.path.exists(output_dir):
-            for file in os.listdir(output_dir):
-                os.remove(output_dir + "/" + file)
-            os.rmdir(output_dir)
+    def tearDown(self): # runs after each and every test
+        output_paths = [self.parameters[x] for x in ["temperatures_country_output_path", "temperatures_global_output_path", "co2_output_path"]]
+        for path in output_paths:
+            if os.path.exists(path):
+                rmtree(path)
 
-    def test_replace_spaces_with_underscores(self):
+    def test_replace_invalid_chars(self):
         # BEWARE: dictionaries in Python do not necessarily enforce order. 
         # To check column names, always use sorted()
+        INVALID_CHARS = [" ", ",", ";", "\n", "\t", "=", "-", "{", "}", "(", ")"] 
         df = pd.DataFrame(
             {
                 'My Awesome Column': pd.Series(["Germany", "New Zealand", "Australia", "UK"]),
                 'Another Awesome Column': pd.Series(["Germany", "New Zealand", "Australia", "UK"]),
             }
         )
-        df.columns = [self.ingestion.replace_spaces_with_underscores(x) for x in df.columns]
-        self.assertEqual(sorted(df.columns), sorted(["my_awesome_column", "another_awesome_column"]))
+        df.columns = [self.ingestion.replace_invalid_chars(x) for x in df.columns]
 
+        all_columns_valid = True
+        for column in df.columns:
+            if not all_columns_valid:
+                break
+            for char in INVALID_CHARS:
+                if char in column:
+                    all_columns_valid = False
+                    break
+        self.assertTrue(True if all_columns_valid else False)
+        self.assertEqual(sorted(df.columns), sorted(["My_Awesome_Column", "Another_Awesome_Column"]))
 
-    @patch('pandas.read_csv')
-    def test_read(self, mock_read_csv):
-        mock_read_csv.return_value = pd.DataFrame(
-            {
-                'Some Country': pd.Series(["Germany", "New Zealand", "Australia", "UK"]),
-                'Some Year': pd.Series(["1900", "1901", "1902", "1903"])
-             }
-        )
+    def test_run(self):
+        # Generate tmp folders and download data
+        input_dir = "/workspaces/twdu-germany/data-ingestion/tmp/input-data/"
+        output_dir = "/workspaces/twdu-germany/data-ingestion/tmp/test/output-data/"
+        for dir in [input_dir, output_dir]:
+            if not os.path.exists(dir): os.makedirs(dir)
 
-        result = self.ingestion.read_co2()
-        self.assertEqual(sorted(result.columns.tolist()), sorted(["some_country", "some_year"]))
-        self.assertEqual(result["some_country"].tolist(), ["Germany", "New Zealand", "Australia", "UK"])
-        self.assertEqual(result["some_year"].tolist(), ["1900", "1901", "1902", "1903"])
+        download(path=self.parameters["temperatures_country_input_path"])
+        download(path=self.parameters["temperatures_global_input_path"])
+        download(path=self.parameters["co2_input_path"])
 
-    def test_write(self):
-        df = pd.DataFrame(
-            {
-                'some_country': pd.Series(["Germany", "New Zealand", "Australia", "UK"]),
-                'some_year': pd.Series(["1900", "1901", "1902", "1903"])
-            }
-        )
-        result = self.ingestion.write_co2(df)
-        files = os.listdir(self.parameters["co2_output_dir"])
-        self.assertTrue(True if "_SUCCESS" in files else False)
-
-    @patch('pandas.read_csv')
-    def test_run(self, mock_read_csv):
-        mock_read_csv.return_value = pd.DataFrame(
-            {
-                'Some Country': pd.Series(["Germany", "New Zealand", "Australia", "UK"]),
-                'Some Year': pd.Series(["1900", "1901", "1902", "1903"])
-             }
-        )
-        result = self.ingestion.run()
-        files = os.listdir(self.parameters["co2_output_dir"])
-        self.assertTrue(True if "_SUCCESS" in files else False)
+        # Run the job and check for _SUCCESS files for each partition
+        self.ingestion.run()
+        output_paths = [self.parameters[x] for x in ["temperatures_country_output_path", "temperatures_global_output_path", "co2_output_path"]]
+        for path in output_paths:
+            files = os.listdir(path)
+            snappy_parquet_files = [x for x in files if x.endswith(".snappy.parquet")]
+            # For this exercise, we require you to control each table's partitioning to 1 parquet partition
+            self.assertTrue(True if len(snappy_parquet_files) == 1 else False)
+            self.assertTrue(True if "_SUCCESS" in files else False)
 
 if __name__ == '__main__':
     unittest.main()
