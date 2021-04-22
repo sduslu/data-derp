@@ -1,10 +1,12 @@
 {
     "context": "..",
+    // "dockerFile": "../Dockerfile",
     "image": "twdu-dev-container",
     "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance",
-        "ms-toolsai.jupyter"
+        "ms-toolsai.jupyter",
+        "hashicorp.terraform"
     ],
     "settings": {
         "jupyter.alwaysTrustNotebooks": true,

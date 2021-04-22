@@ -28,5 +28,10 @@ RUN pip install -r requirements.txt
 # Install JupyterLab renderer support
 RUN jupyter labextension install jupyterlab-plotly@4.14.3
 
+# Install Terraform CLI
+RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
+RUN apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+RUN apt-get update && apt-get install terraform
+
 # TWDU Germany environment variables
 ENV TWDU_ENVIRONMENT=local
