@@ -56,7 +56,8 @@ class TestIngestion(PySparkTest):
         self.assertEqual(sorted(df.columns), sorted(["My_Awesome_Column", "Another_Awesome_Column"]))
 
     def test_run(self):
-        download_ingestion_datasets(bucket=self.bucket, parameters=self.job_parameters)
+        # Download the necessary datasets to twdu-germany/data-ingestion/tmp/
+        download_ingestion_datasets(bucket=self.bucket, parameters=self.parameters)
 
         # Run the job and check for _SUCCESS files for each partition
         self.ingestion.run()

@@ -15,11 +15,10 @@ def download(bucket, path):
     folder = path.replace(filename, "")
 
     s3_path = f"s3://{bucket}/" + filename
-    pandas_df = pd.read_csv(s3_path) # NOTE: to read from S3 straight from pd.read_csv, make sure you've already pip installed s3fs"
+    pandas_df = pd.read_csv(s3_path) # to read directly from S3 using pd.read_csv, make sure you've pip installed s3fs
 
-    # create destination folder(s) if doesn't exist so that Pandas can successfully write the csv into the folder
-    if not os.path.exists(folder): 
-        os.makedirs(folder)
+    if not os.path.exists(folder):
+        os.makedirs(folder) # create destination folder(s) if they don't exist, since Pandas does not allow non-existent parent folders
 
     pandas_df.to_csv(path, index=False) # download as csv to local storage (for local development only)
     return

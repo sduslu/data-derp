@@ -9,6 +9,7 @@ from data_ingestion.ingestion import Ingestion
 # If developing outside of the TWDU Dev Container, don't forget to set the environment variable: TWDU_ENVIRONMENT=local
 ENVIRONMENT = os.getenv(key="TWDU_ENVIRONMENT", default="aws")
 
+# If running locally, first download the necessary datasets to twdu-germany/data-ingestion/tmp/
 if ENVIRONMENT == "local":
     bucket = "twdu-germany-data-source"
     download_ingestion_datasets(bucket=bucket, parameters=job_parameters)
