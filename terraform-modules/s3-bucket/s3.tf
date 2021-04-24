@@ -17,26 +17,26 @@ resource "aws_s3_bucket" "this" {
   }
 }
 
-resource "aws_s3_bucket_policy" "this" {
-  bucket = aws_s3_bucket.this.id
+# resource "aws_s3_bucket_policy" "this" {
+#   bucket = aws_s3_bucket.this.id
 
-  # Terraform's "jsonencode" function converts a
-  # Terraform expression's result to valid JSON syntax.
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid       = "PublicReadGetObject"
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = "s3:GetObject"
-        Resource = [
-          "${aws_s3_bucket.this.arn}/*",
-        ]
-      },
-    ]
-  })
-}
+#   # Terraform's "jsonencode" function converts a
+#   # Terraform expression's result to valid JSON syntax.
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Sid       = "PublicReadGetObject"
+#         Effect    = "Allow"
+#         Principal = "*"
+#         Action    = "s3:GetObject"
+#         Resource = [
+#           "${aws_s3_bucket.this.arn}/*",
+#         ]
+#       },
+#     ]
+#   })
+# }
 
 resource "aws_s3_bucket_public_access_block" "this" {
   bucket                  = aws_s3_bucket.this.id
