@@ -15,6 +15,7 @@ Resources:
       AccessControl: "PublicRead"
       BucketEncryption:
         ServerSideEncryptionConfiguration:
+          - Dis
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: "aws:kms"
       BucketName: !Sub "${BucketBaseName}"

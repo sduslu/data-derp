@@ -18,12 +18,14 @@ elif ENVIRONMENT == "aws":
         job_parameters = getResolvedOptions(
             sys.argv, 
             [
-                "temperatures_country_input_path",
-                "temperatures_country_output_path",
-                "temperatures_global_input_path",
-                "temperatures_global_output_path",
-                "co2_input_path",
-                "co2_output_path"
+                "co2_input_path",                  # Input Table 1/3
+                "temperatures_global_input_path",  # Input Table 2/3
+                "temperatures_country_input_path", # Input Table 3/3
+
+                "temperatures_co2_global_output_path",  # Output Table 1/4
+                "temperatures_co2_country_output_path", # Output Table 2/4
+                "europe_big_3_co2_output_path",         # Output Table 3/4
+                "co2_interpolated_output_path",         # Output Table 4/4
             ]
         )
     except ModuleNotFoundError:
@@ -39,12 +41,14 @@ elif ENVIRONMENT == "aws":
 elif ENVIRONMENT == "local":
 
     job_parameters = {
-        "temperatures_country_input_path":  "/workspaces/twdu-germany/data-ingestion/tmp/input-data/TemperaturesByCountry.csv",
-        "temperatures_country_output_path": "/workspaces/twdu-germany/data-ingestion/tmp/output-data/TemperaturesByCountry.parquet",
-        "temperatures_global_input_path":   "/workspaces/twdu-germany/data-ingestion/tmp/input-data/GlobalTemperatures.csv",
-        "temperatures_global_output_path":  "/workspaces/twdu-germany/data-ingestion/tmp/output-data/GlobalTemperatures.parquet",
-        "co2_input_path":                   "/workspaces/twdu-germany/data-ingestion/tmp/input-data/EmissionsByCountry.csv",
-        "co2_output_path":                  "/workspaces/twdu-germany/data-ingestion/tmp/output-data/EmissionsByCountry.parquet",
+        "co2_input_path":                  "/workspaces/twdu-germany/data-transformation/tmp/input-data/EmissionsByCountry.parquet",
+        "temperatures_global_input_path":  "/workspaces/twdu-germany/data-transformation/tmp/input-data/GlobalTemperatures.parquet",
+        "temperatures_country_input_path": "/workspaces/twdu-germany/data-transformation/tmp/input-data/TemperaturesByCountry.parquet",
+
+        "temperatures_co2_global_output_path":  "/workspaces/twdu-germany/data-transformation/tmp/output-data/GlobalTemperaturesVsEmissions.parquet",
+        "temperatures_co2_country_output_path": "/workspaces/twdu-germany/data-transformation/tmp/output-data/CountryTemperaturesVsEmissions.parquet",
+        "europe_big_3_co2_output_path":         "/workspaces/twdu-germany/data-transformation/tmp/output-data/EuropeBigThreeEmissions.parquet",
+        "co2_interpolated_output_path":         "/workspaces/twdu-germany/data-transformation/tmp/output-data/CountryEmissionsInterpolated.parquet",
     }
 
 def download_twdu_dataset(s3_uri: str, destination: str, format: str):
