@@ -4,32 +4,6 @@ import pandas as pd
 
 # ---------- Part I: Job Setup ---------- #
 
-def download(bucket, path):
-    """Anonymously downloads csv from S3 to a custom destination.
-       If any parent directories do not exist, this function will create them.
-    """
-    if ("/" not in path) or (".csv" not in path):
-        raise ValueError("path should be of format ./.../<filename>.csv")
-
-    filename = path.split("/")[-1]
-    folder = path.replace(filename, "")
-
-    s3_path = f"s3://{bucket}/" + filename
-    pandas_df = pd.read_csv(s3_path) # to read directly from S3 using pd.read_csv, make sure you've pip installed s3fs
-
-    if not os.path.exists(folder):
-        os.makedirs(folder) # create destination folder(s) if they don't exist, since Pandas does not allow non-existent parent folders
-
-    pandas_df.to_csv(path, index=False) # download as csv to local storage (for local development only)
-    return
-
-def download_ingestion_datasets(bucket, parameters):
-    """Downloads all necessary datasets for this exercise to your local file system"""
-    download(bucket, path=parameters["temperatures_country_input_path"])
-    download(bucket, path=parameters["temperatures_global_input_path"])
-    download(bucket, path=parameters["co2_input_path"])
-    return
-
 # By sticking with standard Spark, we can avoid having to deal with Glue dependencies locally
 # If developing outside of the TWDU Dev Container, don't forget to set the environment variable: TWDU_ENVIRONMENT=local
 ENVIRONMENT = os.getenv(key="TWDU_ENVIRONMENT", default="aws")
@@ -72,3 +46,24 @@ elif ENVIRONMENT == "local":
         "co2_input_path":                   "/workspaces/twdu-germany/data-ingestion/tmp/input-data/EmissionsByCountry.csv",
         "co2_output_path":                  "/workspaces/twdu-germany/data-ingestion/tmp/output-data/EmissionsByCountry.parquet",
     }
+
+def download_twdu_dataset(s3_uri: str, destination: str, format: str):
+    """Anonymously downloads a dataset from S3 to a custom destination.
+       If any parent directories do not exist, this function will create them.
+    """
+    if format not in ["csv", "parquet"]:
+        raise ValueError('file_format must be either "csv" or "parquet"')
+   
+    filename = destination.split("/")[-1]
+    folder = destination.replace(filename, "")
+
+    if not os.path.exists(folder):
+        os.makedirs(folder) # create destination folder(s) if they don't exist, since Pandas does not allow non-existent parent folders
+
+    if format == "csv":
+        pandas_df = pd.read_csv(s3_uri) # to read directly from S3 using pd.read_csv, make sure you've pip installed s3fs
+        pandas_df.to_csv(destination, index=False) # download as csv to local storage (for local development only)
+    else:
+        pandas_df = pd.read_parquet(s3_uri) # to read directly from S3 using pd.read_csv, make sure you've pip installed s3fs
+        pandas_df.to_parquet(destination, index=False) # download as csv to local storage (for local development only)
+    return
