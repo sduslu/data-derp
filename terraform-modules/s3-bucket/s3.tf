@@ -24,6 +24,7 @@ resource "aws_s3_bucket_policy" "this" {
   # Terraform expression's result to valid JSON syntax.
   policy = jsonencode({
     Version = "2012-10-17"
+    Id = "AllowPublicRead"
     Statement = [
       {
         Sid       = "PublicReadGetObject"
