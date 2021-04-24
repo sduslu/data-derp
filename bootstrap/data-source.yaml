@@ -39,7 +39,7 @@ Resources:
               - 's3:GetObject'
             Sid: 'PublicReadGetObject'
             Effect: Allow
-            Resource:
+            Resource: !Join
               - ''
               - - 'arn:aws:s3:::'
                 - !Sub "${BucketBaseName}"
