@@ -13,11 +13,10 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       AccessControl: "PublicRead"
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-          - Dis
-          - ServerSideEncryptionByDefault:
-              SSEAlgorithm: "aws:kms"
+      # BucketEncryption:
+      #   ServerSideEncryptionConfiguration:
+      #     - ServerSideEncryptionByDefault:
+      #         SSEAlgorithm: "aws:kms"
       BucketName: !Sub "${BucketBaseName}"
       Tags:
         - Key: Project
@@ -29,6 +28,23 @@ Resources:
         BlockPublicAcls: false
         IgnorePublicAcls: false
         RestrictPublicBuckets: false
+  BucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Sub "${BucketBaseName}"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Action:
+              - 's3:GetObject'
+            Sid: 'PublicReadGetObject'
+            Effect: Allow
+            Resource:
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Sub "${BucketBaseName}"
+                - /*
+            Principal: '*'
 
 Outputs:
   BucketARN:

@@ -3,7 +3,7 @@ variable "bucket-name" {
 }
 
 variable "bucket-acl" {
-  default = "private"
+  default = "public-read"
 }
 
 variable "force-destroy" {
