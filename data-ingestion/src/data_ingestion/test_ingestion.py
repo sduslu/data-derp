@@ -7,13 +7,14 @@ from test_spark_helper import PySparkTest
 import pandas as pd
 import numpy as np
 
-from config import download
+from config import download_ingestion_datasets
 from ingestion import Ingestion
 
 
 class TestIngestion(PySparkTest):
 
     def setUp(self): # runs before each and every test
+        self.bucket = "twdu-germany-data-source"
         self.parameters = {
             "temperatures_country_input_path":  "/workspaces/twdu-germany/data-ingestion/tmp/input-data/TemperaturesByCountry.csv",
             "temperatures_country_output_path": "/workspaces/twdu-germany/data-ingestion/tmp/test/output-data/TemperaturesByCountry.parquet",
@@ -55,15 +56,7 @@ class TestIngestion(PySparkTest):
         self.assertEqual(sorted(df.columns), sorted(["My_Awesome_Column", "Another_Awesome_Column"]))
 
     def test_run(self):
-        # Generate tmp folders and download data
-        input_dir = "/workspaces/twdu-germany/data-ingestion/tmp/input-data/"
-        output_dir = "/workspaces/twdu-germany/data-ingestion/tmp/test/output-data/"
-        for dir in [input_dir, output_dir]:
-            if not os.path.exists(dir): os.makedirs(dir)
-
-        download(path=self.parameters["temperatures_country_input_path"])
-        download(path=self.parameters["temperatures_global_input_path"])
-        download(path=self.parameters["co2_input_path"])
+        download_ingestion_datasets(bucket=self.bucket, parameters=self.job_parameters)
 
         # Run the job and check for _SUCCESS files for each partition
         self.ingestion.run()

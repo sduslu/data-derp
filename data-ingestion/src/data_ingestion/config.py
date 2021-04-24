@@ -4,15 +4,17 @@ import pandas as pd
 
 # ---------- Part I: Job Setup ---------- #
 
-def download(path):
-    """Anonymously downloads csv from S3 to a custom (potentially non-existent) destination"""
+def download(bucket, path):
+    """Anonymously downloads csv from S3 to a custom destination.
+       If any parent directories do not exist, this function will create them.
+    """
     if ("/" not in path) or (".csv" not in path):
         raise ValueError("path should be of format ./.../<filename>.csv")
 
     filename = path.split("/")[-1]
     folder = path.replace(filename, "")
 
-    s3_path = "s3://twdu-germany-data-source/" + filename
+    s3_path = f"s3://{bucket}/" + filename
     pandas_df = pd.read_csv(s3_path) # NOTE: to read from S3 straight from pd.read_csv, make sure you've already pip installed s3fs"
 
     # create destination folder(s) if doesn't exist so that Pandas can successfully write the csv into the folder
@@ -20,6 +22,13 @@ def download(path):
         os.makedirs(folder)
 
     pandas_df.to_csv(path, index=False) # download as csv to local storage (for local development only)
+    return
+
+def download_ingestion_datasets(bucket, parameters):
+    """Downloads all necessary datasets for this exercise to your local file system"""
+    download(bucket, path=parameters["temperatures_country_input_path"])
+    download(bucket, path=parameters["temperatures_global_input_path"])
+    download(bucket, path=parameters["co2_input_path"])
     return
 
 # By sticking with standard Spark, we can avoid having to deal with Glue dependencies locally
@@ -32,7 +41,7 @@ if ENVIRONMENT not in ["local", "aws"]:
 elif ENVIRONMENT == "aws":
     try:
         from awsglue.utils import getResolvedOptions
-        # Provide these parameters in your AWS Glue Job/JobRun definition
+        # Provide these arguments in your AWS Glue Job/JobRun definition
         job_parameters = getResolvedOptions(
             sys.argv, 
             [

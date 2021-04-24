@@ -1,5 +1,5 @@
 {
-    "context": "..",
+    // "context": "..",
     // "dockerFile": "../Dockerfile",
     "image": "twdu-dev-container",
     "extensions": [
