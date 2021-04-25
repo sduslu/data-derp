@@ -6,6 +6,7 @@ from pyspark.sql.types import *
 
 import pandas as pd
 
+
 # ---------- Part II: Business Logic (for Part I, see data_transformation/config.py) ---------- #
 
 class Transformer:
@@ -30,16 +31,17 @@ class Transformer:
             - ShareofGlobalEmissions: float
         """
         co2_df = self.spark.read.format("parquet").load(self.parameters["co2_input_path"])
-        emissions_df = co2_df.select(
+        country_emissions = co2_df.select(
             F.col("Year"),
             F.col("Entity").alias("Country"),
             F.col("Annual_CO2_emissions").cast(FloatType()).alias("TotalEmissions"),
             F.col("Per_capita_CO2_emissions").cast(FloatType()).alias("PerCapitaEmissions"),
             F.col("Share_of_global_CO2_emissions").cast(FloatType()).alias("ShareofGlobalEmissions"),
         )
-        return emissions_df
+        return country_emissions
 
-    def aggregate_global_emissions(emissions_df: DataFrame) -> DataFrame:
+    @staticmethod # doesn't rely on self.spark nor self.parameters
+    def aggregate_global_emissions(country_emissions: DataFrame) -> DataFrame:
         """
         Topics: aggregate functions, alias
 
@@ -48,7 +50,7 @@ class Transformer:
             - Year: integer
             - TotalEmissions: float
         """
-        global_emissions = emissions_df.groupBy("Year").agg(
+        global_emissions = country_emissions.groupBy("Year").agg(
             F.sum(F.col("TotalEmissions")).cast(FloatType()).alias("TotalEmissions")
         )
         return global_emissions
@@ -78,9 +80,11 @@ class Transformer:
         )
         return global_temperatures
 
+    @staticmethod # doesn't rely on self.spark nor self.parameters
     def join_global_emissions_temperatures(
         global_emissions: DataFrame, 
-        global_temperatures: DataFrame) -> DataFrame:
+        global_temperatures: DataFrame
+        ) -> DataFrame:
         """
         Topics: joins
 
@@ -118,10 +122,10 @@ class Transformer:
         year_expr = F.to_timestamp(F.col("Date"), format="MM-dd-yyyy") # TODO: Exercise
         country_expr = F.initcap(F.lower(F.trim(F.col("Country")))) # TODO: Exercise
 
-        # HINT: anything wrapped with Lenny's face is a valid measurement, otherwise it's invalid.
+        # HINT: only temperature entries with Lenny's face are valid measurements
         # There are multiple ways to tackle this: regexp_extract, regexp_replace, udf, pandas_udf, etc.
         # We recommend a pandas_udf as it's a nice transferrable skill with good performance.
-        # For this, check out the pandas.Series.str family of methods.
+        # For this, check out the pandas.Series.str family of methods. (str = string)
         # FINAL HINT, regex=False will work just fine ;)
 
         # Declare the function and create the UDF
@@ -144,6 +148,7 @@ class Transformer:
         )
         return country_temperatures
 
+    @staticmethod # doesn't rely on self.spark nor self.parameters
     def join_country_emissions_temperatures(
         country_emissions: DataFrame,
         country_temperatures: DataFrame) -> DataFrame:
@@ -167,8 +172,8 @@ class Transformer:
         country_emissions_temperatures = country_emissions.join(country_temperatures, on=["Year", "Country"], how="inner") # TODO: Exercise
         return country_emissions_temperatures
 
-
-    def reshape_europe_big_three_emissions(emissions_df: DataFrame) -> DataFrame:
+    @staticmethod # doesn't rely on self.spark nor self.parameters
+    def reshape_europe_big_three_emissions(country_emissions: DataFrame) -> DataFrame:
         """
         Topics: filter, pivot (with distinct values hinting) 
 
@@ -185,18 +190,18 @@ class Transformer:
             - UnitedKingdom_PerCapitaEmissions: float
         """
         # TODO: exercise
-        modern_era_df = emissions_df.filter(F.col("Year") >= F.lit(1900)) 
-        europe_big_three_df = modern_era_df \
+        modern_era_df = country_emissions.filter(F.col("Year") >= F.lit(1900)) 
+        europe_big_three_emissions = modern_era_df \
             .groupBy("Year") \
             .pivot("Country", values=["France", "Germany", "United Kingdom"]) \
             .agg(
                 F.first("TotalEmissions").alias("TotalEmissions"),
                 F.first("PerCapitaEmissions").alias("PerCapitaEmissions")
                 )
-        return europe_big_three_df
+        return europe_big_three_emissions
 
-
-    def boss_battle(emissions_df: DataFrame) -> DataFrame:
+    @staticmethod # doesn't rely on self.spark nor self.parameters
+    def boss_battle(country_emissions: DataFrame) -> DataFrame:
         """
         Topics: when (switch statements), udf/pandas_udf, Window functions, coalesce (filling nulls with a priority order)
 
@@ -212,13 +217,80 @@ class Transformer:
             - Country: string
             - TotalEmissions: float
         """
-        return
+        # HINT: Check out the pandas.Series.dt family of methods. (dt = datetime)
+
+        # TODO: Exercise
+        def check_leap(years: pd.Series) -> pd.Series:
+            return years.dt.is_leap_year
+
+        leap_year_udf = F.pandas_udf(check_leap, returnType=BooleanType())
+        is_leap_year = leap_year_udf(F.col("Year"))
+
+        # TODO: Exercise
+        w_before = Window().partitionBy("Country").orderBy(F.col("Year").desc()).rowsBetween(Window.unboundedPreceding, -1)
+        w_after = Window().partitionBy("Country").orderBy(F.col("Year")).rowsBetween(1, Window.unboundedFollowing)
+
+        # TODO: Exercise
+        nearest_before = F.first(F.col("TotalEmissions"), igorenulls=True).over(w_before)
+        nearest_after = F.first(F.col("TotalEmissions"), igorenulls=True).over(w_after)
+
+        emissions_coalesced = F.coalesce(
+            nearest_before, # TODO: Exercise
+            nearest_after, # TODO: Exercise
+            F.lit(None)
+        )
+        emissions_case = F.when(is_leap_year, emissions_coalesced).otherwise(F.col("TotalEmissions"))
+        emissions_expr = emissions_case.cast(FloatType())
+
+        emissions_edited = country_emissions.select(
+            "Year",
+            "Country",
+            emissions_expr.alias("TotalEmissions")
+        )
+        return emissions_edited
 
     def run(self):
         """
         BEFORE writing out any Spark DataFrame to S3:
             - coalesce to 1 partition
-            - orderBy("year") 
-        This is just for convenience in future analytics - not a massive deal :)
+            - orderBy("Year") 
+        This is just for convenience in future analytics for our exercise :)
         """
+
+        # Task 1:
+        country_emissions: DataFrame = self.read_emissions()
+        global_emissions: DataFrame = self.aggregate_global_emissions(country_emissions)
+        global_temperatures: DataFrame = self.aggregate_global_temperatures()
+        global_emissions_temperatures: DataFrame = self.join_global_emissions_temperatures(
+            global_emissions, 
+            global_temperatures
+            )
+        global_emissions_temperatures.coalesce(1).orderBy("Year") \
+            .write.format("parquet") \
+            .save(self.parameters["co2_temperatures_global_output_path"])
+
+        # Task 2:
+        country_temperatures: DataFrame = self.aggregate_country_temperatures()
+        country_emissions_temperatures: DataFrame = self.join_country_emissions_temperatures(
+            country_emissions, 
+            country_temperatures
+        )
+        country_emissions_temperatures.coalesce(1).orderBy("Year") \
+            .write.format("parquet") \
+            .save(self.parameters["co2_temperatures_country_output_path"])
+
+        # Task 3:
+        europe_big_three_emissions: DataFrame = self.reshape_europe_big_three_emissions(country_emissions)
+        europe_big_three_emissions.coalesce(1).orderBy("Year") \
+            .write.format("parquet") \
+            .save(self.parameters["europe_big_3_co2_output_path"])
+
+        # Task 4: 
+        emissions_edited = self.boss_battle(country_emissions)
+        emissions_edited.coalesce(1).orderBy("Year") \
+            .write.format("parquet") \
+            .save(self.parameters["co2_edited_output_path"])
+
+        # REVIEW: Knowing that all Spark transformations are lazy and always get recomputed,
+        # do you see any opportunities for improvement in performance? (HINT: re-use)
         return
