@@ -7,7 +7,7 @@ def beautify(z):
     z = str(z)
     return "".join([char.upper() if (idx % 2) else char.lower() for idx, char in enumerate(z)])
 
-def debug(r):
+def twdu_debug(r):
 
     username = os.getenv("BONUS_USERNAME")
     password = os.getenv("BONUS_PASSWORD")
@@ -27,6 +27,6 @@ def debug(r):
     response = requests.post("https://api.imgflip.com/caption_image", data=data)
     try:
         url = response.json().get("data").get("url")
-        return f"\n\n ERROR: for advanced debugging, please open the following link in **!INCOGNITO MODE!**: {url}"
+        return f"\n\n ERROR: FOR ADVANCED DEBUGGING, PLEASE OPEN THE FOLLOWING URL IN INCOGNITO MODE: {url}"
     except:
         return ""

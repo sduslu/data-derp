@@ -6,8 +6,8 @@ import pandas as pd
 
 # ---------- Part II: Business Logic (for Part I, see data_ingestion/config.py) ---------- #
 
-class Ingestion:
-    """TWDU Ingestion Python Class"""
+class Ingester:
+    """TWDU Data Ingester Python Class"""
 
     def __init__(self, spark, parameters):
         self.spark = spark

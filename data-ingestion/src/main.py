@@ -3,7 +3,7 @@ import os
 from pyspark.sql import SparkSession
 
 from data_ingestion.config import job_parameters, download_twdu_dataset
-from data_ingestion.ingestion import Ingestion
+from data_ingestion.ingestion import Ingester
 
 # By sticking with standard Spark, we can avoid having to deal with Glue dependencies locally
 # If developing outside of the TWDU Dev Container, don't forget to set the environment variable: TWDU_ENVIRONMENT=local
@@ -32,4 +32,4 @@ spark = SparkSession \
     .config("spark.some.config.option", "some-value") \
     .getOrCreate()
 
-Ingestion(spark, job_parameters).run()
+Ingester(spark, job_parameters).run()

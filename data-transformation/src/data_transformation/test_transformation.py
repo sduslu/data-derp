@@ -8,70 +8,73 @@ import pandas as pd
 import numpy as np
 
 from config import download_twdu_dataset
-from ingestion import Ingestion
+from transformation import Transformer
+from twdu_bonus import twdu_debug
 
 
-class TestIngestion(PySparkTest):
+class TestTransformation(PySparkTest):
 
     def setUp(self): # runs before each and every test
         self.parameters = {
-            "temperatures_country_input_path":  "/workspaces/twdu-germany/data-ingestion/tmp/input-data/TemperaturesByCountry.csv",
-            "temperatures_country_output_path": "/workspaces/twdu-germany/data-ingestion/tmp/test/output-data/TemperaturesByCountry.parquet",
-            "temperatures_global_input_path":   "/workspaces/twdu-germany/data-ingestion/tmp/input-data/GlobalTemperatures.csv",
-            "temperatures_global_output_path":  "/workspaces/twdu-germany/data-ingestion/tmp/test/output-data/GlobalTemperatures.parquet",
-            "co2_input_path":                   "/workspaces/twdu-germany/data-ingestion/tmp/input-data/EmissionsByCountry.csv",
-            "co2_output_path":                  "/workspaces/twdu-germany/data-ingestion/tmp/test/output-data/EmissionsByCountry.parquet",
+        "co2_input_path":                  "/workspaces/twdu-germany/data-transformation/tmp/input-data/EmissionsByCountry.parquet",
+        "temperatures_global_input_path":  "/workspaces/twdu-germany/data-transformation/tmp/input-data/GlobalTemperatures.parquet",
+        "temperatures_country_input_path": "/workspaces/twdu-germany/data-transformation/tmp/input-data/TemperaturesByCountry.parquet",
+
+        "temperatures_co2_global_output_path":  "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/GlobalTemperaturesVsEmissions.parquet",
+        "temperatures_co2_country_output_path": "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/CountryTemperaturesVsEmissions.parquet",
+        "europe_big_3_co2_output_path":         "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/EuropeBigThreeEmissions.parquet",
+        "co2_interpolated_output_path":         "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/CountryEmissionsInterpolated.parquet",
         }
-        self.ingestion = Ingestion(self.spark, self.parameters)
+        self.transformer = Transformer(self.spark, self.parameters)
         return
 
     def tearDown(self): # runs after each and every test
-        output_paths = [self.parameters[x] for x in ["temperatures_country_output_path", "temperatures_global_output_path", "co2_output_path"]]
+        output_paths = [self.parameters[x] for x in [
+            "temperatures_co2_global_output_path", 
+            "temperatures_co2_country_output_path", 
+            "europe_big_3_co2_output_path",
+            "co2_interpolated_output_path"
+            ]
+        ]
         for path in output_paths:
             if os.path.exists(path):
                 rmtree(path)
 
-    def test_replace_invalid_chars(self):
-        # BEWARE: dictionaries in Python do not necessarily enforce order. 
-        # To check column names, always use sorted()
-        INVALID_CHARS = [" ", ",", ";", "\n", "\t", "=", "-", "{", "}", "(", ")"] 
-        df = pd.DataFrame(
-            {
-                'My Awesome Column': pd.Series(["Germany", "New Zealand", "Australia", "UK"]),
-                'Another Awesome Column': pd.Series(["Germany", "New Zealand", "Australia", "UK"]),
-            }
-        )
-        df.columns = [self.ingestion.replace_invalid_chars(x) for x in df.columns]
-
-        all_columns_valid = True
-        for column in df.columns:
-            if not all_columns_valid:
-                break
-            for char in INVALID_CHARS:
-                if char in column:
-                    all_columns_valid = False
-                    break
-        self.assertTrue(True if all_columns_valid else False)
-        self.assertEqual(sorted(df.columns), sorted(["My_Awesome_Column", "Another_Awesome_Column"]))
+    def test_casing(self):
+        original = pd.Series(["gErMaNy", "uNiTeD sTaTeS"])
+        fix_casing = lambda x: x # TODO: import from Transformation module instead
+        fixed = original.map(fix_casing)
+        try:
+            result = sorted(fixed.to_list())
+            self.assertEqual(result, ["Germany", "United States"])
+        except Exception as e:
+            raise type(e)(''.join(twdu_debug(original))) from e
 
     def test_run(self):
         # Download the necessary datasets
         download_twdu_dataset(
-            s3_uri="s3://twdu-germany-data-source/TemperaturesByCountry.csv", 
-            destination=self.parameters["temperatures_country_input_path"],
-            format="csv")
-        download_twdu_dataset(
-            s3_uri="s3://twdu-germany-data-source/GlobalTemperatures.csv", 
-            destination=self.parameters["temperatures_global_input_path"],
-            format="csv")
-        download_twdu_dataset(
-            s3_uri="s3://twdu-germany-data-source/EmissionsByCountry.csv", 
+            s3_uri="s3://twdu-germany-pl-km/data-ingestion/EmissionsByCountry.parquet/", 
             destination=self.parameters["co2_input_path"],
-            format="csv")
+            format="parquet")
+        download_twdu_dataset(
+            s3_uri="s3://twdu-germany-pl-km/data-ingestion/GlobalTemperatures.parquet/", 
+            destination=self.parameters["temperatures_global_input_path"],
+            format="parquet")
+        download_twdu_dataset(
+            s3_uri="s3://twdu-germany-pl-km/data-ingestion/TemperaturesByCountry.parquet/", 
+            destination=self.parameters["temperatures_country_input_path"],
+            format="parquet")
 
         # Run the job and check for _SUCCESS files for each partition
-        self.ingestion.run()
-        output_paths = [self.parameters[x] for x in ["temperatures_country_output_path", "temperatures_global_output_path", "co2_output_path"]]
+        self.transformer.run()
+        output_paths = [self.parameters[x] for x in [
+            "temperatures_co2_global_output_path", 
+            "temperatures_co2_country_output_path", 
+            "europe_big_3_co2_output_path",
+            "co2_interpolated_output_path"
+            ]
+        ]
+
         for path in output_paths:
             files = os.listdir(path)
             snappy_parquet_files = [x for x in files if x.endswith(".snappy.parquet")]

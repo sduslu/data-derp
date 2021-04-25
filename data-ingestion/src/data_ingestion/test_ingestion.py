@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 
 from config import download_twdu_dataset
-from ingestion import Ingestion
+from ingestion import Ingester
 
 
 class TestIngestion(PySparkTest):
@@ -22,7 +22,7 @@ class TestIngestion(PySparkTest):
             "co2_input_path":                   "/workspaces/twdu-germany/data-ingestion/tmp/input-data/EmissionsByCountry.csv",
             "co2_output_path":                  "/workspaces/twdu-germany/data-ingestion/tmp/test/output-data/EmissionsByCountry.parquet",
         }
-        self.ingestion = Ingestion(self.spark, self.parameters)
+        self.ingester = Ingester(self.spark, self.parameters)
         return
 
     def tearDown(self): # runs after each and every test
@@ -41,7 +41,7 @@ class TestIngestion(PySparkTest):
                 'Another Awesome Column': pd.Series(["Germany", "New Zealand", "Australia", "UK"]),
             }
         )
-        df.columns = [self.ingestion.replace_invalid_chars(x) for x in df.columns]
+        df.columns = [self.ingester.replace_invalid_chars(x) for x in df.columns]
 
         all_columns_valid = True
         for column in df.columns:
@@ -70,7 +70,7 @@ class TestIngestion(PySparkTest):
             format="csv")
 
         # Run the job and check for _SUCCESS files for each partition
-        self.ingestion.run()
+        self.ingester.run()
         output_paths = [self.parameters[x] for x in ["temperatures_country_output_path", "temperatures_global_output_path", "co2_output_path"]]
         for path in output_paths:
             files = os.listdir(path)
