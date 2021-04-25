@@ -1,9 +1,9 @@
-name: 'PL/KM'
+name: 'Team PL/KM'
 
 env:
   PROJECT_NAME: twdu-germany
-  MODULE_NAME: pl-km
-  TF_WORKSPACE: pl-km
+  MODULE_NAME: team-pl-km
+  TF_WORKSPACE: team-pl-km
 
 on:
   push:

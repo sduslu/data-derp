@@ -53,15 +53,15 @@ class TestTransformation(PySparkTest):
     def test_run(self):
         # Download the necessary datasets
         download_twdu_dataset(
-            s3_uri="s3://twdu-germany-pl-km/data-ingestion/EmissionsByCountry.parquet/", 
+            s3_uri="s3://twdu-germany-team-pl-km/data-ingestion/EmissionsByCountry.parquet/", 
             destination=self.parameters["co2_input_path"],
             format="parquet")
         download_twdu_dataset(
-            s3_uri="s3://twdu-germany-pl-km/data-ingestion/GlobalTemperatures.parquet/", 
+            s3_uri="s3://twdu-germany-team-pl-km/data-ingestion/GlobalTemperatures.parquet/", 
             destination=self.parameters["temperatures_global_input_path"],
             format="parquet")
         download_twdu_dataset(
-            s3_uri="s3://twdu-germany-pl-km/data-ingestion/TemperaturesByCountry.parquet/", 
+            s3_uri="s3://twdu-germany-team-pl-km/data-ingestion/TemperaturesByCountry.parquet/", 
             destination=self.parameters["temperatures_country_input_path"],
             format="parquet")
 
