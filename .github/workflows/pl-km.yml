@@ -99,12 +99,12 @@ jobs:
 
       - name: Upload Main.py
         run: |
-          cd ${SUBDIR}/lab
+          cd ${SUBDIR}/src
           aws s3 cp main.py s3://${PROJECT_NAME}-${MODULE_NAME}/${SUBDIR}/main.py
 
       - name: Upload Data Transformation lib
         run: |
-          cd ${SUBDIR}/lab
+          cd ${SUBDIR}/src
           python setup.py bdist_egg
           filename=$(ls dist)
           aws s3 cp dist/${filename} s3://${PROJECT_NAME}-${MODULE_NAME}/${SUBDIR}/data_transformation-0.1-py3.egg
