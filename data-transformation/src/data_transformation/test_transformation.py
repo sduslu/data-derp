@@ -16,14 +16,14 @@ class TestTransformation(PySparkTest):
 
     def setUp(self): # runs before each and every test
         self.parameters = {
-        "co2_input_path":                  "/workspaces/twdu-germany/data-transformation/tmp/input-data/EmissionsByCountry.parquet",
-        "temperatures_global_input_path":  "/workspaces/twdu-germany/data-transformation/tmp/input-data/GlobalTemperatures.parquet",
-        "temperatures_country_input_path": "/workspaces/twdu-germany/data-transformation/tmp/input-data/TemperaturesByCountry.parquet",
+        "co2_input_path":                  "/workspaces/twdu-germany/data-transformation/tmp/input-data/EmissionsByCountry.parquet/",
+        "temperatures_global_input_path":  "/workspaces/twdu-germany/data-transformation/tmp/input-data/GlobalTemperatures.parquet/",
+        "temperatures_country_input_path": "/workspaces/twdu-germany/data-transformation/tmp/input-data/TemperaturesByCountry.parquet/",
 
-        "temperatures_co2_global_output_path":  "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/GlobalTemperaturesVsEmissions.parquet",
-        "temperatures_co2_country_output_path": "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/CountryTemperaturesVsEmissions.parquet",
-        "europe_big_3_co2_output_path":         "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/EuropeBigThreeEmissions.parquet",
-        "co2_interpolated_output_path":         "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/CountryEmissionsInterpolated.parquet",
+        "temperatures_co2_global_output_path":  "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/GlobalTemperaturesVsEmissions.parquet/",
+        "temperatures_co2_country_output_path": "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/CountryTemperaturesVsEmissions.parquet/",
+        "europe_big_3_co2_output_path":         "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/EuropeBigThreeEmissions.parquet/",
+        "co2_interpolated_output_path":         "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/CountryEmissionsInterpolated.parquet/",
         }
         self.transformer = Transformer(self.spark, self.parameters)
         return
@@ -68,8 +68,8 @@ class TestTransformation(PySparkTest):
         # Run the job and check for _SUCCESS files for each partition
         self.transformer.run()
         output_paths = [self.parameters[x] for x in [
-            "temperatures_co2_global_output_path", 
-            "temperatures_co2_country_output_path", 
+            "co2_temperatures_global_output_path", 
+            "co2_temperatures_country_output_path", 
             "europe_big_3_co2_output_path",
             "co2_interpolated_output_path"
             ]

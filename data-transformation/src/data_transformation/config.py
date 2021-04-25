@@ -41,14 +41,14 @@ elif ENVIRONMENT == "aws":
 elif ENVIRONMENT == "local":
 
     job_parameters = {
-        "co2_input_path":                  "/workspaces/twdu-germany/data-transformation/tmp/input-data/EmissionsByCountry.parquet",
-        "temperatures_global_input_path":  "/workspaces/twdu-germany/data-transformation/tmp/input-data/GlobalTemperatures.parquet",
-        "temperatures_country_input_path": "/workspaces/twdu-germany/data-transformation/tmp/input-data/TemperaturesByCountry.parquet",
+        "co2_input_path":                  "/workspaces/twdu-germany/data-transformation/tmp/input-data/EmissionsByCountry.parquet/",
+        "temperatures_global_input_path":  "/workspaces/twdu-germany/data-transformation/tmp/input-data/GlobalTemperatures.parquet/",
+        "temperatures_country_input_path": "/workspaces/twdu-germany/data-transformation/tmp/input-data/TemperaturesByCountry.parquet/",
 
-        "temperatures_co2_global_output_path":  "/workspaces/twdu-germany/data-transformation/tmp/output-data/GlobalTemperaturesVsEmissions.parquet",
-        "temperatures_co2_country_output_path": "/workspaces/twdu-germany/data-transformation/tmp/output-data/CountryTemperaturesVsEmissions.parquet",
-        "europe_big_3_co2_output_path":         "/workspaces/twdu-germany/data-transformation/tmp/output-data/EuropeBigThreeEmissions.parquet",
-        "co2_interpolated_output_path":         "/workspaces/twdu-germany/data-transformation/tmp/output-data/CountryEmissionsInterpolated.parquet",
+        "co2_temperatures_global_output_path":  "/workspaces/twdu-germany/data-transformation/tmp/output-data/GlobalEmissionsVsTemperatures.parquet/",
+        "co2_temperatures_country_output_path": "/workspaces/twdu-germany/data-transformation/tmp/output-data/CountryEmissionsVsTemperatures.parquet/",
+        "europe_big_3_co2_output_path":         "/workspaces/twdu-germany/data-transformation/tmp/output-data/EuropeBigThreeEmissions.parquet/",
+        "co2_interpolated_output_path":         "/workspaces/twdu-germany/data-transformation/tmp/output-data/CountryEmissionsInterpolated.parquet/",
     }
 
 def download_twdu_dataset(s3_uri: str, destination: str, format: str):

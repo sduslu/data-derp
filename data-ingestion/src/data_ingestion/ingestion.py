@@ -1,4 +1,6 @@
+from pyspark.sql import DataFrame
 import pyspark.sql.functions as F
+from pyspark.sql.session import SparkSession
 from pyspark.sql.window import Window
 from pyspark.sql.types import *
 
@@ -9,13 +11,13 @@ import pandas as pd
 class Ingester:
     """TWDU Data Ingester Python Class"""
 
-    def __init__(self, spark, parameters):
+    def __init__(self, spark: SparkSession, parameters: "dict[str, str]"):
         self.spark = spark
         self.parameters = parameters
         return
 
     @staticmethod
-    def replace_invalid_chars(column_name):
+    def replace_invalid_chars(column_name: str) -> str:
         """Replace prohibited characters in column names to be compatiable with Apache Parquet"""
         INVALID_CHARS = [" ", ",", ";", "\n", "\t", "=", "-", "{", "}", "(", ")"] 
         UNDERSCORE_CANDIDATES = [" ", ",", ";", "\n", "\t", "=", "-"] # let's replace these with underscores
@@ -24,14 +26,15 @@ class Ingester:
             column_name = column_name.replace(char, replacement)
         return column_name
 
-    def fix_columns(self, df):
+    def fix_columns(self, df: DataFrame) -> DataFrame:
         """Clean up a Spark DataFrame's column names"""
-        df = df.select([F.col(x).alias(self.replace_invalid_chars(x)) for x in df.columns])
-        return df
+        fixed_df = df.select([F.col(x).alias(self.replace_invalid_chars(x)) for x in df.columns])
+        return fixed_df
 
-    def run(self):
-        """You can of course reduce the code repetition below.
-           However, this is a clear way for a beginner to see what the job is doing.
+    def run(self) -> None:
+        """
+        You can of course reduce the code repetition below.
+        However, this is a clear way for a beginner to see what the job is doing.
         """
         kwargs = {"format": "csv", "sep": ",", "inferSchema": "true", "header": "true"}
 

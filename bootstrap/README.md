@@ -3,7 +3,6 @@ This directory holds Cloudformation templates to set up the following
 * [Self-hosted Github Runner](#githubrunner)
 * [Terraform Remote State S3 Bucket and DynamoDB](#terraform-remote-state)
 
-
 ## Gitlab Runner
 We are running a Gitlab Runner in AWS as an EC2 instance backed by an Autoscaling group in a private subnet of a VPC. The number of GithubActions credits is insufficient for the amount of development that will proceed during the training.
 
