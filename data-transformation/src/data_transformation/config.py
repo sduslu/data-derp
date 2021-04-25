@@ -25,7 +25,7 @@ elif ENVIRONMENT == "aws":
                 "temperatures_co2_global_output_path",  # Output Table 1/4
                 "temperatures_co2_country_output_path", # Output Table 2/4
                 "europe_big_3_co2_output_path",         # Output Table 3/4
-                "co2_interpolated_output_path",         # Output Table 4/4
+                "co2_edited_output_path",               # Output Table 4/4
             ]
         )
     except ModuleNotFoundError:
@@ -48,7 +48,7 @@ elif ENVIRONMENT == "local":
         "co2_temperatures_global_output_path":  "/workspaces/twdu-germany/data-transformation/tmp/output-data/GlobalEmissionsVsTemperatures.parquet/",
         "co2_temperatures_country_output_path": "/workspaces/twdu-germany/data-transformation/tmp/output-data/CountryEmissionsVsTemperatures.parquet/",
         "europe_big_3_co2_output_path":         "/workspaces/twdu-germany/data-transformation/tmp/output-data/EuropeBigThreeEmissions.parquet/",
-        "co2_edited_output_path":         "/workspaces/twdu-germany/data-transformation/tmp/output-data/CountryEmissionsEdited.parquet/",
+        "co2_edited_output_path":               "/workspaces/twdu-germany/data-transformation/tmp/output-data/CountryEmissionsEdited.parquet/",
     }
 
 def download_twdu_dataset(s3_uri: str, destination: str, format: str):

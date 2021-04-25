@@ -119,9 +119,6 @@ class Transformer:
         """
         temps_country_df = self.spark.read.format("parquet").load(self.parameters["temperatures_country_input_path"])
         
-        year_expr = F.to_timestamp(F.col("Date"), format="MM-dd-yyyy") # TODO: Exercise
-        country_expr = F.initcap(F.lower(F.trim(F.col("Country")))) # TODO: Exercise
-
         # HINT: only temperature entries with Lenny's face are valid measurements
         # There are multiple ways to tackle this: regexp_extract, regexp_replace, udf, pandas_udf, etc.
         # We recommend a pandas_udf as it's a nice transferrable skill with good performance.
@@ -136,6 +133,9 @@ class Transformer:
 
         fix_temperature_udf = F.pandas_udf(fix_temperature, returnType=FloatType())
         temperature_expr = fix_temperature_udf(F.col("AverageTemperature"))
+
+        year_expr = F.to_timestamp(F.col("Date"), format="MM-dd-yyyy") # TODO: Exercise
+        country_expr = F.initcap(F.lower(F.trim(F.col("Country")))) # TODO: Exercise
 
         # TODO: exercise
         cleaned_df = temps_country_df.select(
@@ -234,12 +234,12 @@ class Transformer:
         nearest_before = F.first(F.col("TotalEmissions"), igorenulls=True).over(w_before)
         nearest_after = F.first(F.col("TotalEmissions"), igorenulls=True).over(w_after)
 
-        emissions_coalesced = F.coalesce(
+        emissions_prioritized = F.coalesce(
             nearest_before, # TODO: Exercise
             nearest_after, # TODO: Exercise
             F.lit(None)
         )
-        emissions_case = F.when(is_leap_year, emissions_coalesced).otherwise(F.col("TotalEmissions"))
+        emissions_case = F.when(is_leap_year, emissions_prioritized).otherwise(F.col("TotalEmissions"))
         emissions_expr = emissions_case.cast(FloatType())
 
         emissions_edited = country_emissions.select(

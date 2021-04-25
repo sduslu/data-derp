@@ -20,10 +20,10 @@ class TestTransformation(PySparkTest):
         "temperatures_global_input_path":  "/workspaces/twdu-germany/data-transformation/tmp/input-data/GlobalTemperatures.parquet/",
         "temperatures_country_input_path": "/workspaces/twdu-germany/data-transformation/tmp/input-data/TemperaturesByCountry.parquet/",
 
-        "temperatures_co2_global_output_path":  "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/GlobalTemperaturesVsEmissions.parquet/",
-        "temperatures_co2_country_output_path": "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/CountryTemperaturesVsEmissions.parquet/",
+        "co2_temperatures_global_output_path":  "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/GlobalEmissionsVsTemperatures.parquet/",
+        "co2_temperatures_country_output_path": "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/CountryEmissionsVsTemperatures.parquet/",
         "europe_big_3_co2_output_path":         "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/EuropeBigThreeEmissions.parquet/",
-        "co2_interpolated_output_path":         "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/CountryEmissionsInterpolated.parquet/",
+        "co2_edited_output_path":               "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/CountryEmissionsEdited.parquet/",
         }
         self.transformer = Transformer(self.spark, self.parameters)
         return
@@ -33,7 +33,7 @@ class TestTransformation(PySparkTest):
             "temperatures_co2_global_output_path", 
             "temperatures_co2_country_output_path", 
             "europe_big_3_co2_output_path",
-            "co2_interpolated_output_path"
+            "co2_edited_output_path"
             ]
         ]
         for path in output_paths:
@@ -71,7 +71,7 @@ class TestTransformation(PySparkTest):
             "co2_temperatures_global_output_path", 
             "co2_temperatures_country_output_path", 
             "europe_big_3_co2_output_path",
-            "co2_interpolated_output_path"
+            "co2_edited_output_path"
             ]
         ]
 
