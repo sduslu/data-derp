@@ -57,7 +57,7 @@ goal_setup-workflow() {
     echo "Branch (${workflow_name}) created."
 
     cp .github/workflows/example.yml.tpl ".github/workflows/${workflow_name}.yml"
-    sed -i '' -e s/example1\-example2/foo\-bar/g ./.github/workflows/foo-bar.yml
+    sed -i '' -e s/example1\-example2/foo\-bar/g ./.github/workflows/${workflow_name}.yml
     git add .github/workflows/${workflow_name}.yml
     git commit -m "auto: creating branch (${workflow_name}) and github actions workflow"
   popd > /dev/null
@@ -103,6 +103,7 @@ goal:
     pull-dev-container            - Pulls dev container (Usage: GithubUsername)
     build-dev-container           - Builds dev container
     setup                         - Installs Crowbar and AWS CLI if not exists
+    setup-workflow                - Sets up workflow and branch given team name
 "
   exit 1
 fi
