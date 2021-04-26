@@ -302,7 +302,7 @@ class Transformer:
         emissions_edited = self.boss_battle(country_emissions)
         emissions_edited.coalesce(1).orderBy("Year") \
             .write.format("parquet").mode("overwrite") \
-            .save(self.parameters["co2_edited_output_path"])
+            .save(self.parameters["co2_oceania_output_path"])
 
         # REVIEW: Knowing that all Spark transformations are lazy and always get recomputed,
         # do you see any opportunities for improvement in performance? (HINT: re-use)

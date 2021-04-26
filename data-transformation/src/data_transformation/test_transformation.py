@@ -28,7 +28,7 @@ class TestTransformation(PySparkTest):
         "co2_temperatures_global_output_path":  "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/GlobalEmissionsVsTemperatures.parquet/",
         "co2_temperatures_country_output_path": "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/CountryEmissionsVsTemperatures.parquet/",
         "europe_big_3_co2_output_path":         "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/EuropeBigThreeEmissions.parquet/",
-        "co2_edited_output_path":               "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/CountryEmissionsEdited.parquet/",
+        "co2_oceania_output_path":              "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/OceaniaEmissionsEdited.parquet/",
         }
         self.transformer = Transformer(self.spark, self.parameters)
         return
@@ -38,7 +38,7 @@ class TestTransformation(PySparkTest):
             "co2_temperatures_global_output_path", 
             "co2_temperatures_country_output_path", 
             "europe_big_3_co2_output_path",
-            "co2_edited_output_path"
+            "co2_oceania_output_path"
             ]
         ]
         for path in output_paths:
@@ -74,7 +74,7 @@ class TestTransformation(PySparkTest):
             "co2_temperatures_global_output_path", 
             "co2_temperatures_country_output_path", 
             "europe_big_3_co2_output_path",
-            "co2_edited_output_path"
+            "co2_oceania_output_path"
             ]
         ]
 

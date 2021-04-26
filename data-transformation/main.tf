@@ -15,6 +15,6 @@ module "glue-job" {
     "--co2_temperatures_global_output_path":  "s3://${var.project-name}-${var.module-name}/data-transformation/GlobalEmissionsVsTemperatures.parquet/",
     "--co2_temperatures_country_output_path": "s3://${var.project-name}-${var.module-name}/data-transformation/GountryEmissionsVsTemperatures.parquet/",
     "--europe_big_3_co2_output_path":         "s3://${var.project-name}-${var.module-name}/data-transformation/EuropeBigThreeEmissions.parquet/",
-    "--co2_edited_output_path":               "s3://${var.project-name}-${var.module-name}/data-transformation/CountryEmissionsEdited.parquet/",
+    "--co2_oceania_output_path":              "s3://${var.project-name}-${var.module-name}/data-transformation/OceaniaEmissionsEdited.parquet/",
   }
 }
