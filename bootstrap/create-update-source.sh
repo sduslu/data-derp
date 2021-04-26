@@ -3,7 +3,7 @@
 set -e
 
 script_dir=$(cd "$(dirname "$0")" ; pwd -P)
-PROJECT=twdu-germany
+PROJECT=twdu-europe
 
 create-update() {
   pushd "${script_dir}" > /dev/null
@@ -42,10 +42,10 @@ create-update-stack() {
 upload_data() {
   pushd "${script_dir}" > /dev/null
 
-    AWS_PROFILE=default aws s3 cp "TemperaturesByCountryOriginal.csv" "s3://twdu-germany-data-source/TemperaturesByCountryOriginal.csv"
-    AWS_PROFILE=default aws s3 cp "TemperaturesByCountry.csv" "s3://twdu-germany-data-source/TemperaturesByCountry.csv"
-    AWS_PROFILE=default aws s3 cp "GlobalTemperatures.csv" "s3://twdu-germany-data-source/GlobalTemperatures.csv"
-    AWS_PROFILE=default aws s3 cp "EmissionsByCountry.csv" "s3://twdu-germany-data-source/EmissionsByCountry.csv"
+    AWS_PROFILE=default aws s3 cp "TemperaturesByCountryOriginal.csv" "s3://twdu-europe-data-source/TemperaturesByCountryOriginal.csv"
+    AWS_PROFILE=default aws s3 cp "TemperaturesByCountry.csv" "s3://twdu-europe-data-source/TemperaturesByCountry.csv"
+    AWS_PROFILE=default aws s3 cp "GlobalTemperatures.csv" "s3://twdu-europe-data-source/GlobalTemperatures.csv"
+    AWS_PROFILE=default aws s3 cp "EmissionsByCountry.csv" "s3://twdu-europe-data-source/EmissionsByCountry.csv"
 
   popd > /dev/null
 }

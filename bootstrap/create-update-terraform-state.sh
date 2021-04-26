@@ -3,7 +3,7 @@
 set -e
 
 script_dir=$(cd "$(dirname "$0")" ; pwd -P)
-PROJECT=twdu-germany
+PROJECT=twdu-europe
 
 create-update-terraform-state() {
   pushd "${script_dir}" > /dev/null

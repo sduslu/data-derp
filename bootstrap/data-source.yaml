@@ -2,11 +2,11 @@ Parameters:
   ProjectName:
     Type: String
     Description: Name of the project
-    Default: "twdu-germany"
+    Default: "twdu-europe"
   BucketBaseName:
     Type: String
     Description: Bucket name
-    Default: "twdu-germany-data-source"
+    Default: "twdu-europe-data-source"
 
 Resources:
   Bucket:

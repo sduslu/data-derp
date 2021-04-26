@@ -2,11 +2,11 @@ Parameters:
   ProjectName:
     Type: String
     Description: Name of the project
-    Default: "twdu-germany"
+    Default: "twdu-europe"
   BucketBaseName:
     Type: String
     Description: Bucket name
-    Default: "twdu-germany-terraform-state"
+    Default: "twdu-europe-terraform-state"
   TableName:
     Type: String
     Description: Name of table
