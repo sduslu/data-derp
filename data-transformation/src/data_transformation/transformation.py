@@ -128,10 +128,9 @@ class Transformer:
         temps_country_df = self.spark.read.format("parquet").load(self.parameters["temperatures_country_input_path"])
         
         # HINT: only temperature entries with Lenny's face are valid measurements
-        # There are multiple ways to tackle this: regexp_extract, regexp_replace, udf, pandas_udf, etc.
-        # We recommend a pandas_udf as it's a nice transferrable skill with good performance.
-        # For this, check out the pandas.Series.str family of methods. (str = string)
-        # FINAL HINT, regex=False will work just fine ;)
+        # There are multiple ways to tackle this: udf, pandas_udf, regexp_extract, regexp_replace, etc.
+        # Normally, we'd recommend a pandas_udf as it's a nice transferrable skill with good performance.
+        # However, to keep the dependency management for this job simple, let's use a normal udf.
 
         # Declare the function and create the UDF
         def fix_temperature(temperature: str) -> str:
