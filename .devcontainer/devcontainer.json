@@ -14,5 +14,6 @@
         "editor.acceptSuggestionOnEnter": "off",
         "files.autoSave": "afterDelay",
         "python.analysis.useImportHeuristic": true
-    }
+    }, 
+    "postCreateCommand": "pip install -e /workspaces/twdu-europe/twdu-tdd/ /workspaces/twdu-europe/data-ingestion/ /workspaces/twdu-europe/data-transformation/"
 }

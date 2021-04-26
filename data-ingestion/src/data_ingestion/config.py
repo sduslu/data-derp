@@ -40,26 +40,11 @@ elif ENVIRONMENT == "aws":
 elif ENVIRONMENT == "local":
 
     job_parameters = {
-        "temperatures_country_input_path":  "/workspaces/twdu-europe/data-ingestion/app/tmp/input-data/TemperaturesByCountry.csv",
-        "temperatures_country_output_path": "/workspaces/twdu-europe/data-ingestion/app/tmp/output-data/TemperaturesByCountry.parquet",
-        "temperatures_global_input_path":   "/workspaces/twdu-europe/data-ingestion/app/tmp/input-data/GlobalTemperatures.csv",
-        "temperatures_global_output_path":  "/workspaces/twdu-europe/data-ingestion/app/tmp/output-data/GlobalTemperatures.parquet",
-        "co2_input_path":                   "/workspaces/twdu-europe/data-ingestion/app/tmp/input-data/EmissionsByCountry.csv",
-        "co2_output_path":                  "/workspaces/twdu-europe/data-ingestion/app/tmp/output-data/EmissionsByCountry.parquet",
+        "co2_input_path":                   "/workspaces/twdu-europe/twdu-datasets/ingestion/inputs/EmissionsByCountry.csv",
+        "temperatures_global_input_path":   "/workspaces/twdu-europe/twdu-datasets/ingestion/inputs/GlobalTemperatures.csv",
+        "temperatures_country_input_path":  "/workspaces/twdu-europe/twdu-datasets/ingestion/inputs/TemperaturesByCountry.csv",
+
+        "co2_output_path":                  "/workspaces/twdu-europe/data-ingestion/tmp/outputs/EmissionsByCountry.parquet/",
+        "temperatures_global_output_path":  "/workspaces/twdu-europe/data-ingestion/tmp/outputs/GlobalTemperatures.parquet/",
+        "temperatures_country_output_path": "/workspaces/twdu-europe/data-ingestion/tmp/outputs/TemperaturesByCountry.parquet/",
     }
-
-def download_twdu_dataset(s3_uri: str, destination: str):
-    """Anonymously downloads a dataset from S3 to a custom destination.
-       If any parent directories do not exist, this function will create them.
-    """
-    filename = destination.strip("/").split("/")[-1]
-    folder = destination.replace(filename, "")
-
-    if not os.path.exists(folder):
-        os.makedirs(folder) # create destination folder(s) if they don't exist
-
-    s3 = S3FileSystem(anon=True)
-    print("Downloading from:", s3_uri)
-    print("Downloading to:", destination)
-    s3.get(s3_uri.replace("s3://", ""), destination, recursive=True)
-    return

@@ -1,11 +1,15 @@
-import unittest
+import pytest
+import sys
+import os
+
 import logging
 from pyspark.sql import SparkSession
 
 import sys
 from time import sleep
 
-class PySparkTest(unittest.TestCase):
+class TestPySpark:
+    """TWDU Base Class for PySpark testing and SparkSession management"""
 
     @classmethod
     def suppress_py4j_logging(cls):
@@ -21,7 +25,7 @@ class PySparkTest(unittest.TestCase):
             .getOrCreate())
 
     @classmethod
-    def setUpClass(cls):
+    def setup_class(cls):
         cls.suppress_py4j_logging()
         cls.spark = cls.create_testing_pyspark_session()
         if not sys.warnoptions:
@@ -29,8 +33,8 @@ class PySparkTest(unittest.TestCase):
             warnings.simplefilter("ignore")
 
     @classmethod
-    def tearDownClass(cls):
+    def teardown_class(cls):
         cls.spark.stop()
 
 if __name__ == '__main__':
-    unittest.main()
+    pytest.main(sys.argv)
