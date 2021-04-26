@@ -9,10 +9,14 @@
 *ignore*
 data-ingestion/app/tmp/*
 data-ingestion/app/src/build/**/*
+data-ingestion/app/build/**/*
 data-ingestion/app/src/dist/**/*
+data-ingestion/app/dist/**/*
 data-ingestion/app/src/*.egg-info
 data-transformation/app/tmp/*
 data-transformation/app/src/build/**/*
+data-transformation/app/build/**/*
 data-transformation/app/src/dist/**/*
+data-transformation/app/dist/**/*
 data-transformation/app/src/*.egg-info
 .pytest_cache
