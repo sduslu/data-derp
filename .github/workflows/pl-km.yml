@@ -110,8 +110,6 @@ jobs:
           aws s3 cp dist/${filename} s3://${PROJECT_NAME}-${MODULE_NAME}/${SUBDIR}/data_transformation-0.1-py3.egg
 
       - name: Terraform Setup Workspace
-        env:
-          ${SUBDIR
         uses: ./.github/composite-actions/terraform-setup-workspace
 
       - name: Terraform Init & Apply
