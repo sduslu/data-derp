@@ -27,7 +27,7 @@ print("TWDU: Starting Spark Job")
 
 spark = SparkSession \
     .builder \
-    .appName("TWDU Germany Glue Data Ingestion") \
+    .appName("TWDU Europe Glue Data Ingestion") \
     .config("spark.some.config.option", "some-value") \
     .getOrCreate()
 
