@@ -234,7 +234,7 @@ class Transformer:
 
         # TODO: Exercise
         from calendar import isleap
-        def check_leap(year: str) -> str:
+        def check_leap(year: int) -> bool:
             return isleap(year)
 
         leap_year_udf = F.udf(check_leap, returnType=BooleanType())
