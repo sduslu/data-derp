@@ -13,17 +13,17 @@ ENVIRONMENT = os.getenv(key="TWDU_ENVIRONMENT", default="aws")
 if ENVIRONMENT == "local":
 
     # Change this to your team name (e.g. ab-cd-ef).
-    module_name = "foo-bar"
+    team_name = "foo-bar"
 
     # Download the necessary datasets locally from the ingestion sets
     download_twdu_dataset(
-        s3_uri="s3://twdu-europe-${module_name}/data-ingestion/EmissionsByCountry.parquet/",
+        s3_uri=f"s3://twdu-europe-{team_name}/data-ingestion/EmissionsByCountry.parquet/",
         destination=job_parameters["co2_input_path"])
     download_twdu_dataset(
-        s3_uri="s3://twdu-europe-${module_name}/data-ingestion/GlobalTemperatures.parquet/",
+        s3_uri=f"s3://twdu-europe-{team_name}/data-ingestion/GlobalTemperatures.parquet/",
         destination=job_parameters["temperatures_global_input_path"])
     download_twdu_dataset(
-        s3_uri="s3://twdu-europe-${module_name}/data-ingestion/TemperaturesByCountry.parquet/",
+        s3_uri=f"s3://twdu-europe-{team_name}/data-ingestion/TemperaturesByCountry.parquet/",
         destination=job_parameters["temperatures_country_input_path"])
 
 # ---------- Part III: Run Da Ting (for Part II, see data_transformation/transformation.py) ---------- #
@@ -37,7 +37,9 @@ spark = SparkSession \
     .getOrCreate()
 
 # Enable Arrow-based columnar data transfers
-# In spark 2.4.3 (the version used in Glue), Apache Arrow must be enabled to used Pandas UDFs. It is enabled by default for newer versions of spark.
+# In Spark 2.4.3 (the version used in AWS Glue), Apache Arrow must be enabled to use Pandas UDFs
+# https://spark.apache.org/docs/2.4.3/sql-pyspark-pandas-with-arrow.html
+# For newer versions of Spark, Arrow is enabled by default.
 spark.conf.set("spark.sql.execution.arrow.enabled", "true")
 
 Transformer(spark, job_parameters).run()
