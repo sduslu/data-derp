@@ -23,8 +23,8 @@ elif ENVIRONMENT == "aws":
                 "temperatures_global_input_path",  # Input Table 2/3
                 "temperatures_country_input_path", # Input Table 3/3
 
-                "temperatures_co2_global_output_path",  # Output Table 1/4
-                "temperatures_co2_country_output_path", # Output Table 2/4
+                "co2_temperatures_global_output_path",  # Output Table 1/4
+                "co2_temperatures_country_output_path", # Output Table 2/4
                 "europe_big_3_co2_output_path",         # Output Table 3/4
                 "co2_edited_output_path",               # Output Table 4/4
             ]
