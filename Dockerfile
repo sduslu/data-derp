@@ -21,7 +21,7 @@ RUN curl -L -o /usr/local/bin/crowbar \
     https://github.com/moritzheiber/crowbar/releases/download/v0.3.7/crowbar-x86_64-linux && \
     chmod +x /usr/local/bin/crowbar
     
-# Install TWDU Germany libraries
+# Install TWDU Europe libraries
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
@@ -33,5 +33,5 @@ RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
 RUN apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
 RUN apt-get update && apt-get install terraform
 
-# TWDU Germany environment variables
+# TWDU Europe environment variables
 ENV TWDU_ENVIRONMENT=local
