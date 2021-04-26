@@ -2,7 +2,12 @@ import unittest
 from unittest.mock import Mock, patch
 import os
 from shutil import rmtree
+
+from pyspark.sql import SparkSession
 from test_spark_helper import PySparkTest
+
+import pyspark.sql.functions as F
+from pyspark.sql.types import *
 
 import pandas as pd
 import numpy as np
@@ -30,8 +35,8 @@ class TestTransformation(PySparkTest):
 
     def tearDown(self): # runs after each and every test
         output_paths = [self.parameters[x] for x in [
-            "temperatures_co2_global_output_path", 
-            "temperatures_co2_country_output_path", 
+            "co2_temperatures_global_output_path", 
+            "co2_temperatures_country_output_path", 
             "europe_big_3_co2_output_path",
             "co2_edited_output_path"
             ]
@@ -40,12 +45,13 @@ class TestTransformation(PySparkTest):
             if os.path.exists(path):
                 rmtree(path)
 
-    def test_casing(self):
-        original = pd.Series(["gErMaNy", "uNiTeD sTaTeS"])
-        fix_casing = lambda x: x # TODO: import from Transformation module instead
-        fixed = original.map(fix_casing)
+    def test_fix_country(self):
+        original = pd.DataFrame({"Country": ["  gErMaNy ", "   uNiTeD sTaTeS    "]})
+        spark_df = self.spark.createDataFrame(original)
+        spark_df = spark_df.withColumn("Country", self.transformer.fix_country(F.col("Country")))
+        fixed = spark_df.toPandas()
         try:
-            result = sorted(fixed.to_list())
+            result = sorted(fixed["Country"])
             self.assertEqual(result, ["Germany", "United States"])
         except Exception as e:
             raise type(e)(''.join(twdu_debug(original))) from e
@@ -54,16 +60,13 @@ class TestTransformation(PySparkTest):
         # Download the necessary datasets
         download_twdu_dataset(
             s3_uri="s3://twdu-germany-team-pl-km/data-ingestion/EmissionsByCountry.parquet/", 
-            destination=self.parameters["co2_input_path"],
-            format="parquet")
+            destination=self.parameters["co2_input_path"])
         download_twdu_dataset(
             s3_uri="s3://twdu-germany-team-pl-km/data-ingestion/GlobalTemperatures.parquet/", 
-            destination=self.parameters["temperatures_global_input_path"],
-            format="parquet")
+            destination=self.parameters["temperatures_global_input_path"])
         download_twdu_dataset(
             s3_uri="s3://twdu-germany-team-pl-km/data-ingestion/TemperaturesByCountry.parquet/", 
-            destination=self.parameters["temperatures_country_input_path"],
-            format="parquet")
+            destination=self.parameters["temperatures_country_input_path"])
 
         # Run the job and check for _SUCCESS files for each partition
         self.transformer.run()

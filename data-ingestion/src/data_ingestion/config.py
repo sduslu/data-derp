@@ -1,6 +1,7 @@
 import sys
 import os
 import pandas as pd
+from s3fs import S3FileSystem
 
 # ---------- Part I: Job Setup ---------- #
 
@@ -47,23 +48,18 @@ elif ENVIRONMENT == "local":
         "co2_output_path":                  "/workspaces/twdu-germany/data-ingestion/tmp/output-data/EmissionsByCountry.parquet",
     }
 
-def download_twdu_dataset(s3_uri: str, destination: str, format: str):
+def download_twdu_dataset(s3_uri: str, destination: str):
     """Anonymously downloads a dataset from S3 to a custom destination.
        If any parent directories do not exist, this function will create them.
     """
-    if format not in ["csv", "parquet"]:
-        raise ValueError('file_format must be either "csv" or "parquet"')
-   
-    filename = destination.split("/")[-1]
+    filename = destination.strip("/").split("/")[-1]
     folder = destination.replace(filename, "")
 
     if not os.path.exists(folder):
-        os.makedirs(folder) # create destination folder(s) if they don't exist, since Pandas does not allow non-existent parent folders
+        os.makedirs(folder) # create destination folder(s) if they don't exist
 
-    if format == "csv":
-        pandas_df = pd.read_csv(s3_uri, storage_options={"anon": True}) # to read directly from S3 using pd.read_csv, make sure you've pip installed s3fs
-        pandas_df.to_csv(destination, index=False) # download as csv to local storage (for local development only)
-    else:
-        pandas_df = pd.read_parquet(s3_uri, storage_options={"anon": True}) # to read directly from S3 using pd.read_csv, make sure you've pip installed s3fs
-        pandas_df.to_parquet(destination, index=False) # download as csv to local storage (for local development only)
+    s3 = S3FileSystem(anon=True)
+    print("Downloading from:", s3_uri)
+    print("Downloading to:", destination)
+    s3.get(s3_uri.replace("s3://", ""), destination, recursive=True)
     return

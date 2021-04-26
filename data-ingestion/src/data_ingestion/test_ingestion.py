@@ -58,16 +58,13 @@ class TestIngestion(PySparkTest):
         # Download the necessary datasets
         download_twdu_dataset(
             s3_uri="s3://twdu-germany-data-source/TemperaturesByCountry.csv", 
-            destination=self.parameters["temperatures_country_input_path"],
-            format="csv")
+            destination=self.parameters["temperatures_country_input_path"])
         download_twdu_dataset(
             s3_uri="s3://twdu-germany-data-source/GlobalTemperatures.csv", 
-            destination=self.parameters["temperatures_global_input_path"],
-            format="csv")
+            destination=self.parameters["temperatures_global_input_path"])
         download_twdu_dataset(
             s3_uri="s3://twdu-germany-data-source/EmissionsByCountry.csv", 
-            destination=self.parameters["co2_input_path"],
-            format="csv")
+            destination=self.parameters["co2_input_path"])
 
         # Run the job and check for _SUCCESS files for each partition
         self.ingester.run()

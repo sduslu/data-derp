@@ -2,7 +2,6 @@
 pyspark==2.4.3
 # AWS Wrangler: all-round versatile tool + includes Pandas
 # (https://aws-data-wrangler.readthedocs.io/en/2.4.0-docs/install.html?highlight=glue%202.0#aws-glue-pyspark-jobs)
-awswrangler==2.7.0
 pyarrow==2
 # Mimic Glue environment (https://docs.aws.amazon.com/glue/latest/dg/reduced-start-times-spark-etl-jobs.html)
 # You can even modify the Glue job's libraries with the --additional-python-modules option (see the link above)

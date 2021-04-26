@@ -1,4 +1,4 @@
-from pyspark.sql import DataFrame
+from pyspark.sql import DataFrame, Column
 import pyspark.sql.functions as F
 from pyspark.sql.session import SparkSession
 from pyspark.sql.window import Window
@@ -102,6 +102,14 @@ class Transformer:
         global_emissions_temperatures = global_emissions.join(global_temperatures, on="Year", how="inner") # TODO: Exercise
         return global_emissions_temperatures
 
+    @staticmethod # doesn't rely on self.spark nor self.parameters
+    def fix_country(col: Column) -> Column:
+        """
+        Use built-in Spark functions to clean-up the "Country" column
+        e.g. "   cAnAdA " -> "Canada"
+        """
+        return F.initcap(F.lower(F.trim(col)))
+
     def aggregate_country_temperatures(self) -> DataFrame:
         """
         Topics: casting, udf/pandas_udf, aggregation functions
@@ -126,16 +134,14 @@ class Transformer:
         # FINAL HINT, regex=False will work just fine ;)
 
         # Declare the function and create the UDF
-        def fix_temperature(temperatures: pd.Series) -> pd.Series:
-            cleaned = temperatures.str.replace("( ͡° ͜ʖ ͡°)", "", regex=False) # TODO: exercise
-            casted = pd.to_numeric(cleaned, errors="coerce") # let "coerce" handle the non-Lenny cases
-            return casted
+        def fix_temperature(temperature: str) -> str:
+            return temperature.replace("( ͡° ͜ʖ ͡°)", "") # TODO: exercise
 
-        fix_temperature_udf = F.pandas_udf(fix_temperature, returnType=FloatType())
-        temperature_expr = fix_temperature_udf(F.col("AverageTemperature"))
+        fix_temperature_udf = F.udf(fix_temperature, returnType=StringType())
+        temperature_expr = fix_temperature_udf(F.col("AverageTemperature")).cast(FloatType())
 
-        year_expr = F.to_timestamp(F.col("Date"), format="MM-dd-yyyy") # TODO: Exercise
-        country_expr = F.initcap(F.lower(F.trim(F.col("Country")))) # TODO: Exercise
+        year_expr = F.year(F.to_timestamp(F.col("Date"), format="MM-dd-yyyy")) # TODO: Exercise
+        country_expr = self.fix_country(F.col("Country")) # TODO: Exercise
 
         # TODO: exercise
         cleaned_df = temps_country_df.select(
@@ -198,6 +204,10 @@ class Transformer:
                 F.first("TotalEmissions").alias("TotalEmissions"),
                 F.first("PerCapitaEmissions").alias("PerCapitaEmissions")
                 )
+        # You might've noticed that "United Kingdom" has a space. 
+        # If you recall, spaces are not permitted in Apache Parquet column names. Let's address that:
+        friendly_columns = [F.col(x).alias(x.replace(" ", "")) for x in europe_big_three_emissions.columns]
+        europe_big_three_emissions = europe_big_three_emissions.select(friendly_columns)
         return europe_big_three_emissions
 
     @staticmethod # doesn't rely on self.spark nor self.parameters
@@ -205,25 +215,29 @@ class Transformer:
         """
         Topics: when (switch statements), udf/pandas_udf, Window functions, coalesce (filling nulls with a priority order)
 
-        Your CO2 data provider informs you they suspect a massive bug in their calculations for every LEAP YEAR. 
-        To be safe, you've been asked to prepare an alternative dataset.
+        The CO2 data provider for Australia and New Zealand informs you they suspect a massive bug in their calculations for every LEAP YEAR. 
+        To be safe, you've been asked to prepare an edited dataset for Australia and New Zealand only.
         Using the result of read_emissions(), edit the estimates for leap years using the following priority:
             1. nearest non-null value before (i.e. 'forward fill')
             2. nearest non-null value after (i.e. 'backward fill')
-            3. nullify the value for that year
-        Then, reshape the data according to the schema requirements below.
+            3. nullify the value
+        Recap:
+            - DISCARD all rows for countries other than Australia or New Zealand
+            - KEEP rows from all years (including non-leap years) for Australia or New Zealand
+
         Your output Spark DataFrame's schema should be:
             - Year: integer
             - Country: string
             - TotalEmissions: float
         """
-        # HINT: Check out the pandas.Series.dt family of methods. (dt = datetime)
+        oceania_emissions = country_emissions.filter(F.col("Country").isin(["Australia", "New Zealand"]))
 
         # TODO: Exercise
-        def check_leap(years: pd.Series) -> pd.Series:
-            return years.dt.is_leap_year
+        from calendar import isleap
+        def check_leap(year: str) -> str:
+            return isleap(year)
 
-        leap_year_udf = F.pandas_udf(check_leap, returnType=BooleanType())
+        leap_year_udf = F.udf(check_leap, returnType=BooleanType())
         is_leap_year = leap_year_udf(F.col("Year"))
 
         # TODO: Exercise
@@ -231,8 +245,8 @@ class Transformer:
         w_after = Window().partitionBy("Country").orderBy(F.col("Year")).rowsBetween(1, Window.unboundedFollowing)
 
         # TODO: Exercise
-        nearest_before = F.first(F.col("TotalEmissions"), igorenulls=True).over(w_before)
-        nearest_after = F.first(F.col("TotalEmissions"), igorenulls=True).over(w_after)
+        nearest_before = F.first(F.col("TotalEmissions"), ignorenulls=True).over(w_before)
+        nearest_after = F.first(F.col("TotalEmissions"), ignorenulls=True).over(w_after)
 
         emissions_prioritized = F.coalesce(
             nearest_before, # TODO: Exercise
@@ -242,7 +256,7 @@ class Transformer:
         emissions_case = F.when(is_leap_year, emissions_prioritized).otherwise(F.col("TotalEmissions"))
         emissions_expr = emissions_case.cast(FloatType())
 
-        emissions_edited = country_emissions.select(
+        emissions_edited = oceania_emissions.select(
             "Year",
             "Country",
             emissions_expr.alias("TotalEmissions")
@@ -266,7 +280,7 @@ class Transformer:
             global_temperatures
             )
         global_emissions_temperatures.coalesce(1).orderBy("Year") \
-            .write.format("parquet") \
+            .write.format("parquet").mode("overwrite") \
             .save(self.parameters["co2_temperatures_global_output_path"])
 
         # Task 2:
@@ -276,19 +290,19 @@ class Transformer:
             country_temperatures
         )
         country_emissions_temperatures.coalesce(1).orderBy("Year") \
-            .write.format("parquet") \
+            .write.format("parquet").mode("overwrite") \
             .save(self.parameters["co2_temperatures_country_output_path"])
 
         # Task 3:
         europe_big_three_emissions: DataFrame = self.reshape_europe_big_three_emissions(country_emissions)
         europe_big_three_emissions.coalesce(1).orderBy("Year") \
-            .write.format("parquet") \
+            .write.format("parquet").mode("overwrite") \
             .save(self.parameters["europe_big_3_co2_output_path"])
 
         # Task 4: 
         emissions_edited = self.boss_battle(country_emissions)
         emissions_edited.coalesce(1).orderBy("Year") \
-            .write.format("parquet") \
+            .write.format("parquet").mode("overwrite") \
             .save(self.parameters["co2_edited_output_path"])
 
         # REVIEW: Knowing that all Spark transformations are lazy and always get recomputed,
