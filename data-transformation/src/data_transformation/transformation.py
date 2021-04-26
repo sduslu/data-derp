@@ -115,6 +115,19 @@ class Transformer:
         """
         return F.initcap(F.lower(F.trim(col)))
 
+    @staticmethod # doesn't rely on self.spark nor self.parameters    
+    def fix_temperature(temperature: str) -> str:
+        """
+        HINT: only temperature entries with Lenny's face are valid measurements
+        There are multiple ways to tackle this: udf, pandas_udf, regexp_extract, regexp_replace, etc.
+        Normally, we'd recommend a pandas_udf as it's a nice transferrable skill with good performance.
+        However, to keep this job simple, let's use a normal udf.
+
+        The point is to demonstrate that you can write arbitrary Python logic as a UDF 
+        if Spark doesn't have the built-in function you need.
+        """
+        return temperature.replace("( ͡° ͜ʖ ͡°)", "") # TODO: exercise
+
     def aggregate_country_temperatures(self) -> DataFrame:
         """
         Topics: casting, udf/pandas_udf, aggregation functions
@@ -123,7 +136,7 @@ class Transformer:
         INVESTIGATE the data to look for any data quality issues
         Think carefully about:
             - any necessary cleaning (WARNING: don't assume Spark can intelligently read/cast everything)
-            - the appropriate aggregation functions to use
+            - the appropriate aggregation function to use
         For this project, you can just ignore any 'Uncertainty' columns.
         Your output Spark DataFrame's schema should be:
             - Year: integer
@@ -132,16 +145,8 @@ class Transformer:
         """
         temps_country_df = self.spark.read.format("parquet").load(self.parameters["temperatures_country_input_path"])
         
-        # HINT: only temperature entries with Lenny's face are valid measurements
-        # There are multiple ways to tackle this: udf, pandas_udf, regexp_extract, regexp_replace, etc.
-        # Normally, we'd recommend a pandas_udf as it's a nice transferrable skill with good performance.
-        # However, to keep the dependency management for this job simple, let's use a normal udf.
-
-        # Declare the function and create the UDF
-        def fix_temperature(temperature: str) -> str:
-            return temperature.replace("( ͡° ͜ʖ ͡°)", "") # TODO: exercise
-
-        fix_temperature_udf = F.udf(fix_temperature, returnType=StringType())
+        # Register your function as a UDF
+        fix_temperature_udf = F.udf(self.fix_temperature, returnType=StringType())
         temperature_expr = fix_temperature_udf(F.col("AverageTemperature")).cast(FloatType())
 
         year_expr = F.year(F.to_timestamp(F.col("Date"), format="MM-dd-yyyy")) # TODO: Exercise

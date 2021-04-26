@@ -21,6 +21,10 @@
       return hours * 60 * 60 * 1000;
     }
 
+    function hoursMinutesToMilliseconds(hours, minutes) {
+      return hoursToMilliseconds(hours) + minutesToMilliseconds(minutes)
+    }
+
     welcomeTime = hoursToMilliseconds(1)
     deNutshellTime = hoursToMilliseconds(2)
     lunchTime = hoursToMilliseconds(1)
@@ -45,41 +49,15 @@
       baseData.addColumn('number', 'Percent Complete');
       baseData.addColumn('string', 'Dependencies');
 
-      dayOneSchedule = [
+      dayXSchedule = [
         ['welcome', 'Welcome to TWDU Europe: Expectations, Goals', 'welcome', new Date(2021, 3, 26, 9, 0, 0), null, welcomeTime, 0, null],
         ['deNutshell', 'What is Data Engineering and what problems does it solve?', 'deNutshell', null, null, deNutshellTime, 0, 'welcome'],
         ['dayonelunch', 'Lunch', 'lunch', null, null, lunchTime, 0, 'deNutshell'],
         ['understandingDe', 'Understanding Data Engineering', 'understandingDe', null, null, understandingDeTime, 0, 'dayonelunch'],
       ]
-      dayTwoSchedule = [
-        ['realLifeSlice', 'Real Life Slice', 'realLifeSlice', new Date(2021, 3, 27, 9, 0, 0), null, realLifeSliceTime, 0, null],
-        ['dataIngestion', 'Data Ingestion', 'dataIngestion', null, null, dataIngestionTime, 0, 'realLifeSlice'],
-        ['daytwolunch', 'Lunch', 'lunch', null, null, lunchTime, 0, 'dataIngestion'],
-        ['dataTransformationPart1', 'Data Transformation Part 1', 'dataTransformation', null, null, dataTransformationTime = dataTransformationTime-hoursToMilliseconds(4), 0, 'daytwolunch'],
-      ]
-
-      dayThreeSchedule = [
-        ['dataTransformationPart2', 'Data Transformation Part 2', 'dataTransformation', new Date(2021, 3, 28, 9, 0, 0), null, dataTransformationTime, 0, null],
-        ['daythreelunch', 'Lunch', 'lunch', null, null, lunchTime, 0, 'dataTransformationPart2'],
-        ['dataVisualisation', 'Data Visualisation', 'dataVisualisation', null, null, dataVisualisationTime, 0, 'daythreelunch'],
-      ]
-
-      dayFourSchedule = [
-        ['statisticsDataScience', 'Statistics And Data Science', 'statisticsDataScience',  new Date(2021, 3, 29, 9, 0, 0), null, statisticsDataScienceTime, 0, null],
-        ['dayFourLunch', 'Lunch', 'lunch', null, null, lunchTime, 0, 'statisticsDataScience'],
-        ['streaming', 'Streaming', 'streaming', null, null, streamingTime, 0, 'dayFourLunch'],
-      ]
-
-      dayFiveSchedule = [
-        ['dataMesh', 'Data Mesh', 'dataMesh',  new Date(2021, 3, 30, 9, 0, 0), null, dataMeshTime, 0, null]
-      ]
 
       baseData.addRows(
-              dayOneSchedule
-              // dayTwoSchedule
-              // dayThreeSchedule
-              // dayFourSchedule
-              // dayFiveSchedule
+              dayXSchedule
       );
 
       var options = {

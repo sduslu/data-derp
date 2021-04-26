@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 
 from data_ingestion.ingestion import Ingester
+from expected_ingestion import output_metadata
 
 class TestIngestion(TestPySpark):
 
@@ -32,13 +33,13 @@ class TestIngestion(TestPySpark):
                 rmtree(path.rsplit("/", 1)[0])
 
     def test_replace_invalid_chars(self):
-        # BEWARE: dictionaries in Python do not necessarily enforce order. 
+        # BEWARE: dictionaries do not necessarily enforce order. 
         # To check column names, always use sorted()
         INVALID_CHARS = [" ", ",", ";", "\n", "\t", "=", "-", "{", "}", "(", ")"] 
         df = pd.DataFrame(
             {
                 'My Awesome Column': pd.Series(["Germany", "New Zealand", "Australia", "UK"]),
-                'Another Awesome Column': pd.Series(["Germany", "New Zealand", "Australia", "UK"]),
+                '(Another) Awesome Column': pd.Series(["Germany", "New Zealand", "Australia", "UK"]),
             }
         )
         df.columns = [self.ingester.replace_invalid_chars(x) for x in df.columns]
@@ -54,16 +55,40 @@ class TestIngestion(TestPySpark):
         assert all_columns_valid
         assert sorted(df.columns) == sorted(["My_Awesome_Column", "Another_Awesome_Column"])
 
+    def test_fix_columns(self):
+        # BEWARE: dictionaries do not necessarily enforce order. 
+        # To check column names, always use sorted()
+        pandas_df = pd.DataFrame(
+            {
+                'My Awesome Column': pd.Series(["Germany", "New Zealand", "Australia", "UK"]),
+                '(Another) Awesome Column': pd.Series(["Germany", "New Zealand", "Australia", "UK"]),
+            }
+        )
+        spark_df = self.spark.createDataFrame(pandas_df)
+        fixed_df = self.ingester.fix_columns(spark_df)
+        assert sorted(fixed_df.columns) == sorted(["My_Awesome_Column", "Another_Awesome_Column"])
+
     def test_run(self):
+        """High level job test: count + schema checks but nothing more granular"""
         # Run the job and check for _SUCCESS files for each partition
         self.ingester.run()
-        output_paths = [self.parameters[x] for x in ["temperatures_country_output_path", "temperatures_global_output_path", "co2_output_path"]]
-        for path in output_paths:
+
+        output_path_keys = ["temperatures_country_output_path", "temperatures_global_output_path", "co2_output_path"]
+        output_path_values = [self.parameters[k] for k in output_path_keys]
+        expected_metadata = [output_metadata[k.replace("_path", "")] for k in output_path_keys]
+
+        for (path, expected) in list(zip(output_path_values, expected_metadata)):
             files = os.listdir(path)
             snappy_parquet_files = [x for x in files if x.endswith(".snappy.parquet")]
             # For this exercise, we require you to control each table's partitioning to 1 parquet partition
             assert (True if len(snappy_parquet_files) == 1 else False)
             assert (True if "_SUCCESS" in files else False)
+
+            # Check count and schema - this covers most of pyspark-test's (https://pypi.org/project/pyspark-test/) functionality already
+            # No need for a full equality check (it collects everything into the driver's memory - too time/memory consuming)
+            df = self.spark.read.parquet(path)
+            assert df.count() == expected["count"]
+            assert df.schema == expected["schema"]
 
 if __name__ == '__main__':
     pytest.main(sys.argv)
