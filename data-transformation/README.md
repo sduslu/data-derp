@@ -18,7 +18,3 @@ Process the ingested files
 | 2020 | France | 188 | 13 | 21 |
 | 2021 | Germany | 200 | 16 | 22 |
 | 2021 | France | 205 | 15 | 22 |
-
-## Notes
-### File Structure
-In an ideal world, you might use an `src/` and `test/` directory to intentionally package your production code and keep test files separate. It is also one of the [sensible defaults by Pytest](https://docs.pytest.org/en/reorganize-docs/new-docs/user/directory_structure.html). We realised that it would be a disaster for this multi-python-project repository (and the dev experience) because it would require different PYTHONPATH to be set for every subproject. As a result, the tests are inline with the code in `src/`. You can then run tests by pressing the green PLAY button or running `python -m pytest`. But in general, always follow those sensible defaults.
