@@ -66,7 +66,7 @@ jobs:
 
       - name: Upload Data Ingestion lib
         run: |
-          cd ${SUBDIR}/src
+          cd ${SUBDIR}
           python setup.py bdist_egg
           filename=$(ls dist)
           aws s3 cp dist/${filename} s3://${PROJECT_NAME}-${MODULE_NAME}/${SUBDIR}/data_ingestion-0.1-py3.egg
@@ -104,7 +104,7 @@ jobs:
 
       - name: Upload Data Transformation lib
         run: |
-          cd ${SUBDIR}/src
+          cd ${SUBDIR}
           python setup.py bdist_egg
           filename=$(ls dist)
           aws s3 cp dist/${filename} s3://${PROJECT_NAME}-${MODULE_NAME}/${SUBDIR}/data_transformation-0.1-py3.egg
