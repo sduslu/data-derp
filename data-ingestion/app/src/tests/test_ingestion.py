@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import Mock, patch
 import os
 from shutil import rmtree
-from test_spark_helper import PySparkTest
+from test_spark_helper import PySparkTestCase
 
 import pandas as pd
 import numpy as np
@@ -11,7 +11,7 @@ from data_ingestion.config import download_twdu_dataset
 from data_ingestion.ingestion import Ingester
 
 
-class TestIngestion(PySparkTest):
+class TestIngestion(PySparkTestCase):
 
     def setUp(self): # runs before each and every test
         self.parameters = {

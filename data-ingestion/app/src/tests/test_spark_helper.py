@@ -5,7 +5,7 @@ from pyspark.sql import SparkSession
 import sys
 from time import sleep
 
-class PySparkTest(unittest.TestCase):
+class PySparkTestCase(unittest.TestCase):
 
     @classmethod
     def suppress_py4j_logging(cls):
