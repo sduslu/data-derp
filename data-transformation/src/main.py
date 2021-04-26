@@ -32,6 +32,9 @@ spark = SparkSession \
     .config("spark.some.config.option", "some-value") \
     .getOrCreate()
 
+# Enable Arrow-based columnar data transfers
+spark.conf.set("spark.sql.execution.arrow.enabled", "true")
+
 Transformer(spark, job_parameters).run()
 
 print("TWDU: Spark Job Complete")

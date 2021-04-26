@@ -214,15 +214,16 @@ class Transformer:
         """
         Topics: when (switch statements), udf/pandas_udf, Window functions, coalesce (filling nulls with a priority order)
 
-        The CO2 data provider for Australia and New Zealand informs you they suspect a massive bug in their calculations for every LEAP YEAR. 
-        To be safe, you've been asked to prepare an edited dataset for Australia and New Zealand only.
-        Using the result of read_emissions(), edit the estimates for leap years using the following priority:
+        The CO2 data provider for Australia and New Zealand informs you that there's a massive bug in their estimations for every LEAP YEAR. 
+        As a result, your team will have to produce an edited dataset for Australia and New Zealand only.
+        Using the result of read_emissions(), edit the TotalEmissions estimates for leap years using the following priority:
             1. nearest non-null value before (i.e. 'forward fill')
             2. nearest non-null value after (i.e. 'backward fill')
             3. nullify the value
         Recap:
             - DISCARD all rows for countries other than Australia or New Zealand
             - KEEP rows from all years (including non-leap years) for Australia or New Zealand
+            - KEEP only the following columns: Year, Country, and TotalEmissions
 
         Your output Spark DataFrame's schema should be:
             - Year: integer
@@ -255,19 +256,19 @@ class Transformer:
         emissions_case = F.when(is_leap_year, emissions_prioritized).otherwise(F.col("TotalEmissions"))
         emissions_expr = emissions_case.cast(FloatType())
 
-        emissions_edited = oceania_emissions.select(
+        oceania_emissions_edited = oceania_emissions.select(
             "Year",
             "Country",
             emissions_expr.alias("TotalEmissions")
         )
-        return emissions_edited
+        return oceania_emissions_edited
 
     def run(self):
         """
         BEFORE writing out any Spark DataFrame to S3:
             - coalesce to 1 partition
             - orderBy("Year") 
-        This is just for convenience in future analytics for our exercise :)
+        This is just for convenience in our testing functions :)
         """
 
         # Task 1:
@@ -299,11 +300,11 @@ class Transformer:
             .save(self.parameters["europe_big_3_co2_output_path"])
 
         # Task 4: 
-        emissions_edited = self.boss_battle(country_emissions)
-        emissions_edited.coalesce(1).orderBy("Year") \
+        oceania_emissions_edited = self.boss_battle(country_emissions)
+        oceania_emissions_edited.coalesce(1).orderBy("Year") \
             .write.format("parquet").mode("overwrite") \
             .save(self.parameters["co2_oceania_output_path"])
 
         # REVIEW: Knowing that all Spark transformations are lazy and always get recomputed,
-        # do you see any opportunities for improvement in performance? (HINT: re-use)
+        # do you see any opportunities for improvement in performance?
         return
