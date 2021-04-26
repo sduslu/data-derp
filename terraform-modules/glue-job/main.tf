@@ -33,7 +33,7 @@ data "aws_s3_bucket" "this" {
 
 resource "aws_iam_role" "this" {
   name = "${var.project-name}-${var.module-name}-${var.submodule-name}-glue"
-  permissions_boundary = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/twdu-germany/twdu-germany-delegated-boundary"
+  permissions_boundary = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/twdu-europe/twdu-europe-delegated-boundary"
   force_detach_policies = true
   assume_role_policy = <<EOF
 {

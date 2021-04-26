@@ -1,7 +1,7 @@
 name: 'example1-example2'
 
 env:
-  PROJECT_NAME: twdu-germany
+  PROJECT_NAME: twdu-europe
   MODULE_NAME: example1-example2
   TF_WORKSPACE: example1-example2
 
@@ -31,7 +31,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Assume Role
-      run: assume-role twdu-germany-github-runner-aws
+      run: assume-role twdu-europe-github-runner-aws
 
     - name: Terraform Setup Workspace
       uses: ./.github/composite-actions/terraform-setup-workspace
@@ -57,7 +57,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Assume Role
-        run: assume-role twdu-germany-github-runner-aws
+        run: assume-role twdu-europe-github-runner-aws
 
       - name: Upload Main.py
         run: |
@@ -95,7 +95,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Assume Role
-        run: assume-role twdu-germany-github-runner-aws
+        run: assume-role twdu-europe-github-runner-aws
 
       - name: Upload Main.py
         run: |
@@ -133,7 +133,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Assume Role
-        run: assume-role twdu-germany-github-runner-aws
+        run: assume-role twdu-europe-github-runner-aws
 
       - name: Terraform Setup Workspace
         uses: ./.github/composite-actions/terraform-setup-workspace
@@ -156,7 +156,7 @@ jobs:
 #        uses: actions/checkout@v2
 #
 #      - name: Assume Role
-#        run: assume-role twdu-germany-github-runner-aws
+#        run: assume-role twdu-europe-github-runner-aws
 #
 #      - name: Terraform Init & Destroy (Data Workflow)
 #        env:

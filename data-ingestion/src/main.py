@@ -12,13 +12,13 @@ ENVIRONMENT = os.getenv(key="TWDU_ENVIRONMENT", default="aws")
 # If running locally, first download the necessary datasets to local storage
 if ENVIRONMENT == "local":
     download_twdu_dataset(
-        s3_uri="s3://twdu-germany-data-source/TemperaturesByCountry.csv", 
+        s3_uri="s3://twdu-europe-data-source/TemperaturesByCountry.csv",
         destination=job_parameters["temperatures_country_input_path"])
     download_twdu_dataset(
-        s3_uri="s3://twdu-germany-data-source/GlobalTemperatures.csv", 
+        s3_uri="s3://twdu-europe-data-source/GlobalTemperatures.csv",
         destination=job_parameters["temperatures_global_input_path"])
     download_twdu_dataset(
-        s3_uri="s3://twdu-germany-data-source/EmissionsByCountry.csv", 
+        s3_uri="s3://twdu-europe-data-source/EmissionsByCountry.csv",
         destination=job_parameters["co2_input_path"])
 
 # ---------- Part III: Run Da Ting (for Part II, see data_ingestion/ingestion.py) ---------- #

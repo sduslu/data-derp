@@ -2,7 +2,7 @@
 
 set -ex
 script_dir=$(cd "$(dirname "$0")" ; pwd -P)
-PROJECT="twdu-germany"
+PROJECT="twdu-europe"
 
 goal_pull-dev-container() {
   pushd "${script_dir}" > /dev/null
@@ -17,8 +17,8 @@ goal_pull-dev-container() {
 
     echo ${token} | docker login https://docker.pkg.github.com -u ${username} --password-stdin
 
-    docker pull docker.pkg.github.com/kelseymok/twdu-germany/dev-container:latest
-    docker tag docker.pkg.github.com/kelseymok/twdu-germany/dev-container:latest twdu-dev-container:latest
+    docker pull docker.pkg.github.com/kelseymok/twdu-europe/dev-container:latest
+    docker tag docker.pkg.github.com/kelseymok/twdu-europe/dev-container:latest twdu-dev-container:latest
   popd > /dev/null
 }
 
@@ -86,7 +86,7 @@ goal_setup() {
   read  -p "Enter OKTA username (before @): " -s okta_username
 
   crowbar profiles add "${PROJECT}" -u $okta_username -p okta --url "https://thoughtworks.okta.com/home/amazon_aws/0oa1kzdqca8OEU6ju0h8/272"
-  if [[ $(AWS_PROFILE=twdu-germany aws s3 ls --region eu-central-1) ]]; then
+  if [[ $(AWS_PROFILE=twdu-europe aws s3 ls --region eu-central-1) ]]; then
     echo "Crowbar profile successfully created and connected to AWS"
   else
     echo "Crowbar profile could not connect to AWS resources. Did you enter the right username/password?"

@@ -12,5 +12,5 @@ Ingest files (input) and output to specified locations (without transformations)
 
 | Input | Output |
 | --- | --- |
-| [Temperature](https://raw.githubusercontent.com/owid/owid-datasets/master/datasets/Berkley%20Land-Ocean%20Temperature%20Anomaly/Berkley%20Land-Ocean%20Temperature%20Anomaly.csv) | s3://twdu-germany-<workflow-name>/data-ingestion/output/temperature.parquet |
-| [CO2](https://raw.githubusercontent.com/owid/owid-datasets/master/datasets/CO2%20emissions%20(Aggregate%20dataset%20(2021))/CO2%20emissions%20(Aggregate%20dataset%20(2021)).csv) | s3://twdu-germany-<workflow-name>/data-ingestion/output/co2.parquet |
+| [Temperature](https://raw.githubusercontent.com/owid/owid-datasets/master/datasets/Berkley%20Land-Ocean%20Temperature%20Anomaly/Berkley%20Land-Ocean%20Temperature%20Anomaly.csv) | s3://twdu-europe-<workflow-name>/data-ingestion/output/temperature.parquet |
+| [CO2](https://raw.githubusercontent.com/owid/owid-datasets/master/datasets/CO2%20emissions%20(Aggregate%20dataset%20(2021))/CO2%20emissions%20(Aggregate%20dataset%20(2021)).csv) | s3://twdu-europe-<workflow-name>/data-ingestion/output/co2.parquet |

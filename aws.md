@@ -12,14 +12,14 @@
 To install AWS CLI/Crowbar: `./go setup`. This assumes you have Python already.
 
 ### Set Up Crowbar
-Set up a profile called `twdu-germany` to use with the AWS TWDU Germany account:
+Set up a profile called `twdu-europe` to use with the AWS TWDU Germany account:
 ```bash
-crowbar profiles add twdu-germany -u <YOUR-USERNAME> -p okta --url "https://thoughtworks.okta.com/home/amazon_aws/0oa1kzdqca8OEU6ju0h8/272"
+crowbar profiles add twdu-europe -u <YOUR-USERNAME> -p okta --url "https://thoughtworks.okta.com/home/amazon_aws/0oa1kzdqca8OEU6ju0h8/272"
 ```
 
 Login and verify access:
 ```bash
-AWS_PROFILE=twdu-germany aws s3 ls --region eu-central-1
+AWS_PROFILE=twdu-europe aws s3 ls --region eu-central-1
 ```
 
 Switching a role:

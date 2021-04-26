@@ -21,14 +21,14 @@ class TestTransformation(PySparkTest):
 
     def setUp(self): # runs before each and every test
         self.parameters = {
-        "co2_input_path":                  "/workspaces/twdu-germany/data-transformation/tmp/input-data/EmissionsByCountry.parquet/",
-        "temperatures_global_input_path":  "/workspaces/twdu-germany/data-transformation/tmp/input-data/GlobalTemperatures.parquet/",
-        "temperatures_country_input_path": "/workspaces/twdu-germany/data-transformation/tmp/input-data/TemperaturesByCountry.parquet/",
+        "co2_input_path":                  "/workspaces/twdu-europe/data-transformation/tmp/input-data/EmissionsByCountry.parquet/",
+        "temperatures_global_input_path":  "/workspaces/twdu-europe/data-transformation/tmp/input-data/GlobalTemperatures.parquet/",
+        "temperatures_country_input_path": "/workspaces/twdu-europe/data-transformation/tmp/input-data/TemperaturesByCountry.parquet/",
 
-        "co2_temperatures_global_output_path":  "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/GlobalEmissionsVsTemperatures.parquet/",
-        "co2_temperatures_country_output_path": "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/CountryEmissionsVsTemperatures.parquet/",
-        "europe_big_3_co2_output_path":         "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/EuropeBigThreeEmissions.parquet/",
-        "co2_oceania_output_path":              "/workspaces/twdu-germany/data-transformation/tmp/test/output-data/OceaniaEmissionsEdited.parquet/",
+        "co2_temperatures_global_output_path":  "/workspaces/twdu-europe/data-transformation/tmp/test/output-data/GlobalEmissionsVsTemperatures.parquet/",
+        "co2_temperatures_country_output_path": "/workspaces/twdu-europe/data-transformation/tmp/test/output-data/CountryEmissionsVsTemperatures.parquet/",
+        "europe_big_3_co2_output_path":         "/workspaces/twdu-europe/data-transformation/tmp/test/output-data/EuropeBigThreeEmissions.parquet/",
+        "co2_oceania_output_path":              "/workspaces/twdu-europe/data-transformation/tmp/test/output-data/OceaniaEmissionsEdited.parquet/",
         }
         self.transformer = Transformer(self.spark, self.parameters)
         return
@@ -59,13 +59,13 @@ class TestTransformation(PySparkTest):
     def test_run(self):
         # Download the necessary datasets
         download_twdu_dataset(
-            s3_uri="s3://twdu-germany-team-pl-km/data-ingestion/EmissionsByCountry.parquet/", 
+            s3_uri="s3://twdu-europe-team-pl-km/data-ingestion/EmissionsByCountry.parquet/",
             destination=self.parameters["co2_input_path"])
         download_twdu_dataset(
-            s3_uri="s3://twdu-germany-team-pl-km/data-ingestion/GlobalTemperatures.parquet/", 
+            s3_uri="s3://twdu-europe-team-pl-km/data-ingestion/GlobalTemperatures.parquet/",
             destination=self.parameters["temperatures_global_input_path"])
         download_twdu_dataset(
-            s3_uri="s3://twdu-germany-team-pl-km/data-ingestion/TemperaturesByCountry.parquet/", 
+            s3_uri="s3://twdu-europe-team-pl-km/data-ingestion/TemperaturesByCountry.parquet/",
             destination=self.parameters["temperatures_country_input_path"])
 
         # Run the job and check for _SUCCESS files for each partition

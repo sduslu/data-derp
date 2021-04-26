@@ -15,12 +15,12 @@ class TestIngestion(PySparkTest):
 
     def setUp(self): # runs before each and every test
         self.parameters = {
-            "temperatures_country_input_path":  "/workspaces/twdu-germany/data-ingestion/tmp/input-data/TemperaturesByCountry.csv",
-            "temperatures_country_output_path": "/workspaces/twdu-germany/data-ingestion/tmp/test/output-data/TemperaturesByCountry.parquet",
-            "temperatures_global_input_path":   "/workspaces/twdu-germany/data-ingestion/tmp/input-data/GlobalTemperatures.csv",
-            "temperatures_global_output_path":  "/workspaces/twdu-germany/data-ingestion/tmp/test/output-data/GlobalTemperatures.parquet",
-            "co2_input_path":                   "/workspaces/twdu-germany/data-ingestion/tmp/input-data/EmissionsByCountry.csv",
-            "co2_output_path":                  "/workspaces/twdu-germany/data-ingestion/tmp/test/output-data/EmissionsByCountry.parquet",
+            "temperatures_country_input_path":  "/workspaces/twdu-europe/data-ingestion/tmp/input-data/TemperaturesByCountry.csv",
+            "temperatures_country_output_path": "/workspaces/twdu-europe/data-ingestion/tmp/test/output-data/TemperaturesByCountry.parquet",
+            "temperatures_global_input_path":   "/workspaces/twdu-europe/data-ingestion/tmp/input-data/GlobalTemperatures.csv",
+            "temperatures_global_output_path":  "/workspaces/twdu-europe/data-ingestion/tmp/test/output-data/GlobalTemperatures.parquet",
+            "co2_input_path":                   "/workspaces/twdu-europe/data-ingestion/tmp/input-data/EmissionsByCountry.csv",
+            "co2_output_path":                  "/workspaces/twdu-europe/data-ingestion/tmp/test/output-data/EmissionsByCountry.parquet",
         }
         self.ingester = Ingester(self.spark, self.parameters)
         return
@@ -57,13 +57,13 @@ class TestIngestion(PySparkTest):
     def test_run(self):
         # Download the necessary datasets
         download_twdu_dataset(
-            s3_uri="s3://twdu-germany-data-source/TemperaturesByCountry.csv", 
+            s3_uri="s3://twdu-europe-data-source/TemperaturesByCountry.csv",
             destination=self.parameters["temperatures_country_input_path"])
         download_twdu_dataset(
-            s3_uri="s3://twdu-germany-data-source/GlobalTemperatures.csv", 
+            s3_uri="s3://twdu-europe-data-source/GlobalTemperatures.csv",
             destination=self.parameters["temperatures_global_input_path"])
         download_twdu_dataset(
-            s3_uri="s3://twdu-germany-data-source/EmissionsByCountry.csv", 
+            s3_uri="s3://twdu-europe-data-source/EmissionsByCountry.csv",
             destination=self.parameters["co2_input_path"])
 
         # Run the job and check for _SUCCESS files for each partition

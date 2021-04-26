@@ -13,7 +13,7 @@ In order to reduce the amount of effort of setting up development environments a
     - **Jupyter** (author: Microsoft)
     - **Pylance** (author: Microsoft) 
 3. In VS Code's top menu: **View** > **Command Palette...**. Type **Remote-Containers: Open Folder in Container**
-4. Navigate to the root of this repository (**twdu-germany**), then click 'Open'. 
+4. Navigate to the root of this repository (**twdu-europe**), then click 'Open'. 
 5. Open the **Extensions** pane (bottom-most chicklet on the left) and check that Python, Jupyter, and Pylance all have been installed in your **Dev Container**. If not, click **Install** on each of them.
 
 
