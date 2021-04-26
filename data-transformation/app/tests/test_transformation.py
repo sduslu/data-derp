@@ -12,9 +12,9 @@ from pyspark.sql.types import *
 import pandas as pd
 import numpy as np
 
-from config import download_twdu_dataset
-from transformation import Transformer
-from twdu_bonus import twdu_debug
+from app.data_transformation.config import download_twdu_dataset
+from app.data_transformation.transformation import Transformer
+from app.data_transformation.twdu_bonus import twdu_debug
 
 
 class TestTransformation(PySparkTest):
