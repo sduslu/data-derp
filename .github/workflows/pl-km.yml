@@ -8,7 +8,7 @@ env:
 on:
   push:
     branches:
-    - pl-km
+      - master
     paths-ignore:
       - 'Dockerfile'
       - '.github/workflow/build-push-dev-container.yml'
