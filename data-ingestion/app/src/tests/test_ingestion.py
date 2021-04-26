@@ -13,19 +13,19 @@ from data_ingestion.ingestion import Ingester
 
 class TestIngestion(PySparkTestCase):
 
-    def setUp(self): # runs before each and every test
+    def setUp(self):
         self.parameters = {
-            "temperatures_country_input_path":  "/workspaces/twdu-europe/data-ingestion/tmp/input-data/TemperaturesByCountry.csv",
-            "temperatures_country_output_path": "/workspaces/twdu-europe/data-ingestion/tmp/test/output-data/TemperaturesByCountry.parquet",
-            "temperatures_global_input_path":   "/workspaces/twdu-europe/data-ingestion/tmp/input-data/GlobalTemperatures.csv",
-            "temperatures_global_output_path":  "/workspaces/twdu-europe/data-ingestion/tmp/test/output-data/GlobalTemperatures.parquet",
-            "co2_input_path":                   "/workspaces/twdu-europe/data-ingestion/tmp/input-data/EmissionsByCountry.csv",
-            "co2_output_path":                  "/workspaces/twdu-europe/data-ingestion/tmp/test/output-data/EmissionsByCountry.parquet",
+            "temperatures_country_input_path":  "/workspaces/twdu-europe/data-ingestion/app/tmp/test/input-data/TemperaturesByCountry.csv",
+            "temperatures_country_output_path": "/workspaces/twdu-europe/data-ingestion/app/tmp/test/output-data/TemperaturesByCountry.parquet",
+            "temperatures_global_input_path":   "/workspaces/twdu-europe/data-ingestion/app/tmp/test/input-data/GlobalTemperatures.csv",
+            "temperatures_global_output_path":  "/workspaces/twdu-europe/data-ingestion/app/tmp/test/output-data/GlobalTemperatures.parquet",
+            "co2_input_path":                   "/workspaces/twdu-europe/data-ingestion/app/tmp/test/input-data/EmissionsByCountry.csv",
+            "co2_output_path":                  "/workspaces/twdu-europe/data-ingestion/app/tmp/test/output-data/EmissionsByCountry.parquet",
         }
         self.ingester = Ingester(self.spark, self.parameters)
         return
 
-    def tearDown(self): # runs after each and every test
+    def tearDown(self):
         output_paths = [self.parameters[x] for x in ["temperatures_country_output_path", "temperatures_global_output_path", "co2_output_path"]]
         for path in output_paths:
             if os.path.exists(path):

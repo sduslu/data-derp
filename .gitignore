@@ -7,11 +7,11 @@
 *local-datasets*
 *scratchpad*
 *ignore*
-data-ingestion/app/src/tmp/*
+data-ingestion/app/tmp/*
 data-ingestion/app/src/build/**/*
 data-ingestion/app/src/dist/**/*
 data-ingestion/app/src/*.egg-info
-data-transformation/app/src/tmp/*
+data-transformation/app/tmp/*
 data-transformation/app/src/build/**/*
 data-transformation/app/src/dist/**/*
 data-transformation/app/src/*.egg-info

@@ -40,12 +40,12 @@ elif ENVIRONMENT == "aws":
 elif ENVIRONMENT == "local":
 
     job_parameters = {
-        "temperatures_country_input_path":  "/workspaces/twdu-europe/data-ingestion/tmp/input-data/TemperaturesByCountry.csv",
-        "temperatures_country_output_path": "/workspaces/twdu-europe/data-ingestion/tmp/output-data/TemperaturesByCountry.parquet",
-        "temperatures_global_input_path":   "/workspaces/twdu-europe/data-ingestion/tmp/input-data/GlobalTemperatures.csv",
-        "temperatures_global_output_path":  "/workspaces/twdu-europe/data-ingestion/tmp/output-data/GlobalTemperatures.parquet",
-        "co2_input_path":                   "/workspaces/twdu-europe/data-ingestion/tmp/input-data/EmissionsByCountry.csv",
-        "co2_output_path":                  "/workspaces/twdu-europe/data-ingestion/tmp/output-data/EmissionsByCountry.parquet",
+        "temperatures_country_input_path":  "/workspaces/twdu-europe/data-ingestion/app/tmp/input-data/TemperaturesByCountry.csv",
+        "temperatures_country_output_path": "/workspaces/twdu-europe/data-ingestion/app/tmp/output-data/TemperaturesByCountry.parquet",
+        "temperatures_global_input_path":   "/workspaces/twdu-europe/data-ingestion/app/tmp/input-data/GlobalTemperatures.csv",
+        "temperatures_global_output_path":  "/workspaces/twdu-europe/data-ingestion/app/tmp/output-data/GlobalTemperatures.parquet",
+        "co2_input_path":                   "/workspaces/twdu-europe/data-ingestion/app/tmp/input-data/EmissionsByCountry.csv",
+        "co2_output_path":                  "/workspaces/twdu-europe/data-ingestion/app/tmp/output-data/EmissionsByCountry.parquet",
     }
 
 def download_twdu_dataset(s3_uri: str, destination: str):
