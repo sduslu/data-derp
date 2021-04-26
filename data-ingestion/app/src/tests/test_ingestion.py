@@ -7,8 +7,8 @@ from test_spark_helper import PySparkTest
 import pandas as pd
 import numpy as np
 
-from config import download_twdu_dataset
-from ingestion import Ingester
+from data_ingestion.config import download_twdu_dataset
+from data_ingestion.ingestion import Ingester
 
 
 class TestIngestion(PySparkTest):
