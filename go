@@ -51,15 +51,25 @@ goal_setup-workflow() {
       echo "WORKFLOW_NAME not set. Usage <workflow-name: ab-cd-ef>"
       exit 1
     fi
+
+    cleanup_on_err() {
+      echo "Something went wrong. Cleaning up."
+      git checkout master
+      git branch -D ${workflow_name}
+      rm .github/workflows/${workflow_name}.yml
+    }
+    trap cleanup_on_err ERR
+
     git checkout master
     echo "Creating branch: ${workflow_name}"
     git checkout -B "${workflow_name}"
     echo "Branch (${workflow_name}) created."
 
     cp .github/workflows/example.yml.tpl ".github/workflows/${workflow_name}.yml"
-    sed -i '' -e s/example1\-example2/foo\-bar/g ./.github/workflows/${workflow_name}.yml
+    sed -i '' -e s/example1\-example2/${workflow_name}/g ./.github/workflows/${workflow_name}.yml
     git add .github/workflows/${workflow_name}.yml
     git commit -m "auto: creating branch (${workflow_name}) and github actions workflow"
+
   popd > /dev/null
 }
 
