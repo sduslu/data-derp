@@ -31,13 +31,18 @@ class Transformer:
             - ShareofGlobalEmissions: float
         """
         co2_df = self.spark.read.format("parquet").load(self.parameters["co2_input_path"])
-        country_emissions = co2_df.select(
-            F.col("Year"),
-            F.col("Entity").alias("Country"),
-            F.col("Annual_CO2_emissions").cast(FloatType()).alias("TotalEmissions"),
-            F.col("Per_capita_CO2_emissions").cast(FloatType()).alias("PerCapitaEmissions"),
-            F.col("Share_of_global_CO2_emissions").cast(FloatType()).alias("ShareofGlobalEmissions"),
-        )
+
+        # You'll notice that there's an Entity called "World".
+        # Since we're analyzing emissions of countries, let's discard "World"
+        country_emissions = co2_df \
+            .filter(F.col("Entity") != F.lit("World")) \
+            .select(
+                F.col("Year"),
+                F.col("Entity").alias("Country"),
+                F.col("Annual_CO2_emissions").cast(FloatType()).alias("TotalEmissions"),
+                F.col("Per_capita_CO2_emissions").cast(FloatType()).alias("PerCapitaEmissions"),
+                F.col("Share_of_global_CO2_emissions").cast(FloatType()).alias("ShareofGlobalEmissions"),
+            )
         return country_emissions
 
     @staticmethod # doesn't rely on self.spark nor self.parameters

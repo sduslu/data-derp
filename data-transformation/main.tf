@@ -13,7 +13,7 @@ module "glue-job" {
     "--temperatures_country_input_path":      "s3://${var.project-name}-${var.module-name}/data-ingestion/TemperaturesByCountry.parquet/",
     
     "--co2_temperatures_global_output_path":  "s3://${var.project-name}-${var.module-name}/data-transformation/GlobalEmissionsVsTemperatures.parquet/",
-    "--co2_temperatures_country_output_path": "s3://${var.project-name}-${var.module-name}/data-transformation/GountryEmissionsVsTemperatures.parquet/",
+    "--co2_temperatures_country_output_path": "s3://${var.project-name}-${var.module-name}/data-transformation/CountryEmissionsVsTemperatures.parquet/",
     "--europe_big_3_co2_output_path":         "s3://${var.project-name}-${var.module-name}/data-transformation/EuropeBigThreeEmissions.parquet/",
     "--co2_oceania_output_path":              "s3://${var.project-name}-${var.module-name}/data-transformation/OceaniaEmissionsEdited.parquet/",
   }

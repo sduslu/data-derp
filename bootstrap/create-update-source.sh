@@ -41,12 +41,9 @@ create-update-stack() {
 
 upload_data() {
   pushd "${script_dir}" > /dev/null
-# This file doesn't exist??
-#    AWS_PROFILE=default aws s3 cp "TemperaturesByCountryOriginal.csv" "s3://twdu-europe-data-source/TemperaturesByCountryOriginal.csv"
-    AWS_PROFILE=default aws s3 cp "TemperaturesByCountry.csv" "s3://twdu-europe-data-source/TemperaturesByCountry.csv"
-    AWS_PROFILE=default aws s3 cp "GlobalTemperatures.csv" "s3://twdu-europe-data-source/GlobalTemperatures.csv"
-    AWS_PROFILE=default aws s3 cp "EmissionsByCountry.csv" "s3://twdu-europe-data-source/EmissionsByCountry.csv"
-
+    AWS_PROFILE=default aws s3 cp "../twdu-datasets/ingestion/inputs/EmissionsByCountry.csv" "s3://twdu-europe-data-source/EmissionsByCountry.csv"
+    AWS_PROFILE=default aws s3 cp "../twdu-datasets/ingestion/inputs/TemperaturesByCountry.csv" "s3://twdu-europe-data-source/TemperaturesByCountry.csv"
+    AWS_PROFILE=default aws s3 cp "../twdu-datasets/ingestion/inputs/GlobalTemperatures.csv" "s3://twdu-europe-data-source/GlobalTemperatures.csv"
   popd > /dev/null
 }
 
