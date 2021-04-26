@@ -33,7 +33,7 @@ fetch-github-registration-token() {
       -u $username \
       -X POST \
       -H "Accept: application/vnd.github.v3+json" \
-      https://api.github.com/repos/kelseymok/twdu-germany/actions/runners/registration-token)
+      https://api.github.com/repos/kelseymok/twdu-europe/actions/runners/registration-token)
 
     echo $response | jq -r .token
 }

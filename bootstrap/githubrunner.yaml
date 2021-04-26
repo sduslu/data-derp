@@ -6,11 +6,11 @@ Parameters:
   ProjectName:
     Type: String
     Description: Name of the project these resources belongs to
-    Default: twdu-germany
+    Default: twdu-europe
   ModuleName:
     Type: String
     Description: Name of the module these resources belongs to
-    Default: foobar
+    Default: base
   VpcCIDR:
     Description: Please enter the IP range (CIDR notation) for this VPC
     Type: String
@@ -346,7 +346,7 @@ Resources:
           tar xzf ./actions-runner-linux-x64-2.277.1.tar.gz
 
           get-token() {
-              key="/twdu-germany/github-runner-reg-token"
+              key="/twdu-europe/github-runner-reg-token"
               aws ssm get-parameters --name ${!key} --region eu-central-1 --with-decryption | jq -r .Parameters[0].Value
           }
 
@@ -358,7 +358,7 @@ Resources:
               exit 1
           fi
 
-          RUNNER_ALLOW_RUNASROOT=1 ./config.sh --url https://github.com/kelseymok/twdu-germany --token "${!token}" --unattended
+          RUNNER_ALLOW_RUNASROOT=1 ./config.sh --url https://github.com/kelseymok/twdu-europe --token "${!token}" --unattended
           RUNNER_ALLOW_RUNASROOT=1 ./run.sh
           set -x
 
@@ -430,7 +430,7 @@ Resources:
                 Action:
                   - "ssm:GetParameters"
                 Resource:
-                  - !Sub "arn:aws:ssm:eu-central-1:${AWS::AccountId}:parameter/twdu-germany/github-reg-token"
+                  - !Sub "arn:aws:ssm:eu-central-1:${AWS::AccountId}:parameter/twdu-europe/github-reg-token"
               - Effect: Allow
                 Action:
                   - "kms:Decrypt"

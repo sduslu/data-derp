@@ -7,8 +7,8 @@ This directory holds Cloudformation templates to set up the following
 We are running a Gitlab Runner in AWS as an EC2 instance backed by an Autoscaling group in a private subnet of a VPC. The number of GithubActions credits is insufficient for the amount of development that will proceed during the training.
 
 ### Setup
-1. Create a "repo" level Personal Access Token
-2. `./go githubrunner <GITHUB_USERNAME`   
+1. Follow the [AWS Setup Instructions](../aws.md) to run AWS CLI commands against Okta apps
+2. `./go githubrunner <GITHUB_USERNAME>`   
 
 ### Resources
 * [Adding Self-Hosted Runners](https://docs.github.com/en/actions/hosting-your-own-runners/adding-self-hosted-runners)
@@ -21,4 +21,13 @@ We are running a Gitlab Runner in AWS as an EC2 instance backed by an Autoscalin
 In order to use terraform, a remote state must already exist. This gets around the chicken-egg problem of configuring a bucket before running terraform applys.
 
 ### Setup
-1. `./go terraform-state`
+1. Follow the [AWS Setup Instructions](../aws.md) to run AWS CLI commands against Okta apps
+2. `./go terraform-state`
+
+## Data Source
+Set up a base Data Source bucket that contains desanitised data for downstream processing
+
+### Setup
+1. Follow the [AWS Setup Instructions](../aws.md) to run AWS CLI commands against Okta apps
+2. `./go data-source
+

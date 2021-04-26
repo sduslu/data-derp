@@ -37,8 +37,9 @@ else
   echo "Usage: $0 <goal>
 
 goal:
-    githabrunner           - Deploys Githabrunner (Usage: Username)
+    githubrunner           - Deploys Githabrunner (Usage: Username)
     terraform-state        - Creates stack for terraform-state
+    data-source            - Creates stack for data-source
 "
   exit 1
 fi
