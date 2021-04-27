@@ -56,6 +56,11 @@ class TestTransformation(TestPySpark):
             raise type(e)(''.join(twdu_debug(original))) from e
 
     def test_remove_lenny_face(self):
+        """
+        Objective: Convert an incoming string into a format that can be casted to a FloatType by Spark.
+        Spark is smart enough to convert "69.420" to 69.420 but <69.420> will be casted to a null.
+        To keep the exercise simple (no regex required), you'll only need to handle the Lenny face.
+        """
         original = pd.Series(["( ͡° ͜ʖ ͡°)4.384( ͡° ͜ʖ ͡°)", "#", "?", "-", "( ͡° ͜ʖ ͡°)1.53( ͡° ͜ʖ ͡°)"])
         result = original.map(self.transformer.remove_lenny_face)
         try:
