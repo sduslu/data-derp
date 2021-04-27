@@ -9,12 +9,14 @@ import pandas as pd
 import numpy as np
 
 from data_ingestion.ingestion import Ingester
-from expected_ingestion import output_metadata
+from twdu_ingestion_expected import get_expected_metadata
 
 class TestIngestion(TestPySpark):
 
-    def setup_method(self):
-        self.parameters = {
+    @classmethod
+    def setup_class(cls):
+        cls.spark = cls.start_spark()
+        cls.parameters = {
             "co2_input_path":                   "/workspaces/twdu-europe/twdu-datasets/ingestion/inputs/EmissionsByCountry.csv",
             "temperatures_global_input_path":   "/workspaces/twdu-europe/twdu-datasets/ingestion/inputs/GlobalTemperatures.csv",
             "temperatures_country_input_path":  "/workspaces/twdu-europe/twdu-datasets/ingestion/inputs/TemperaturesByCountry.csv",
@@ -23,11 +25,13 @@ class TestIngestion(TestPySpark):
             "temperatures_global_output_path":  "/workspaces/twdu-europe/data-ingestion/tmp/test/outputs/GlobalTemperatures.parquet/",
             "temperatures_country_output_path": "/workspaces/twdu-europe/data-ingestion/tmp/test/outputs/TemperaturesByCountry.parquet/",
         }
-        self.ingester = Ingester(self.spark, self.parameters)
+        cls.ingester = Ingester(cls.spark, cls.parameters)
         return
 
-    def teardown_method(self):
-        output_paths = self.parameters.values()
+    @classmethod
+    def teardown_class(cls):
+        cls.stop_spark()
+        output_paths = cls.parameters.values()
         for path in output_paths:
             if ("/tmp/" in path) and os.path.exists(path):
                 rmtree(path.rsplit("/", 1)[0])
@@ -75,7 +79,8 @@ class TestIngestion(TestPySpark):
 
         output_path_keys = ["temperatures_country_output_path", "temperatures_global_output_path", "co2_output_path"]
         output_path_values = [self.parameters[k] for k in output_path_keys]
-        expected_metadata = [output_metadata[k.replace("_path", "")] for k in output_path_keys]
+        expected_metadata_dict = get_expected_metadata()
+        expected_metadata = [expected_metadata_dict[k.replace("_path", "")] for k in output_path_keys]
 
         for (path, expected) in list(zip(output_path_values, expected_metadata)):
             files = os.listdir(path)

@@ -23,6 +23,8 @@ class Transformer:
         Topics: cast, select, alias
 
         Read EmissionsByCountry.parquet into a Spark DataFrame.
+        Make sure that each Entity is a country.
+
         Your output Spark DataFrame's schema should be:
             - Year: integer
             - Country: string
@@ -116,7 +118,7 @@ class Transformer:
         return F.initcap(F.lower(F.trim(col)))
 
     @staticmethod # doesn't rely on self.spark nor self.parameters    
-    def fix_temperature(temperature: str) -> str:
+    def remove_lenny_face(temperature: str) -> str:
         """
         HINT: only temperature entries with Lenny's face are valid measurements
         There are multiple ways to tackle this: udf, pandas_udf, regexp_extract, regexp_replace, etc.
@@ -146,7 +148,7 @@ class Transformer:
         temps_country_df = self.spark.read.format("parquet").load(self.parameters["temperatures_country_input_path"])
         
         # Register your function as a UDF
-        fix_temperature_udf = F.udf(self.fix_temperature, returnType=StringType())
+        fix_temperature_udf = F.udf(self.remove_lenny_face, returnType=StringType())
         temperature_expr = fix_temperature_udf(F.col("AverageTemperature")).cast(FloatType())
 
         year_expr = F.year(F.to_timestamp(F.col("Date"), format="MM-dd-yyyy")) # TODO: Exercise

@@ -15,12 +15,14 @@ import numpy as np
 
 from data_transformation.transformation import Transformer
 from twdu_bonus import twdu_debug
-from expected_transformation import output_metadata
+from twdu_transformation_expected import get_expected_metadata
 
 class TestTransformation(TestPySpark):
 
-    def setup_method(self): # runs before each and every test
-        self.parameters = {
+    @classmethod
+    def setup_class(cls): # runs before each and every test
+        cls.spark = cls.start_spark()
+        cls.parameters = {
         "co2_input_path":                  "/workspaces/twdu-europe/twdu-datasets/transformation/inputs/EmissionsByCountry.parquet/",
         "temperatures_global_input_path":  "/workspaces/twdu-europe/twdu-datasets/transformation/inputs/GlobalTemperatures.parquet/",
         "temperatures_country_input_path": "/workspaces/twdu-europe/twdu-datasets/transformation/inputs/TemperaturesByCountry.parquet/",
@@ -30,15 +32,17 @@ class TestTransformation(TestPySpark):
         "europe_big_3_co2_output_path":         "/workspaces/twdu-europe/data-transformation/tmp/test/outputs/EuropeBigThreeEmissions.parquet/",
         "co2_oceania_output_path":              "/workspaces/twdu-europe/data-transformation/tmp/test/outputs/OceaniaEmissionsEdited.parquet/",
         }
-        self.transformer = Transformer(self.spark, self.parameters)
+        cls.transformer = Transformer(cls.spark, cls.parameters)
         return
 
-
-    def teardown_method(self):
-        output_paths = self.parameters.values()
+    @classmethod
+    def teardown_class(cls):
+        cls.stop_spark()
+        output_paths = cls.parameters.values()
         for path in output_paths:
             if ("/tmp/" in path) and os.path.exists(path):
                 rmtree(path.rsplit("/", 1)[0])
+        
 
     def test_fix_country(self):
         original = pd.Series(["  gErMaNy ", "   uNiTeD sTaTeS    "])
@@ -51,9 +55,9 @@ class TestTransformation(TestPySpark):
         except Exception as e:
             raise type(e)(''.join(twdu_debug(original))) from e
 
-    def test_fix_temperature(self):
+    def test_remove_lenny_face(self):
         original = pd.Series(["( ͡° ͜ʖ ͡°)4.384( ͡° ͜ʖ ͡°)", "#", "?", "-", "( ͡° ͜ʖ ͡°)1.53( ͡° ͜ʖ ͡°)"])
-        result = original.map(self.transformer.fix_temperature)
+        result = original.map(self.transformer.remove_lenny_face)
         try:
             assert result.to_list() == ["4.384", "#", "?", "-", "1.53"]
         except Exception as e:
@@ -71,7 +75,8 @@ class TestTransformation(TestPySpark):
             "co2_oceania_output_path"
             ]
         output_path_values = [self.parameters[k] for k in output_path_keys]
-        expected_metadata = [output_metadata[k.replace("_path", "")] for k in output_path_keys]
+        expected_metadata_dict = get_expected_metadata()
+        expected_metadata = [expected_metadata_dict[k.replace("_path", "")] for k in output_path_keys]
 
         for (path, expected) in list(zip(output_path_values, expected_metadata)):
             files = os.listdir(path)

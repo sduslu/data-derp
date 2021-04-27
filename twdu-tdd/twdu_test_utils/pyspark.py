@@ -25,15 +25,16 @@ class TestPySpark:
             .getOrCreate())
 
     @classmethod
-    def setup_class(cls):
+    def start_spark(cls):
         cls.suppress_py4j_logging()
         cls.spark = cls.create_testing_pyspark_session()
         if not sys.warnoptions:
             import warnings
             warnings.simplefilter("ignore")
+        return cls.spark
 
     @classmethod
-    def teardown_class(cls):
+    def stop_spark(cls):
         cls.spark.stop()
 
 if __name__ == '__main__':
