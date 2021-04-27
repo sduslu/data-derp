@@ -228,7 +228,7 @@ class Transformer:
         Using the result of read_emissions(), disregard the TotalEmissions estimates for leap years, the replace them using the following priority:
             1. nearest non-null value from the past 3 years relative to the current year (i.e. 'forward fill')
             2. nearest non-null value from the future 3 years relative to the current year (i.e. 'backward fill')
-            3. nullify the value
+            3. nullify the value (i.e. do not accept the TotalEmissions value for any leap year under any circumstances whatsoever)
         Recap:
             - DISCARD all rows for countries other than Australia or New Zealand
             - KEEP rows from all years (including non-leap years) for Australia or New Zealand
