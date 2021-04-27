@@ -113,6 +113,7 @@ class Transformer:
         """
         Use built-in Spark functions to clean-up the "Country" column
         e.g. "   cAnAdA " -> "Canada"
+        Don't forget about those annoying leading/trailing spaces.
         """
         fixed_country = NotImplemented # TODO: Exercise
         if fixed_country is NotImplemented:
