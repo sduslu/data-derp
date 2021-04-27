@@ -14,7 +14,7 @@ import pandas as pd
 import numpy as np
 
 from data_transformation.transformation import Transformer
-from twdu_bonus import twdu_debug
+from debugger import debug
 from twdu_transformation_expected import get_expected_metadata
 
 class TestTransformation(TestPySpark):
@@ -44,7 +44,6 @@ class TestTransformation(TestPySpark):
             if ("/tmp/" in path) and os.path.exists(path):
                 rmtree(path.rsplit("/", 1)[0])
         
-
     def test_fix_country(self):
         original = pd.Series(["  gErMaNy ", "   uNiTeD sTaTeS    "])
         spark_df = self.spark.createDataFrame(pd.DataFrame({"Country": original}))
@@ -54,7 +53,7 @@ class TestTransformation(TestPySpark):
             result = sorted(fixed["Country"])
             assert result == ["Germany", "United States"]
         except Exception as e:
-            raise type(e)(''.join(twdu_debug(original))) from e
+            raise type(e)(''.join(debug(original))) from e
 
     def test_remove_lenny_face(self):
         """
@@ -67,7 +66,7 @@ class TestTransformation(TestPySpark):
         try:
             assert result.to_list() == ["4.384", "#", "?", "-", "1.53"]
         except Exception as e:
-            raise type(e)(''.join(twdu_debug(original))) from e
+            raise type(e)(''.join(debug(original))) from e
 
     def test_run(self):
         """High level job test: count + schema checks but nothing more granular"""
