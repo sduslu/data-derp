@@ -5,6 +5,6 @@ runs:
   steps:
     - run: |
         cd ${SUBDIR}
-        terraform init
+        terraform init --backend-config=bucket=${PROJECT_NAME}-${MODULE_NAME}-terraform-state
         terraform destroy -var "project-name=${PROJECT_NAME}" -var "module-name=${MODULE_NAME}" -auto-approve
       shell: bash

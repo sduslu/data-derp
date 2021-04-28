@@ -1,6 +1,5 @@
 terraform {
   backend "s3" {
-    bucket = "twdu-europe-terraform-state"
     key    = "data-transformation"
     region = "eu-central-1"
     dynamodb_table = "terraform-lock"
