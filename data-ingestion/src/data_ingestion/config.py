@@ -39,12 +39,13 @@ elif ENVIRONMENT == "aws":
 # EDIT HERE - set the output paths for your local Spark jobs as desired
 elif ENVIRONMENT == "local":
 
+    root_dir = os.path.dirname(os.path.realpath(__file__)).split("/data-ingestion/")[0]
     job_parameters = {
-        "co2_input_path":                   "/workspaces/twdu-europe/twdu-datasets/ingestion/inputs/EmissionsByCountry.csv",
-        "temperatures_global_input_path":   "/workspaces/twdu-europe/twdu-datasets/ingestion/inputs/GlobalTemperatures.csv",
-        "temperatures_country_input_path":  "/workspaces/twdu-europe/twdu-datasets/ingestion/inputs/TemperaturesByCountry.csv",
+        "co2_input_path":                   f"{root_dir}/twdu-datasets/twdu-datasets/ingestion/inputs/EmissionsByCountry.csv",
+        "temperatures_global_input_path":   f"{root_dir}/twdu-datasets/twdu-datasets/ingestion/inputs/GlobalTemperatures.csv",
+        "temperatures_country_input_path":  f"{root_dir}/twdu-datasets/twdu-datasets/ingestion/inputs/TemperaturesByCountry.csv",
 
-        "co2_output_path":                  "/workspaces/twdu-europe/data-ingestion/tmp/outputs/EmissionsByCountry.parquet/",
-        "temperatures_global_output_path":  "/workspaces/twdu-europe/data-ingestion/tmp/outputs/GlobalTemperatures.parquet/",
-        "temperatures_country_output_path": "/workspaces/twdu-europe/data-ingestion/tmp/outputs/TemperaturesByCountry.parquet/",
+        "co2_output_path":                  f"{root_dir}/twdu-datasets/data-ingestion/tmp/outputs/EmissionsByCountry.parquet/",
+        "temperatures_global_output_path":  f"{root_dir}/twdu-datasets/data-ingestion/tmp/outputs/GlobalTemperatures.parquet/",
+        "temperatures_country_output_path": f"{root_dir}/twdu-datasets/data-ingestion/tmp/outputs/TemperaturesByCountry.parquet/",
     }

@@ -41,13 +41,14 @@ elif ENVIRONMENT == "aws":
 # EDIT HERE - set the output paths for your local Spark jobs as desired
 elif ENVIRONMENT == "local":
 
+    root_dir = os.path.dirname(os.path.realpath(__file__)).split("/data-transformation/")[0]
     job_parameters = {
-        "co2_input_path":                  "/workspaces/twdu-europe/twdu-datasets/transformation/inputs/EmissionsByCountry.parquet/",
-        "temperatures_global_input_path":  "/workspaces/twdu-europe/twdu-datasets/transformation/inputs/GlobalTemperatures.parquet/",
-        "temperatures_country_input_path": "/workspaces/twdu-europe/twdu-datasets/transformation/inputs/TemperaturesByCountry.parquet/",
+        "co2_input_path":                  f"{root_dir}/twdu-datasets/transformation/inputs/EmissionsByCountry.parquet/",
+        "temperatures_global_input_path":  f"{root_dir}/twdu-datasets/transformation/inputs/GlobalTemperatures.parquet/",
+        "temperatures_country_input_path": f"{root_dir}/twdu-datasets/transformation/inputs/TemperaturesByCountry.parquet/",
 
-        "co2_temperatures_global_output_path":  "/workspaces/twdu-europe/data-transformation/tmp/outputs/GlobalEmissionsVsTemperatures.parquet/",
-        "co2_temperatures_country_output_path": "/workspaces/twdu-europe/data-transformation/tmp/outputs/CountryEmissionsVsTemperatures.parquet/",
-        "europe_big_3_co2_output_path":         "/workspaces/twdu-europe/data-transformation/tmp/outputs/EuropeBigThreeEmissions.parquet/",
-        "co2_oceania_output_path":              "/workspaces/twdu-europe/data-transformation/tmp/outputs/OceaniaEmissionsEdited.parquet/",
+        "co2_temperatures_global_output_path":  f"{root_dir}/data-transformation/tmp/outputs/GlobalEmissionsVsTemperatures.parquet/",
+        "co2_temperatures_country_output_path": f"{root_dir}/data-transformation/tmp/outputs/CountryEmissionsVsTemperatures.parquet/",
+        "europe_big_3_co2_output_path":         f"{root_dir}/data-transformation/tmp/outputs/EuropeBigThreeEmissions.parquet/",
+        "co2_oceania_output_path":              f"{root_dir}/data-transformation/tmp/outputs/OceaniaEmissionsEdited.parquet/",
     }

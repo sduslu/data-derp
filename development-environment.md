@@ -30,8 +30,7 @@ You have two options:
 
 ## Troubleshooting
 Sometimes pytest might not detect changes in your data-ingestion and data-transformation libraries. In those cases run:
-    - `pip install -e /workspaces/twdu-europe/data-ingestion/`
-    - `pip install -e /workspaces/twdu-europe/data-transformation/`
+    - `pip install -e ./data-ingestion/ ./data-transformation/`
     - Alternatively, in VS Code's top menu: **View** > **Command Palette...**. Type **Remote-Containers: Rebuild Container**
 
 ## Tips & Tricks

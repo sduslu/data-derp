@@ -13,6 +13,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_15.x | bash -
 RUN apt-get install -y nodejs
     
 # Install TWDU Europe libraries
+RUN python -m pip install pip==21.0.1
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
@@ -26,4 +27,3 @@ RUN apt-get update && apt-get install terraform
 
 # TWDU Europe environment variables
 ENV TWDU_ENVIRONMENT=local
-RUN pip install pytest-mock

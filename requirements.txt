@@ -9,6 +9,7 @@ scikit-learn==0.22.1
 scipy==1.4.1
 # DevOps + TDD
 pytest
+pytest-mock
 awscli
 # Interactive Computing + Visualization
 jupyterlab
