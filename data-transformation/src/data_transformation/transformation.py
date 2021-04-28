@@ -81,7 +81,10 @@ class Transformer:
         temps_global_df = temperatures_global_df.withColumn("Year", F.year(F.col("Date")))
 
         global_temperatures = temps_global_df.groupBy("Year").agg(
-            # TODO: Exercise
+            F.avg("LandAverageTemperature").cast(FloatType()).alias("LandAverageTemperature"), # TODO: Exercise
+            F.max("LandMaxTemperature").cast(FloatType()).alias("LandMaxTemperature"), # TODO: Exercise
+            F.min("LandMinTemperature").cast(FloatType()).alias("LandMinTemperature"), # TODO: Exercise
+            F.avg("LandAndOceanAverageTemperature").cast(FloatType()).alias("LandAndOceanAverageTemperature") # TODO: Exercise
         )
         return global_temperatures
 
@@ -104,9 +107,7 @@ class Transformer:
             - LandMinTemperature: float
             - LandAndOceanAverageTemperature: floats
         """
-        global_emissions_temperatures = global_emissions.join(
-            # TODO: Exercise
-        ) 
+        global_emissions_temperatures = global_emissions.join(global_temperatures, on="Year", how="inner") # TODO: Exercise
         return global_emissions_temperatures
 
     @staticmethod # doesn't rely on self.spark nor self.parameters
@@ -116,10 +117,7 @@ class Transformer:
         e.g. "   cAnAdA " -> "Canada"
         Don't forget about those annoying leading/trailing spaces.
         """
-        fixed_country = NotImplemented # TODO: Exercise
-        if fixed_country is NotImplemented:
-            raise NotImplemented("DO YOUR HOMEWORK OR NO TV")
-        return fixed_country
+        return F.initcap(F.lower(F.trim(col)))
 
     @staticmethod # doesn't rely on self.spark nor self.parameters    
     def remove_lenny_face(temperature: str) -> str:
@@ -132,10 +130,7 @@ class Transformer:
         The point is to demonstrate that you can write arbitrary Python logic as a UDF 
         if Spark doesn't have the built-in function you need.
         """
-        fixed_temperature_string = NotImplemented # TODO: Exercise
-        if fixed_temperature_string is NotImplemented:
-            raise NotImplemented("DO YOUR HOMEWORK OR NO CHOCOLATE")
-        return fixed_temperature_string
+        return temperature.replace("( ͡° ͜ʖ ͡°)", "") # TODO: exercise
 
     def aggregate_country_temperatures(self, temperatures_country_df: DataFrame) -> DataFrame:
         """
@@ -161,9 +156,15 @@ class Transformer:
         year_expr = F.year(F.to_timestamp(F.col("Date"), format="MM-dd-yyyy")) # TODO: Exercise
         country_expr = self.fix_country(F.col("Country")) # TODO: Exercise
 
-        country_temperatures = NotImplemented # TODO: Exercise
-        if country_temperatures is NotImplemented:
-            raise NotImplemented("DO YOUR HOMEWORK OR NO ICE CREAM")
+        # TODO: exercise
+        cleaned_df = temperatures_country_df.select(
+            year_expr.alias("Year"),
+            country_expr.alias("Country"),
+            temperature_expr.alias("AverageTemperature")
+        )
+        country_temperatures = cleaned_df.groupBy("Year", "Country").agg( 
+            F.avg(F.col("AverageTemperature")).cast(FloatType()).alias("AverageTemperature")
+        )
         return country_temperatures
 
     @staticmethod # doesn't rely on self.spark nor self.parameters
@@ -187,9 +188,7 @@ class Transformer:
         # HINT: don't forget a slight modification compared to the join_global_emissions_temperatures function
         # In the real world, you should always make sure that the country names have been standardized.
         # However, for our exercise, just assume that a no-match is truly no-match.
-        country_emissions_temperatures = country_emissions.join(
-            # TODO: Exercise
-        )
+        country_emissions_temperatures = country_emissions.join(country_temperatures, on=["Year", "Country"], how="inner") # TODO: Exercise
         return country_emissions_temperatures
 
     @staticmethod # doesn't rely on self.spark nor self.parameters
@@ -210,11 +209,14 @@ class Transformer:
             - UnitedKingdom_PerCapitaEmissions: float
         """
         # TODO: exercise
-        modern_era_df = country_emissions.filter(F.col("Year") >= F.lit(1900))
-        europe_big_three_emissions = NotImplemented
-        if europe_big_three_emissions is NotImplemented:
-            raise NotImplemented("DO YOUR HOMEWORK OR NO PIZZA")
-
+        modern_era_df = country_emissions.filter(F.col("Year") >= F.lit(1900)) 
+        europe_big_three_emissions = modern_era_df \
+            .groupBy("Year") \
+            .pivot("Country", values=["France", "Germany", "United Kingdom"]) \
+            .agg(
+                F.first("TotalEmissions").alias("TotalEmissions"),
+                F.first("PerCapitaEmissions").alias("PerCapitaEmissions")
+                )
         # You might've noticed that "United Kingdom" has a space. 
         # If you recall, spaces are not permitted in Apache Parquet column names. Let's address that:
         friendly_columns = [F.col(x).alias(x.replace(" ", "")) for x in europe_big_three_emissions.columns]
@@ -247,11 +249,9 @@ class Transformer:
         oceania_emissions = country_emissions.filter(F.col("Country").isin(["Australia", "New Zealand"]))
 
         # HINT: Python UDFs allow you to import external libraries
+        from calendar import isleap
         def check_leap(year: int) -> bool:
-            leap_bool = NotImplemented # TODO: Exercise
-            if leap_bool is NotImplemented:
-                raise NotImplemented("DO YOUR HOMEWORK OR NO CAKE")
-            return leap_bool
+            return isleap(year)
 
         leap_year_udf = F.udf(check_leap, returnType=BooleanType())
         is_leap_year = leap_year_udf(F.col("Year"))
@@ -259,18 +259,24 @@ class Transformer:
         # HINT: Carefully look up the Spark Window semantics
         # (partitionBy, orderBy, rowsBetween, rangeBetween)
         # Look carefully for the right Window functions to apply as well.
-        w_past = NotImplemented # TODO: Exercise
-        w_future = NotImplemented # TODO: Exercise
-        nearest_before = NotImplemented # TODO: Exercise
-        nearest_after = NotImplemented # TODO: Exercise
+        # TODO: Exercise
+        w_past = Window().partitionBy("Country").orderBy(F.col("Year")).rangeBetween(-3, -1)
+        w_future = Window().partitionBy("Country").orderBy(F.col("Year")).rangeBetween(1, 3)
+        # TODO: Exercise
+        nearest_before = F.last(F.col("TotalEmissions"), ignorenulls=True).over(w_past)
+        nearest_after = F.first(F.col("TotalEmissions"), ignorenulls=True).over(w_future)
         
         if any(x is NotImplemented for x in [w_past, w_future, nearest_before, nearest_after]):
             raise NotImplemented("DO YOUR HOMEWORK OR NO CHIPS")
 
         # HINT: how do you choose the first column that is non-null in Spark (or SQL)? 
-        emissions_prioritized = NotImplemented # TODO: Exercise
+        emissions_prioritized = F.coalesce(
+            nearest_before, # TODO: Exercise
+            nearest_after, # TODO: Exercise
+            F.lit(None)
+        )
         # HINT: how do you do perform case-switch statements in Spark?
-        emissions_case = NotImplemented # TODO: Exercise
+        emissions_case = F.when(is_leap_year, emissions_prioritized).otherwise(F.col("TotalEmissions"))
         if any(x is NotImplemented for x in [emissions_prioritized, emissions_case]):
             raise NotImplemented("DO YOUR HOMEWORK OR NO NACHOS")
         

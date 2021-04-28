@@ -21,18 +21,15 @@ class Ingester:
         """Replace prohibited characters in column names to be compatiable with Apache Parquet"""
         INVALID_CHARS = [" ", ",", ";", "\n", "\t", "=", "-", "{", "}", "(", ")"] 
         UNDERSCORE_CANDIDATES = [" ", ",", ";", "\n", "\t", "=", "-"] # let's replace these with underscores
-        
-        column_name = NotImplemented # TODO: Exercise (modify however necessary, no need to be a one-liner)
-        if column_name is NotImplemented:
-            raise NotImplementedError("DO YOUR HOMEWORK OR NO CHEESECAKE")
+        for char in INVALID_CHARS:
+            replacement = "_" if char in UNDERSCORE_CANDIDATES else ""
+            column_name = column_name.replace(char, replacement)
         return column_name
 
     def fix_columns(self, df: DataFrame) -> DataFrame:
         """Clean up a Spark DataFrame's column names"""
         # HINT: you don't need to do use .withColumnRenamed a dozen times - one-liner solution possible ;)
-        fixed_df = NotImplemented # TODO: Exercise (modify however necessary, no need to be a one-liner)
-        if fixed_df is NotImplemented:
-            raise NotImplementedError("DO YOUR HOMEWORK OR NO BREZE")
+        fixed_df = df.select([F.col(x).alias(self.replace_invalid_chars(x)) for x in df.columns])
         return fixed_df
 
     def run(self) -> None:
