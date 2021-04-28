@@ -12,6 +12,7 @@ ENVIRONMENT = os.getenv(key="TWDU_ENVIRONMENT", default="aws")
 # ---------- Part III: Run Da Ting (for Part II, see data_transformation/transformation.py) ---------- #
 
 print("TWDU: Starting Spark Job")
+print()
 
 spark = SparkSession \
     .builder \
@@ -27,4 +28,5 @@ spark.conf.set("spark.sql.execution.arrow.enabled", "true")
 
 Transformer(spark, job_parameters).run()
 
+print()
 print("TWDU: Spark Job Complete")

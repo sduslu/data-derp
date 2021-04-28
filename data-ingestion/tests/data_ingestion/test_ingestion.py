@@ -3,6 +3,7 @@ import sys
 import os
 
 from shutil import rmtree
+from pytest_mock.plugin import MockerFixture
 from twdu_test_utils.pyspark import TestPySpark
 
 import pandas as pd
@@ -73,8 +74,13 @@ class TestIngestion(TestPySpark):
         fixed_df = self.ingester.fix_columns(spark_df)
         assert sorted(fixed_df.columns) == sorted(["My_Awesome_Column", "Another_Awesome_Column"])
 
-    def test_run(self):
+    def test_run(self, mocker: MockerFixture):
         """High level job test: count + schema checks but nothing more granular"""
+
+        # Optional - if mocking is needed:
+        # mock_object = mocker.Mock()
+        # mock_object.some_property.some_method(some_argument).another_method.return_value = ...
+
         # Run the job and check for _SUCCESS files for each partition
         self.ingester.run()
 

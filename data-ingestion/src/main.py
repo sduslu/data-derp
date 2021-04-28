@@ -12,6 +12,7 @@ ENVIRONMENT = os.getenv(key="TWDU_ENVIRONMENT", default="aws")
 # ---------- Part III: Run Da Ting (for Part II, see data_ingestion/ingestion.py) ---------- #
 
 print("TWDU: Starting Spark Job")
+print()
 
 spark = SparkSession \
     .builder \
@@ -21,4 +22,5 @@ spark = SparkSession \
 
 Ingester(spark, job_parameters).run()
 
+print()
 print("TWDU: Spark Job Complete")

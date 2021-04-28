@@ -19,7 +19,7 @@ def get_expected_metadata():
         StructField("Country", StringType(), True),
         StructField("TotalEmissions", FloatType(), True),
         StructField("PerCapitaEmissions", FloatType(), True),
-        StructField("ShareofGlobalEmissions", FloatType(), True),
+        StructField("ShareOfGlobalEmissions", FloatType(), True),
         StructField("AverageTemperature", FloatType(), True)
         ]
     )
