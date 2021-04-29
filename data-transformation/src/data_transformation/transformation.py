@@ -328,6 +328,6 @@ class Transformer:
             .write.format("parquet").mode("overwrite") \
             .save(self.parameters["co2_oceania_output_path"])
 
-        # REVIEW: Knowing that all Spark transformations are lazy and always get recomputed,
+        # REVIEW: knowing that all Spark transformations are lazy and always get recomputed,
         # do you see any opportunities for improvement in performance?
         return
