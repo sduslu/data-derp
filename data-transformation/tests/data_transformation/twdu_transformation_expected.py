@@ -50,4 +50,5 @@ def get_expected_metadata():
         "europe_big_3_co2_output": {"count": europe_big_3_co2_expected_count, "schema": europe_big_3_co2_expected_schema},
         "co2_oceania_output": {"count": co2_oceania_expected_count, "schema": co2_oceania_expected_schema}
     }
+    
     return expected_output_metadata
