@@ -37,7 +37,7 @@ class Ingester:
 
     def run(self) -> None:
         """
-        You can of course reduce the code repetition below.
+        You can of course reduce the code repetition shown below.
         However, this is a clear way for a beginner to see what the job is doing.
         """
         kwargs = {"format": "csv", "sep": ",", "inferSchema": "true", "header": "true"}
