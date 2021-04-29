@@ -6,7 +6,7 @@ from data_transformation.config import job_parameters
 from data_transformation.transformation import Transformer
 
 # By sticking with standard Spark, we can avoid having to deal with Glue dependencies locally
-# If developing outside of the TWDU Dev Container, don't forget to set the environment variable: TWDU_ENVIRONMENT=local
+# If developing outside of twdu-dev-container, don't forget to set the environment variable: TWDU_ENVIRONMENT=local
 ENVIRONMENT = os.getenv(key="TWDU_ENVIRONMENT", default="aws")
 
 # ---------- Part III: Run Da Ting (for Part II, see data_transformation/transformation.py) ---------- #
