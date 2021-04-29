@@ -3,7 +3,7 @@ import sys
 import os
 
 from shutil import rmtree
-# from pytest_mock.plugin import MockerFixture
+from pytest_mock.plugin import MockerFixture
 from twdu_test_utils.pyspark import TestPySpark
 
 import pandas as pd
