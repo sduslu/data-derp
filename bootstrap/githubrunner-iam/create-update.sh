@@ -38,6 +38,8 @@ pushd "${script_dir}" > /dev/null
     sleep 10
     AWS_PROFILE=${aws_profile} aws cloudformation execute-change-set \
       --change-set-name "update-${now}" \
-      --stack-name "${stack_name}"
+      --stack-name "${stack_name}" \
+      --region eu-central-1
+
   fi
 popd > /dev/null
