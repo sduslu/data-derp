@@ -226,7 +226,7 @@ Resources:
         - !Ref InstanceRole
   Boundary:
     Type: AWS::IAM::ManagedPolicy
-    DeletionPolicy: Retain
+#    DeletionPolicy: Retain
     Properties:
       ManagedPolicyName: !Sub "${ProjectName}-${ModuleName}-delegated-boundary"
       Path: !Sub "/${ProjectName}-${ModuleName}/"

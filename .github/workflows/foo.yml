@@ -158,10 +158,10 @@ jobs:
       - name: Assume Role
         run: assume-role ${PROJECT_NAME}-${MODULE_NAME}-github-runner-aws
 
-      - name: Terraform Init & Destroy (Data Workflow)
-        env:
-          SUBDIR: data-workflow
-        uses: ./.github/composite-actions/terraform-destroy
+#      - name: Terraform Init & Destroy (Data Workflow)
+#        env:
+#          SUBDIR: data-workflow
+#        uses: ./.github/composite-actions/terraform-destroy
 
       - name: Terraform Init & Destroy (Data Transformation)
         env:
