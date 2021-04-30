@@ -26,7 +26,7 @@ resource "aws_s3_bucket_public_access_block" "this" {
 }
 
 resource "aws_s3_bucket_policy" "this" {
-  depends_on = ["aws_s3_bucket_public_access_block.this"]
+  depends_on = [aws_s3_bucket_public_access_block.this]
   bucket = aws_s3_bucket.this.id
 
   # Terraform's "jsonencode" function converts a
