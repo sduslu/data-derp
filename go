@@ -2,7 +2,7 @@
 
 set -ex
 script_dir=$(cd "$(dirname "$0")" ; pwd -P)
-PROJECT="twdu-europe"
+PROJECT="data-derp"
 
 goal_pull-dev-container() {
   pushd "${script_dir}" > /dev/null
@@ -17,30 +17,14 @@ goal_pull-dev-container() {
 
     echo ${token} | docker login https://docker.pkg.github.com -u ${username} --password-stdin
 
-    docker pull docker.pkg.github.com/kelseymok/twdu-europe/dev-container:latest
-    docker tag docker.pkg.github.com/kelseymok/twdu-europe/dev-container:latest twdu-dev-container:latest
+    docker pull docker.pkg.github.com/kelseymok/data-derp/dev-container:latest
+    docker tag docker.pkg.github.com/kelseymok/data-derp/dev-container:latest data-derp-dev-container:latest
   popd > /dev/null
 }
 
 goal_build-dev-container() {
   pushd "${script_dir}" > /dev/null
-    docker build -t twdu-dev-container .
-  popd > /dev/null
-}
-
-goal_switch-to-admin-role() {
-  pushd "${script_dir}" > /dev/null
-    identity=$(AWS_PROFILE=${PROJECT} aws sts get-caller-identity)
-    account=$(echo $identity | jq -r '.Account')
-    arn=$(echo $identity | jq -r '.Arn')
-
-    response=$(AWS_PROFILE=${PROJECT} aws sts assume-role \
-    --role-arn "arn:aws:iam::${account}:role/federated-admin" \
-    --role-session-name "local-$(echo $arn | cut -d '/' -f 3)")
-
-    aws configure set aws_access_key_id $(echo $response | jq -r '.Credentials.AccessKeyId') --profile default
-    aws configure set aws_secret_access_key $(echo $response | jq -r '.Credentials.SecretAccessKey') --profile default
-    aws configure set aws_session_token $(echo $response | jq -r '.Credentials.SessionToken') --profile default
+    docker build -t data-derp-dev-container .
   popd > /dev/null
 }
 
@@ -96,7 +80,7 @@ goal_setup() {
   read  -p "Enter OKTA username (before @): " -s okta_username
 
   crowbar profiles add "${PROJECT}" -u $okta_username -p okta --url "https://thoughtworks.okta.com/home/amazon_aws/0oa1kzdqca8OEU6ju0h8/272"
-  if [[ $(AWS_PROFILE=twdu-europe aws s3 ls --region eu-central-1) ]]; then
+  if [[ $(AWS_PROFILE=data-derp aws s3 ls --region eu-central-1) ]]; then
     echo "Crowbar profile successfully created and connected to AWS"
   else
     echo "Crowbar profile could not connect to AWS resources. Did you enter the right username/password?"

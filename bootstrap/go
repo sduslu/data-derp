@@ -101,6 +101,17 @@ goal_all() {
 
 }
 
+
+goal_create-stack() {
+
+ read  -p "Enter Project Name: " project_name
+ read  -p "Enter Module Name: (Default: base) " module_name
+ read  -p "Enter Github Username: " github_username
+
+  assume-role
+  ./all-in-one/create-stack.sh "${project_name}" "${module_name:-base}" "${github_username}"
+}
+
 TARGET=${1:-}
 if type -t "goal_${TARGET}" &>/dev/null; then
   "goal_${TARGET}" ${@:2}
@@ -114,6 +125,7 @@ goal:
     terraform-state        - Creates stack for terraform-state
     data-source            - Creates stack for data-source
     all                    - Create everything
+    create-stack           - Create everything all at once
 "
   exit 1
 fi

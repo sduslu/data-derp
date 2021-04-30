@@ -73,13 +73,13 @@ upload_data() {
         exit 1
       fi
     done
-    AWS_PROFILE=${aws_profile} aws s3 cp "${script_dir}/../../twdu-datasets/ingestion/inputs/EmissionsByCountry.csv" "s3://${project_name}-${module_name}-data-source/EmissionsByCountry.csv"
-    AWS_PROFILE=${aws_profile} aws s3 cp "${script_dir}/../../twdu-datasets/ingestion/inputs/TemperaturesByCountry.csv" "s3://${project_name}-${module_name}-data-source/TemperaturesByCountry.csv"
-    AWS_PROFILE=${aws_profile} aws s3 cp "${script_dir}/../../twdu-datasets/ingestion/inputs/GlobalTemperatures.csv" "s3://${project_name}-${module_name}-data-source/GlobalTemperatures.csv"
+    AWS_PROFILE=${aws_profile} aws s3 cp "${script_dir}/../../datasets/ingestion/inputs/EmissionsByCountry.csv" "s3://${project_name}-${module_name}-data-source/EmissionsByCountry.csv"
+    AWS_PROFILE=${aws_profile} aws s3 cp "${script_dir}/../../datasets/ingestion/inputs/TemperaturesByCountry.csv" "s3://${project_name}-${module_name}-data-source/TemperaturesByCountry.csv"
+    AWS_PROFILE=${aws_profile} aws s3 cp "${script_dir}/../../datasets/ingestion/inputs/GlobalTemperatures.csv" "s3://${project_name}-${module_name}-data-source/GlobalTemperatures.csv"
 
-    AWS_PROFILE=data-derp aws s3 cp "../../twdu-datasets/ingestion/inputs/EmissionsByCountry.csv" "s3://${project_name}-${module_name}-data-source/EmissionsByCountry.csv"
-    AWS_PROFILE=data-derp aws s3 cp "../../twdu-datasets/ingestion/inputs/TemperaturesByCountry.csv" "s3://${project_name}-${module_name}-data-source/TemperaturesByCountry.csv"
-    AWS_PROFILE=data-derp aws s3 cp "../../twdu-datasets/ingestion/inputs/GlobalTemperatures.csv" "s3://${project_name}-${module_name}-data-source/GlobalTemperatures.csv"
+    AWS_PROFILE=data-derp aws s3 cp "../../datasets/ingestion/inputs/EmissionsByCountry.csv" "s3://${project_name}-${module_name}-data-source/EmissionsByCountry.csv"
+    AWS_PROFILE=data-derp aws s3 cp "../../datasets/ingestion/inputs/TemperaturesByCountry.csv" "s3://${project_name}-${module_name}-data-source/TemperaturesByCountry.csv"
+    AWS_PROFILE=data-derp aws s3 cp "../../datasets/ingestion/inputs/GlobalTemperatures.csv" "s3://${project_name}-${module_name}-data-source/GlobalTemperatures.csv"
   popd > /dev/null
 }
 

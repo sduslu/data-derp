@@ -27,9 +27,9 @@ class TestTransformation(TestPySpark):
         cls.spark = cls.start_spark()
         root_dir = os.path.dirname(os.path.realpath(__file__)).split("/data-transformation/")[0]
         cls.parameters = {
-        "co2_input_path":                  f"{root_dir}/twdu-datasets/transformation/inputs/EmissionsByCountry.parquet/",
-        "temperatures_global_input_path":  f"{root_dir}/twdu-datasets/transformation/inputs/GlobalTemperatures.parquet/",
-        "temperatures_country_input_path": f"{root_dir}/twdu-datasets/transformation/inputs/TemperaturesByCountry.parquet/",
+        "co2_input_path":                  f"{root_dir}/datasets/transformation/inputs/EmissionsByCountry.parquet/",
+        "temperatures_global_input_path":  f"{root_dir}/datasets/transformation/inputs/GlobalTemperatures.parquet/",
+        "temperatures_country_input_path": f"{root_dir}/datasets/transformation/inputs/TemperaturesByCountry.parquet/",
 
         "co2_temperatures_global_output_path":  f"{root_dir}/data-transformation/tmp/test/outputs/GlobalEmissionsVsTemperatures.parquet/",
         "co2_temperatures_country_output_path": f"{root_dir}/data-transformation/tmp/test/outputs/CountryEmissionsVsTemperatures.parquet/",

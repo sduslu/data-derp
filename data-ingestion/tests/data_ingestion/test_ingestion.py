@@ -19,9 +19,9 @@ class TestIngestion(TestPySpark):
         cls.spark = cls.start_spark()
         root_dir = os.path.dirname(os.path.realpath(__file__)).split("/data-ingestion/")[0]
         cls.parameters = {
-            "co2_input_path":                   f"{root_dir}/twdu-datasets/ingestion/inputs/EmissionsByCountry.csv",
-            "temperatures_global_input_path":   f"{root_dir}/twdu-datasets/ingestion/inputs/GlobalTemperatures.csv",
-            "temperatures_country_input_path":  f"{root_dir}/twdu-datasets/ingestion/inputs/TemperaturesByCountry.csv",
+            "co2_input_path":                   f"{root_dir}/datasets/ingestion/inputs/EmissionsByCountry.csv",
+            "temperatures_global_input_path":   f"{root_dir}/datasets/ingestion/inputs/GlobalTemperatures.csv",
+            "temperatures_country_input_path":  f"{root_dir}/datasets/ingestion/inputs/TemperaturesByCountry.csv",
 
             "co2_output_path":                  f"{root_dir}/data-ingestion/tmp/test/outputs/EmissionsByCountry.parquet/",
             "temperatures_global_output_path":  f"{root_dir}/data-ingestion/tmp/test/outputs/GlobalTemperatures.parquet/",

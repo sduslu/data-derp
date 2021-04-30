@@ -6,8 +6,8 @@ from s3fs import S3FileSystem
 # ---------- Part I: Job Setup ---------- #
 
 # By sticking with standard Spark, we can avoid having to deal with Glue dependencies locally
-# If developing outside of the TWDU Dev Container, don't forget to set the environment variable: TWDU_ENVIRONMENT=local
-ENVIRONMENT = os.getenv(key="TWDU_ENVIRONMENT", default="aws")
+# If developing outside of the TWDU Dev Container, don't forget to set the environment variable: ENVIRONMENT=local
+ENVIRONMENT = os.getenv(key="ENVIRONMENT", default="aws")
 
 if ENVIRONMENT not in ["local", "aws"]:
     raise ValueError("""ENVIRONMENT must be "local" or "aws" only""")
@@ -34,7 +34,7 @@ elif ENVIRONMENT == "aws":
         No module named 'awsglue' 
         ********
         Hello ThoughtWorker! Are you developing outside of the TWDU Dev Container? 
-        If so, don't forget to set the environment variable: TWDU_ENVIRONMENT=local
+        If so, don't forget to set the environment variable: ENVIRONMENT=local
         ********
         """)
 
@@ -43,9 +43,9 @@ elif ENVIRONMENT == "local":
 
     root_dir = os.path.dirname(os.path.realpath(__file__)).split("/data-transformation/")[0]
     job_parameters = {
-        "co2_input_path":                  f"{root_dir}/twdu-datasets/transformation/inputs/EmissionsByCountry.parquet/",
-        "temperatures_global_input_path":  f"{root_dir}/twdu-datasets/transformation/inputs/GlobalTemperatures.parquet/",
-        "temperatures_country_input_path": f"{root_dir}/twdu-datasets/transformation/inputs/TemperaturesByCountry.parquet/",
+        "co2_input_path":                  f"{root_dir}/datasets/transformation/inputs/EmissionsByCountry.parquet/",
+        "temperatures_global_input_path":  f"{root_dir}/datasets/transformation/inputs/GlobalTemperatures.parquet/",
+        "temperatures_country_input_path": f"{root_dir}/datasets/transformation/inputs/TemperaturesByCountry.parquet/",
 
         "co2_temperatures_global_output_path":  f"{root_dir}/data-transformation/tmp/outputs/GlobalEmissionsVsTemperatures.parquet/",
         "co2_temperatures_country_output_path": f"{root_dir}/data-transformation/tmp/outputs/CountryEmissionsVsTemperatures.parquet/",

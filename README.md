@@ -1,5 +1,5 @@
-# TWDU Europe
-This repository contains the practical exercise of this TWDU training. It contains the following relevant modules:
+# Data Derp
+This repository contains the practical exercise of the Data Derp training. It contains the following relevant modules:
 * data-ingestion
 * data-transformation
 * data-analytics  

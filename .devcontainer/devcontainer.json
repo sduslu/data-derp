@@ -1,7 +1,7 @@
 {
     // "context": "..",
     // "dockerFile": "../Dockerfile",
-    "image": "twdu-dev-container",
+    "image": "data-derp-dev-container",
     "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance",
@@ -15,5 +15,5 @@
         "files.autoSave": "afterDelay",
         "python.analysis.useImportHeuristic": true
     }, 
-    "postCreateCommand": "pip install -e ./twdu-tdd/ ./data-ingestion/ ./data-transformation/"
+    "postCreateCommand": "pip install -e ./test-helpers/ ./data-ingestion/ ./data-transformation/"
 }
