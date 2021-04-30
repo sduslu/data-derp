@@ -8,7 +8,7 @@ env:
 on:
   push:
     branches:
-    - example1-example2
+      - master
     paths-ignore:
       - 'Dockerfile'
       - '.github/workflow/build-push-dev-container.yml'
@@ -31,7 +31,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Assume Role
-      run: assume-role twdu-europe-github-runner-aws
+      run: assume-role ${PROJECT_NAME}-${MODULE_NAME}-github-runner-aws
 
     - name: Terraform Setup Workspace
       uses: ./.github/composite-actions/terraform-setup-workspace
@@ -57,7 +57,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Assume Role
-        run: assume-role twdu-europe-github-runner-aws
+        run: assume-role ${PROJECT_NAME}-${MODULE_NAME}-github-runner-aws
 
       - name: Upload Main.py
         run: |
@@ -95,7 +95,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Assume Role
-        run: assume-role twdu-europe-github-runner-aws
+        run: assume-role ${PROJECT_NAME}-${MODULE_NAME}-github-runner-aws
 
       - name: Upload Main.py
         run: |
@@ -133,7 +133,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Assume Role
-        run: assume-role twdu-europe-github-runner-aws
+        run: assume-role ${PROJECT_NAME}-${MODULE_NAME}-github-runner-aws
 
       - name: Terraform Setup Workspace
         uses: ./.github/composite-actions/terraform-setup-workspace
@@ -156,7 +156,7 @@ jobs:
 #        uses: actions/checkout@v2
 #
 #      - name: Assume Role
-#        run: assume-role twdu-europe-github-runner-aws
+#        run: assume-role ${PROJECT_NAME}-${MODULE_NAME}-github-runner-aws
 #
 #      - name: Terraform Init & Destroy (Data Workflow)
 #        env:
@@ -172,7 +172,7 @@ jobs:
 #        env:
 #          SUBDIR: data-ingestion
 #        uses: ./.github/composite-actions/terraform-destroy
-
+#
 #      - name: Terraform Init & Destroy (Base)
 #        env:
 #          SUBDIR: base
