@@ -59,7 +59,7 @@ Resources:
               "Action": "sts:AssumeRole",
               "Condition": {
                 "ArnLike": {
-                    "aws:SourceArn": !Sub "arn:aws:iam::${AWS::AccountId}:assumed-role/*-github-runner/*"
+                    "aws:SourceArn": !Sub "arn:aws:iam::${AWS::AccountId}:role/*-github-runner"
                 }
               }
             }
