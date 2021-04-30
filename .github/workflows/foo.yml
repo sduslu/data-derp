@@ -163,15 +163,15 @@ jobs:
 #          SUBDIR: data-workflow
 #        uses: ./.github/composite-actions/terraform-destroy
 
-      - name: Terraform Init & Destroy (Data Transformation)
-        env:
-          SUBDIR: data-transformation
-        uses: ./.github/composite-actions/terraform-destroy
+#      - name: Terraform Init & Destroy (Data Transformation)
+#        env:
+#          SUBDIR: data-transformation
+#        uses: ./.github/composite-actions/terraform-destroy
 
-      - name: Terraform Init & Destroy (Data Ingestion)
-        env:
-          SUBDIR: data-ingestion
-        uses: ./.github/composite-actions/terraform-destroy
+#      - name: Terraform Init & Destroy (Data Ingestion)
+#        env:
+#          SUBDIR: data-ingestion
+#        uses: ./.github/composite-actions/terraform-destroy
 
       - name: Terraform Init & Destroy (Base)
         env:
