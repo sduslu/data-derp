@@ -85,7 +85,7 @@ create-update-stack() {
         --template-body file://./template.yaml \
         --capabilities CAPABILITY_NAMED_IAM \
         --region eu-central-1 \
-        --parameters ParameterKey=ProjectName,ParameterValue=${project_name} ParameterKey=ModuleName,ParameterValue=${module_name} ParameterKey=InstanceType,ParameterValue=t3.small ParameterKey=GithubRepoUrl,ParameterValue=http://github.com/${REPO_NAME} ParameterKey=VPCStackName,ParameterValue=${project_name}-base-githubrunner-vpc
+        --parameters ParameterKey=ProjectName,ParameterValue=${project_name} ParameterKey=ModuleName,ParameterValue=${module_name} ParameterKey=InstanceType,ParameterValue=t3.small ParameterKey=GithubRepoUrl,ParameterValue=https://github.com/${REPO_NAME} ParameterKey=VPCStackName,ParameterValue=${project_name}-base-githubrunner-vpc
     else
       echo "Stack (${stack_name}) exists. Creating ChangeSet..."
       now=$(date +%s)
@@ -95,12 +95,13 @@ create-update-stack() {
         --template-body file://./template.yaml \
         --capabilities CAPABILITY_NAMED_IAM \
         --region eu-central-1 \
-        --parameters ParameterKey=ProjectName,ParameterValue=${project_name} ParameterKey=ModuleName,ParameterValue=${module_name} ParameterKey=InstanceType,ParameterValue=t3.small ParameterKey=GithubRepoUrl,ParameterValue=http://github.com/${REPO_NAME} ParameterKey=VPCStackName,ParameterValue=${project_name}-base-githubrunner-vpc
+        --parameters ParameterKey=ProjectName,ParameterValue=${project_name} ParameterKey=ModuleName,ParameterValue=${module_name} ParameterKey=InstanceType,ParameterValue=t3.small ParameterKey=GithubRepoUrl,ParameterValue=https://github.com/${REPO_NAME} ParameterKey=VPCStackName,ParameterValue=${project_name}-base-githubrunner-vpc
 
       sleep 10
       AWS_PROFILE=${aws_profile} aws cloudformation execute-change-set \
         --change-set-name "update-${now}" \
-        --stack-name "${stack_name}"
+        --stack-name "${stack_name}" \
+        --region eu-central-1
     fi
   popd > /dev/null
 
