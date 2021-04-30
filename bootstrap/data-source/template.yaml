@@ -2,11 +2,11 @@ Parameters:
   ProjectName:
     Type: String
     Description: Name of the project
-    Default: "twdu-europe"
-  BucketBaseName:
+    Default: "my-project"
+  ModuleName:
     Type: String
-    Description: Bucket name
-    Default: "twdu-europe-data-source"
+    Description: Name of the module
+    Default: "base"
 
 Resources:
   Bucket:
@@ -17,7 +17,7 @@ Resources:
       #   ServerSideEncryptionConfiguration:
       #     - ServerSideEncryptionByDefault:
       #         SSEAlgorithm: "aws:kms"
-      BucketName: !Sub "${BucketBaseName}"
+      BucketName: !Sub "${ProjectName}-${ModuleName}-data-source"
       Tags:
         - Key: Project
           Value: !Ref ProjectName
@@ -31,7 +31,7 @@ Resources:
   BucketPolicy:
     Type: 'AWS::S3::BucketPolicy'
     Properties:
-      Bucket: !Sub "${BucketBaseName}"
+      Bucket: !Sub "${ProjectName}-${ModuleName}-data-source"
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -42,7 +42,7 @@ Resources:
             Resource: !Join
               - ''
               - - 'arn:aws:s3:::'
-                - !Sub "${BucketBaseName}"
+                - !Sub "${ProjectName}-${ModuleName}-data-source"
                 - /*
             Principal: '*'
 
@@ -54,7 +54,7 @@ Outputs:
       Name: !Sub '${AWS::StackName}-Arn'
   BucketS3Uri:
     Description: S3 Uri
-    Value: !Sub "s3://${BucketBaseName}"
+    Value: !Sub "s3://${ProjectName}-${ModuleName}-data-source"
     Export:
       Name: !Sub '${AWS::StackName}-S3Uri'
 

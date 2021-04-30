@@ -8,7 +8,7 @@ We are running a Gitlab Runner in AWS as an EC2 instance backed by an Autoscalin
 
 ### Setup
 1. Follow the [AWS Setup Instructions](../aws.md) to run AWS CLI commands against Okta apps
-2. `./go githubrunner <GITHUB_USERNAME>`   
+2. `./go githubrunner`
 
 ### Resources
 * [Adding Self-Hosted Runners](https://docs.github.com/en/actions/hosting-your-own-runners/adding-self-hosted-runners)

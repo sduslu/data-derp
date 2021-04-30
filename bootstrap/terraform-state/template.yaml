@@ -1,12 +1,14 @@
+Description: Deploys an S3 bucket (KMS-encrypted) to hold remote Terraform State and DynamoDB table (lock table for Terraform)
+
 Parameters:
   ProjectName:
     Type: String
     Description: Name of the project
-    Default: "twdu-europe"
-  BucketBaseName:
+    Default: "my-project"
+  ModuleName:
     Type: String
-    Description: Bucket name
-    Default: "twdu-europe-terraform-state"
+    Description: Name of the module
+    Default: "base"
   TableName:
     Type: String
     Description: Name of table
@@ -21,10 +23,12 @@ Resources:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: "aws:kms"
-      BucketName: !Sub "${BucketBaseName}"
+      BucketName: !Sub "${ProjectName}-${ModuleName}-terraform-state"
       Tags:
         - Key: Project
           Value: !Ref ProjectName
+        - Key: Module
+          Value: !Ref ModuleName
       VersioningConfiguration:
         Status: "Enabled"
       PublicAccessBlockConfiguration:
@@ -48,6 +52,8 @@ Resources:
       Tags:
         - Key: Project
           Value: !Ref ProjectName
+        - Key: Module
+          Value: !Ref ModuleName
 
 Outputs:
   BucketARN:
@@ -57,7 +63,7 @@ Outputs:
       Name: !Sub '${AWS::StackName}-Arn'
   BucketS3Uri:
     Description: S3 Uri
-    Value: !Sub "s3://${BucketBaseName}"
+    Value: !Sub "s3://${ProjectName}-${ModuleName}-terraform-state"
     Export:
       Name: !Sub '${AWS::StackName}-S3Uri'
   RoleName:

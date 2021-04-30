@@ -5,29 +5,100 @@ set -o nounset
 set -o pipefail
 
 script_dir=$(cd "$(dirname "$0")" ; pwd -P)
+
+assume-role() {
+  read -p "Assume an AWS Role? (any input = yes. Default: None) " assume_a_role
+
+  if [ ! -z "${assume_a_role}" ]; then
+    read  -p "Enter Base AWS Profile name to assume role from (Default: None): " base_profile
+    read  -p "Enter AWS Role Name to assume (Default: None): " role_name
+
+    if [[ ! -z "${role_name}" && ! -z "${base_profile}" ]]; then
+        echo "Both ROLE_NAME and BASE_PROFILE set. Assuming role (${role_name}) from base profile (${base_profile})"
+      ./switch-role.sh ${base_profile} ${role_name}
+    fi
+  fi
+}
+
+goal_githubrunner-vpc() {
+  pushd "${script_dir}" > /dev/null
+    read  -p "Enter Project Name: " project_name
+    assume-role
+    ./githubrunner-vpc/create-update.sh "${project_name}" "base"
+
+  popd > /dev/null
+}
+
+
 goal_githubrunner() {
   pushd "${script_dir}" > /dev/null
-    username="${1}"
 
-    if [ -z "${username}" ]; then
-      echo "GITHUB_USERNAME not set. Usage <func> GITHUB_USERNAME"
-      exit 1
-    fi
+    read  -p "Enter Project Name: " project_name
+    read  -p "Enter Team Name: (Default: base) " module_name
+    read  -p "Enter Github Username: " github_username
 
-    ./create-update-github-runner.sh "${username}"
+    for i in project_name github_username; do
+      if [ -z "!{i}" ]; then
+        echo "${i} not set. Usage <func> PROJECT_NAME GITHUB_USERNAME"
+        exit 1
+      fi
+    done
+
+    assume-role
+    ./githubrunner/create-update.sh "${project_name}" "${module_name:-base}" "${github_username}"
+
   popd > /dev/null
 }
 
 goal_terraform-state() {
   pushd "${script_dir}" > /dev/null
-    ./create-update-terraform-state.sh
+    read  -p "Enter Project Name: " project_name
+    read  -p "Enter Module Name: (Default: base) " module_name
+
+    for i in project_name github_username; do
+      if [ -z "!{i}" ]; then
+        echo "${i} not set. Usage <func> PROJECT_NAME GITHUB_USERNAME"
+        exit 1
+      fi
+    done
+    assume-role
+    ./terraform-state/create-update.sh "${project_name}" "${module_name:-base}"
   popd > /dev/null
 }
 
 goal_data-source() {
   pushd "${script_dir}" > /dev/null
-    ./create-update-source.sh
+    read  -p "Enter Project Name: " project_name
+    read  -p "Enter Module Name: (Default: base) " module_name
+    assume-role
+    ./data-source/create-update.sh "${project_name}" "${module_name:-base}"
   popd > /dev/null
+}
+
+goal_githubrunner-iam() {
+  pushd "${script_dir}" > /dev/null
+    read  -p "Enter Project Name: " project_name
+    read  -p "Enter Module Name: (Default: base) " module_name
+    assume-role
+    ./githubrunner-iam/create-update.sh "${project_name}" "${module_name:-base}"
+  popd > /dev/null
+}
+
+goal_all() {
+
+ read  -p "Enter Project Name: " project_name
+ read  -p "Enter Module Name: (Default: base) " module_name
+ read  -p "Enter Github Username: " github_username
+
+  assume-role
+#  ./githubrunner-vpc/create-update.sh "${project_name}" "base"
+#  echo "Waiting 120 seconds for VPC to come alive before deploying machines on it"
+#  sleep 120
+#  ./githubrunner/create-update.sh "${project_name}" "${module_name:-base}" "${github_username}"
+  ./githubrunner-iam/create-update.sh "${project_name}" "${module_name:-base}"
+  ./data-source/create-update.sh "${project_name}" "${module_name:-base}"
+  ./terraform-state/create-update.sh "${project_name}" "${module_name:-base}"
+
 }
 
 TARGET=${1:-}
@@ -37,9 +108,12 @@ else
   echo "Usage: $0 <goal>
 
 goal:
-    githubrunner           - Deploys Githabrunner (Usage: Username)
+    githubrunner-vpc       - Creates stack for githubrunner-vpc
+    githubrunner-iam       - Creates stack for githubrunner-iam
+    githubrunner           - Creates stack for githubrunner
     terraform-state        - Creates stack for terraform-state
     data-source            - Creates stack for data-source
+    all                    - Create everything
 "
   exit 1
 fi
