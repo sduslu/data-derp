@@ -58,8 +58,8 @@ Resources:
               },
               "Action": "sts:AssumeRole",
               "Condition": {
-                "ArnLike": {
-                    "aws:SourceArn": !Sub "arn:aws:iam::${AWS::AccountId}:role/*-github-runner"
+                "StringLike": {
+                    "aws:PrincipalArn": !Sub "arn:aws:iam::${AWS::AccountId}:role/*-github-runner"
                 }
               }
             }
