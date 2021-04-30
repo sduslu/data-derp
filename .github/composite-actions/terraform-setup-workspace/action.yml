@@ -5,6 +5,6 @@ runs:
   steps:
     - run: |
         cd ${SUBDIR}
-        TF_WORKSPACE=default terraform init --backend-config=bucket=${PROJECT_NAME}-${MODULE_NAME}-terraform-state
+        TF_WORKSPACE=default terraform init --backend-config=bucket=${PROJECT_NAME}-${MODULE_NAME}-terraform-state --backend-config=dynamodb_table=${PROJECT_NAME}-${MODULE_NAME}-terraform-lock
         terraform workspace new $TF_WORKSPACE || echo "Workspace already exists"
       shell: bash

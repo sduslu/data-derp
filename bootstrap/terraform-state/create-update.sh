@@ -29,7 +29,7 @@ pushd "${script_dir}" > /dev/null
     AWS_PROFILE=${aws_profile} aws cloudformation create-change-set \
       --stack-name "${stack_name}" \
       --change-set-name "update-${now}" \
-      --template-body file://./terraform-state.yaml \
+      --template-body file://./template.yaml \
       --capabilities CAPABILITY_NAMED_IAM \
       --parameters ParameterKey=ProjectName,ParameterValue=${project_name} ParameterKey=ModuleName,ParameterValue=${module_name} \
       --region eu-central-1 \

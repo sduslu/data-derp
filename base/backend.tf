@@ -2,7 +2,6 @@ terraform {
   backend "s3" {
     key    = "base"
     region = "eu-central-1"
-    dynamodb_table = "terraform-lock"
   }
 }
 

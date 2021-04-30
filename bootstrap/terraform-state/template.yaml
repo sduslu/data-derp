@@ -48,7 +48,7 @@ Resources:
       KeySchema:
         - AttributeName: "LockID"
           KeyType: "HASH"
-      TableName: !Ref TableName
+      TableName: !Sub "${ProjectName}-${ModuleName}-terraform-lock"
       Tags:
         - Key: Project
           Value: !Ref ProjectName
