@@ -18,13 +18,13 @@ goal_pull-dev-container() {
     echo ${token} | docker login https://docker.pkg.github.com -u ${username} --password-stdin
 
     docker pull docker.pkg.github.com/kelseymok/data-derp/dev-container:latest
-    docker tag docker.pkg.github.com/kelseymok/data-derp/dev-container:latest data-derp-dev-container:latest
+    docker tag docker.pkg.github.com/kelseymok/data-derp/dev-container:latest data-derp:latest
   popd > /dev/null
 }
 
 goal_build-dev-container() {
   pushd "${script_dir}" > /dev/null
-    docker build -t data-derp-dev-container .
+    docker build -t data-derp .
   popd > /dev/null
 }
 

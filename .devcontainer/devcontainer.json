@@ -1,7 +1,7 @@
 {
     // "context": "..",
     // "dockerFile": "../Dockerfile",
-    "image": "data-derp-dev-container",
+    "image": "data-derp",
     "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance",

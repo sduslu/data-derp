@@ -6,7 +6,7 @@ In order to reduce the amount of effort of setting up development environments a
 * [Visual Studio](https://code.visualstudio.com/download)
 
 ## Install
-1. **Important:** from the root of this Git repo, run the following command in your terminal: `./go build-dev-container`
+1. **Important:** from the root of this Git repo, run the following command in your terminal: `docker build -t data-derp .`
 2. In VS Code's top menu: **View** > **Extensions**. Install the following Extensions on VS Code:
     - **Remote - Containers** (author: Microsoft)
     - **Python** (author: Microsoft)
