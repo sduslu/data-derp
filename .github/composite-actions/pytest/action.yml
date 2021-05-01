@@ -4,6 +4,8 @@ runs:
   using: "composite"
   steps:
     - run: |
+        cd ${SUBDIR}/../
+        pip install -e ./test-utils/ ./${SUBDIR}/
         cd ${SUBDIR}
         python -m pytest
       shell: bash
