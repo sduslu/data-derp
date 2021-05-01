@@ -1,6 +1,7 @@
 from pyspark.sql import DataFrame
 from pyspark.sql.session import SparkSession
 from pyspark.sql.types import *
+import pyspark.sql.functions as F
 
 # ---------- Part II: Business Logic (for Part I, see data_ingestion/config.py) ---------- #
 
