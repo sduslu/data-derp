@@ -1,33 +1,27 @@
 # Bootstrap
-This directory holds Cloudformation templates to set up the following
-* [Self-hosted Github Runner](#githubrunner)
-* [Terraform Remote State S3 Bucket and DynamoDB](#terraform-remote-state)
+This directory holds a single Cloudformation template to set up the following
+* A Single VPC, NAT Gateway, IG, Private/Public Subnet, VPC Endpoints to ensure private networking
+* GithubRunner attached to your specified Github repository 
+* Terraform Remote State S3 Bucket and DynamoDB
+* S3 bucket containing the exercise's data to be ingested and transformed
 
-## Gitlab Runner
-We are running a Gitlab Runner in AWS as an EC2 instance backed by an Autoscaling group in a private subnet of a VPC. The number of GithubActions credits is insufficient for the amount of development that will proceed during the training.
+## Setup
+1. [Create a Github Personal Access Token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) with the Repo Scope. This will be used to generate a token to register a GithubRunner.
+![github-repo-scope](./assets/github-repo-scope.png)
+   
+2. To reduce clashing with other AWS credentials, the bootstrap script uses an AWS_PROFILE set to `data-derp`. Manually create an AWS profile named `data-derp` with relevant credentials to your AWS account. For those expected to assume a role (within the same account), there is a helper function:
+```bash
+./switch-role.sh <starting-role> <target-role>
+```
+   
+3. Create the Stack
+```bash
+./bootstrap.sh -p your-project-name -m your-team-name -u your-github-username
+```
 
-### Setup
-1. Follow the [AWS Setup Instructions](../aws.md) to run AWS CLI commands against Okta apps
-2. `./go githubrunner`
+4. When prompted, enter your Personal Access Token (created in step 1)
+```bash
+Enter host password for user 'your-github-username': <the-personal-access-token>
+```
 
-### Resources
-* [Adding Self-Hosted Runners](https://docs.github.com/en/actions/hosting-your-own-runners/adding-self-hosted-runners)
-* [Create a Registration Token for Gitlab Runner](https://docs.github.com/en/rest/reference/actions#create-a-registration-token-for-a-repository)
-
-### Notes
-* Forks of this repo can also use the runner. Can we disable forks?
-
-## Terraform Remote State
-In order to use terraform, a remote state must already exist. This gets around the chicken-egg problem of configuring a bucket before running terraform applys.
-
-### Setup
-1. Follow the [AWS Setup Instructions](../aws.md) to run AWS CLI commands against Okta apps
-2. `./go terraform-state`
-
-## Data Source
-Set up a base Data Source bucket that contains desanitised data for downstream processing
-
-### Setup
-1. Follow the [AWS Setup Instructions](../aws.md) to run AWS CLI commands against Okta apps
-2. `./go data-source
-
+4. View your [Cloudformation Stacks in the AWS Console](https://eu-central-1.console.aws.amazon.com/cloudformation/home?region=eu-central-1#/stacks)
