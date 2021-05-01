@@ -21,3 +21,5 @@ data-transformation/dist/**/*
 data-transformation/src/*.egg-info
 .pytest_cache
 test-utils/build/**/*
+test-utils/dist/**/*
+test-utils.egg-info/
