@@ -40,9 +40,8 @@ In VS with the Remote Container (see [Development Environment](./development-env
 4. To test an individual **test function** run `python -m pytest <path_to_test_xxx.py> -k <name_of_test_function>`
 
 ## Troubleshooting
-Sometimes pytest might not detect changes in your data-ingestion and data-transformation libraries. In those cases run:
-    - `pip install -e ./data-ingestion/ ./data-transformation/`
-    - Alternatively, in VS Code's top menu: **View** > **Command Palette...**. Type **Remote-Containers: Rebuild Container**
+Sometimes pytest might not detect changes in your data-ingestion and data-transformation libraries. In those cases:
+    - **View** > **Command Palette...**. Type **Remote-Containers: Rebuild Container**
 
 ## Tips & Tricks
 1. To get the full path to any file, simply right-click on it and choose **Copy Path**
