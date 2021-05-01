@@ -7,7 +7,6 @@ pyspark[sql]==2.4.3
 s3fs==0.4.0
 # DevOps + TDD
 pytest
-pytest_mock==3.6.0
 awscli
 # Interactive Computing + Visualization
 jupyterlab
