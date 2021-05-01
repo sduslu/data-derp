@@ -21,7 +21,7 @@ jobs:
     env:
       SUBDIR: base
     container:
-      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
+      image: ghcr.io/kelseymok/terraform-workspace:latest
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -47,7 +47,7 @@ jobs:
       SUBDIR: data-ingestion
     needs: ["base"]
     container:
-      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
+      image: ghcr.io/kelseymok/terraform-workspace:latest
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -88,7 +88,7 @@ jobs:
       SUBDIR: data-transformation
     needs: [ "base" ]
     container:
-      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
+      image: ghcr.io/kelseymok/terraform-workspace:latest
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -129,7 +129,7 @@ jobs:
     env:
       SUBDIR: data-workflow
     container:
-      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
+      image: ghcr.io/kelseymok/terraform-workspace:latest
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -152,7 +152,7 @@ jobs:
 #    runs-on: self-hosted
 #    environment: production
 #    container:
-#      image: docker.pkg.github.com/kelseymok/terraform-workspace/terraform-workspace:latest
+#      image: ghcr.io/kelseymok/terraform-workspace:latest
 #      credentials:
 #        username: ${{ github.actor }}
 #        password: ${{ secrets.GITHUB_TOKEN }}

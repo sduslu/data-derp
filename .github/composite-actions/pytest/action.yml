@@ -1,5 +1,5 @@
-name: Terraform Init & Apply
-description: Runs terraform init and apply
+name: Runs Pytest
+description: Runs Pytest
 runs:
   using: "composite"
   steps:
