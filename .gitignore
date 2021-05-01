@@ -20,3 +20,4 @@ data-transformation/src/dist/**/*
 data-transformation/dist/**/*
 data-transformation/src/*.egg-info
 .pytest_cache
+test-utils/build/**/*
