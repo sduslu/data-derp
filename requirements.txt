@@ -17,4 +17,3 @@ plotly
 raceplotly
 # Machine Learning + Explainability
 interpret
-pytest_mock==3.6.0
