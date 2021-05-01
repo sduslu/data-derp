@@ -14,10 +14,35 @@ on:
       - '.github/workflow/build-push-dev-container.yml'
 
 jobs:
+  test:
+    name: 'Test Python modules'
+    runs-on: self-hosted
+    environment: production
+    container:
+      image: ghcr.io/kelseymok/terraform-workspace:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Test Data Ingestion
+        env:
+          SUBDIR: data-ingestion
+        uses: ./.github/composite-actions/pytest
+
+      - name: Test Data Transformation
+        env:
+          SUBDIR: data-transformation
+        uses: ./.github/composite-actions/pytest
+
   base:
     name: 'Base Terraform'
     runs-on: self-hosted
     environment: production
+    needs: ["test"]
     env:
       SUBDIR: base
     container:
@@ -56,9 +81,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Pytest
-        uses: ./.github/composite-actions/pytest
-
       - name: Assume Role
         run: assume-role ${PROJECT_NAME}-${MODULE_NAME}-github-runner-aws
 
@@ -96,9 +118,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      - name: Pytest
-        uses: ./.github/composite-actions/pytest
 
       - name: Assume Role
         run: assume-role ${PROJECT_NAME}-${MODULE_NAME}-github-runner-aws
