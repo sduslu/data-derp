@@ -1,7 +1,7 @@
 name: 'km'
 
 env:
-  PROJECT_NAME: data-derp
+  PROJECT_NAME: twdu-europe
   MODULE_NAME: km
   TF_WORKSPACE: km
 
