@@ -6,7 +6,7 @@ from data_ingestion.config import job_parameters
 from data_ingestion.ingestion import Ingester
 
 # By sticking with standard Spark, we can avoid having to deal with Glue dependencies locally
-# If developing outside of the data-derp-dev-container, don't forget to set the environment variable: ENVIRONMENT=local
+# If developing outside of the data-derp container, don't forget to set the environment variable: ENVIRONMENT=local
 ENVIRONMENT = os.getenv(key="ENVIRONMENT", default="aws")
 
 # ---------- Part III: Run Da Ting (for Part II, see data_ingestion/ingestion.py) ---------- #
