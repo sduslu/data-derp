@@ -1,0 +1,9 @@
+name: Terraform Init & Apply
+description: Runs terraform init and apply
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        cd ${SUBDIR}
+        python -m pytest
+      shell: bash
