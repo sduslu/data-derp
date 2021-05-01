@@ -1,12 +1,8 @@
 from typing import Dict
-
 from pyspark.sql import DataFrame, Column
 import pyspark.sql.functions as F
 from pyspark.sql.session import SparkSession
-from pyspark.sql.window import Window
 from pyspark.sql.types import *
-
-import pandas as pd
 
 # ---------- Part II: Business Logic (for Part I, see data_transformation/config.py) ---------- #
 
