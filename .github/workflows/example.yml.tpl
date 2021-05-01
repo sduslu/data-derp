@@ -39,13 +39,32 @@ jobs:
     - name: Terraform Init & Apply
       uses: ./.github/composite-actions/terraform-apply
 
+  data-ingestion-test:
+    name: 'Test Data Ingestion'
+    runs-on: self-hosted
+    environment: production
+    container:
+      image: ghcr.io/kelseymok/pyspark-testing-env:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Test Data Ingestion
+        env:
+          SUBDIR: data-ingestion
+        uses: ./.github/composite-actions/pytest
+
   data-ingestion:
     name: 'Data Ingestion'
     runs-on: self-hosted
     environment: production
     env:
       SUBDIR: data-ingestion
-    needs: ["base"]
+    needs: ["base", "data-ingestion-test"]
     container:
       image: ghcr.io/kelseymok/terraform-workspace:latest
       credentials:
@@ -55,9 +74,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      - name: Pytest
-        uses: ./.github/composite-actions/pytest
 
       - name: Assume Role
         run: assume-role ${PROJECT_NAME}-${MODULE_NAME}-github-runner-aws
@@ -80,13 +96,32 @@ jobs:
       - name: Terraform Init & Apply
         uses: ./.github/composite-actions/terraform-apply
 
+  data-transformation-test:
+    name: 'Test Data Transformation'
+    runs-on: self-hosted
+    environment: production
+    container:
+      image: ghcr.io/kelseymok/pyspark-testing-env:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Test Data Transformation
+        env:
+          SUBDIR: data-transformation
+        uses: ./.github/composite-actions/pytest
+
   data-transformation:
     name: 'Data Transformation'
     runs-on: self-hosted
     environment: production
     env:
       SUBDIR: data-transformation
-    needs: [ "base" ]
+    needs: [ "base", "data-transformation-test"]
     container:
       image: ghcr.io/kelseymok/terraform-workspace:latest
       credentials:
@@ -96,9 +131,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      - name: Pytest
-        uses: ./.github/composite-actions/pytest
 
       - name: Assume Role
         run: assume-role ${PROJECT_NAME}-${MODULE_NAME}-github-runner-aws
