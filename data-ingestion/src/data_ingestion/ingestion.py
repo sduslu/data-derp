@@ -1,337 +1,55 @@
-from typing import Dict
-
-from pyspark.sql import DataFrame, Column
-import pyspark.sql.functions as F
+from pyspark.sql import DataFrame
 from pyspark.sql.session import SparkSession
-from pyspark.sql.window import Window
 from pyspark.sql.types import *
 
-# ---------- Part II: Business Logic (for Part I, see data_transformation/config.py) ---------- #
+# ---------- Part II: Business Logic (for Part I, see data_ingestion/config.py) ---------- #
 
-class Transformer:
-    """Data Transformer Python Class"""
+class Ingester:
+    """Data Ingester Python Class"""
 
-    def __init__(self, spark: SparkSession, parameters: Dict[str, str], boss_level: bool = True):
+    def __init__(self, spark: SparkSession, parameters: "dict[str, str]"):
         self.spark = spark
         self.parameters = parameters
-        self.boss_level = boss_level
         return
 
     @staticmethod
-    def get_country_emissions(co2_df: DataFrame) -> DataFrame:
+    def replace_invalid_chars(column_name: str) -> str:
+        """Replace prohibited characters in column names to be compatiable with Apache Parquet"""
+        INVALID_CHARS = [" ", ",", ";", "\n", "\t", "=", "-", "{", "}", "(", ")"]
+        UNDERSCORE_CANDIDATES = [" ", ",", ";", "\n", "\t", "=", "-"] # let's replace these with underscores
+
+        column_name = NotImplemented # TODO: Exercise (modify however necessary, no need to be a one-liner)
+        if column_name is NotImplemented:
+            raise NotImplementedError("DO YOUR HOMEWORK OR NO CHEESECAKE")
+        return column_name
+
+    def fix_columns(self, df: DataFrame) -> DataFrame:
+        """Clean up a Spark DataFrame's column names"""
+        # HINT: you don't need to do use .withColumnRenamed a dozen times - one-liner solution possible ;)
+        fixed_df = NotImplemented # TODO: Exercise (modify however necessary, no need to be a one-liner)
+        if fixed_df is NotImplemented:
+            raise NotImplementedError("DO YOUR HOMEWORK OR NO BREZE")
+        return fixed_df
+
+    def run(self) -> None:
         """
-        Topics: cast, select, alias
-
-        Read EmissionsByCountry.parquet into a Spark DataFrame.
-        Make sure that each Entity is a country.
-
-        Your output Spark DataFrame's schema should be:
-            - Year: integer
-            - Country: string
-            - TotalEmissions: float
-            - PerCapitaEmissions: float
-            - ShareOfGlobalEmissions: float
+        You can of course reduce the code repetition shown below.
+        However, this is a clear way for a beginner to see what the job is doing.
         """
+        kwargs = {"format": "csv", "sep": ",", "inferSchema": "true", "header": "true"}
 
-        # You'll notice that there's an Entity called "World".
-        # Since we're analyzing emissions of countries, let's discard "World"
-        country_emissions = co2_df \
-            .filter(F.col("Entity") != F.lit("World")) \
-            .select(
-            F.col("Year"),
-            F.col("Entity").alias("Country"),
-            F.col("Annual_CO2_emissions").cast(FloatType()).alias("TotalEmissions"),
-            F.col("Per_capita_CO2_emissions").cast(FloatType()).alias("PerCapitaEmissions"),
-            F.col("Share_of_global_CO2_emissions").cast(FloatType()).alias("ShareOfGlobalEmissions"),
-        )
-        return country_emissions
+        co2_df = self.spark.read.load(self.parameters["co2_input_path"], **kwargs) # kwargs = keyword arguments. Python pro tip ;)
+        co2_fixed = self.fix_columns(co2_df).coalesce(1)
+        co2_fixed.write.format("parquet").mode("overwrite").save(self.parameters["co2_output_path"])
 
-    @staticmethod # doesn't rely on self.spark nor self.parameters
-    def aggregate_global_emissions(country_emissions: DataFrame) -> DataFrame:
-        """
-        Topics: aggregate functions, alias
+        country_temps_df = self.spark.read.load(self.parameters["temperatures_country_input_path"], **kwargs)
+        country_temps_fixed = self.fix_columns(country_temps_df).coalesce(1)
+        country_temps_fixed.write.format("parquet").mode("overwrite").save(self.parameters["temperatures_country_output_path"])
 
-        Aggregate the total CO2 emissions globally on an ANNUAL basis.
-        Your output Spark DataFrame's schema should be:
-            - Year: integer
-            - TotalEmissions: float
-        """
-        global_emissions = country_emissions.groupBy("Year").agg(
-            F.sum(F.col("TotalEmissions")).cast(FloatType()).alias("TotalEmissions")
-        )
-        return global_emissions
+        global_temps_df = self.spark.read.load(self.parameters["temperatures_global_input_path"], **kwargs)
+        global_temps_fixed = self.fix_columns(global_temps_df).coalesce(1)
+        global_temps_fixed.write.format("parquet").mode("overwrite").save(self.parameters["temperatures_global_output_path"])
 
-    @staticmethod
-    def aggregate_global_temperatures(temperatures_global_df: DataFrame) -> DataFrame:
-        """
-        Topics: aggregate functions, alias
-
-        Aggregate temperature measurements globally on an ANNUAL basis.
-        Think carefully about the appropriate aggregation functions to use.
-        For this project, you can just ignore any 'Uncertainty' columns.
-        Your output Spark DataFrame's schema should be:
-            - Year: integer
-            - LandAverageTemperature: float
-            - LandMaxTemperature: float
-            - LandMinTemperature: float
-            - LandAndOceanAverageTemperature: float
-        """
-        temps_global_df = temperatures_global_df.withColumn("Year", F.year(F.col("Date")))
-
-        global_temperatures = temps_global_df.groupBy("Year").agg(
-            F.avg("LandAverageTemperature").cast(FloatType()).alias("LandAverageTemperature"), # TODO: Exercise
-            F.max("LandMaxTemperature").cast(FloatType()).alias("LandMaxTemperature"), # TODO: Exercise
-            F.min("LandMinTemperature").cast(FloatType()).alias("LandMinTemperature"), # TODO: Exercise
-            F.avg("LandAndOceanAverageTemperature").cast(FloatType()).alias("LandAndOceanAverageTemperature") # TODO: Exercise
-        )
-        return global_temperatures
-
-    @staticmethod # doesn't rely on self.spark nor self.parameters
-    def join_global_emissions_temperatures(
-            global_emissions: DataFrame,
-            global_temperatures: DataFrame
-    ) -> DataFrame:
-        """
-        Topics: joins
-
-        Perform an INNER JOIN between the results of
-            1. aggregate_global_emissions
-            2. aggregate_global_temperatures
-        Your output Spark DataFrame's schema should be:
-            - Year: integer
-            - TotalEmissions: float
-            - LandAverageTemperature: float
-            - LandMaxTemperature: float
-            - LandMinTemperature: float
-            - LandAndOceanAverageTemperature: floats
-        """
-        global_emissions_temperatures = global_emissions.join(global_temperatures, on="Year", how="inner") # TODO: Exercise
-        return global_emissions_temperatures
-
-    @staticmethod # doesn't rely on self.spark nor self.parameters
-    def fix_country(col: Column) -> Column:
-        """
-        Use built-in Spark functions to clean-up the "Country" column
-        e.g. "   cAnAdA " -> "Canada"
-        Don't forget about those annoying leading/trailing spaces.
-        """
-        return F.initcap(F.lower(F.trim(col)))
-
-    @staticmethod # doesn't rely on self.spark nor self.parameters
-    def remove_lenny_face(temperature: str) -> str:
-        """
-        HINT: only temperature entries with Lenny's face are valid measurements
-        There are multiple ways to tackle this: udf, pandas_udf, regexp_extract, regexp_replace, etc.
-        Normally, we'd recommend a pandas_udf as it's a nice transferrable skill with good performance.
-        However, to keep this job simple, let's use a normal udf.
-
-        The point is to demonstrate that you can write arbitrary Python logic as a UDF
-        if Spark doesn't have the built-in function you need.
-        """
-        return temperature.replace("( ͡° ͜ʖ ͡°)", "") # TODO: exercise
-
-    def aggregate_country_temperatures(self, temperatures_country_df: DataFrame) -> DataFrame:
-        """
-        Topics: casting, udf/pandas_udf, aggregation functions
-
-        Aggregate temperature measurements per country on an ANNUAL basis.
-        INVESTIGATE the data to look for any data quality issues
-        Think carefully about:
-            - any necessary cleaning (WARNING: don't assume Spark can intelligently read/cast everything)
-            - the appropriate aggregation function to use
-        For this project, you can just ignore any 'Uncertainty' columns.
-        Your output Spark DataFrame's schema should be:
-            - Year: integer
-            - Country: string
-            - AverageTemperature: float
-        """
-        # Register your function as a UDF
-        fix_temperature_udf = F.udf(self.remove_lenny_face, returnType=StringType())
-        temperature_expr = fix_temperature_udf(F.col("AverageTemperature")).cast(FloatType())
-
-        # Unlike the Global Temperatures dataset...Spark couldn't automatically parse the "Date" column as a timestamp
-        # You'll have to find a built-in function to perform the conversion then extract the year
-        year_expr = F.year(F.to_timestamp(F.col("Date"), format="MM-dd-yyyy")) # TODO: Exercise
-        country_expr = self.fix_country(F.col("Country")) # TODO: Exercise
-
-        # TODO: exercise
-        cleaned_df = temperatures_country_df.select(
-            year_expr.alias("Year"),
-            country_expr.alias("Country"),
-            temperature_expr.alias("AverageTemperature")
-        )
-        country_temperatures = cleaned_df.groupBy("Year", "Country").agg(
-            F.avg(F.col("AverageTemperature")).cast(FloatType()).alias("AverageTemperature")
-        )
-        return country_temperatures
-
-    @staticmethod # doesn't rely on self.spark nor self.parameters
-    def join_country_emissions_temperatures(
-            country_emissions: DataFrame,
-            country_temperatures: DataFrame) -> DataFrame:
-        """
-        Topics: joins
-
-        Perform an INNER JOIN between the results of:
-            1. get_country_emissions
-            2. aggregate_country_temperatures
-        Your output Spark DataFrame's schema should be:
-            - Year: integer
-            - Country: string
-            - TotalEmissions: float
-            - PerCapitaEmissions: float
-            - ShareOfGlobalEmissions: float
-            - AverageTemperature: float
-        """
-        # HINT: don't forget a slight modification compared to the join_global_emissions_temperatures function
-        # In the real world, you should always make sure that the country names have been standardized.
-        # However, for our exercise, just assume that a no-match is truly no-match.
-        country_emissions_temperatures = country_emissions.join(country_temperatures, on=["Year", "Country"], how="inner") # TODO: Exercise
-        return country_emissions_temperatures
-
-    @staticmethod # doesn't rely on self.spark nor self.parameters
-    def reshape_europe_big_three_emissions(country_emissions: DataFrame) -> DataFrame:
-        """
-        Topics: filter, pivot (with distinct values hinting)
-
-        Using the result of get_country_emissions, filter for 1900 onwards only.
-        Next, reshape the data to satisfy the requirements below.
-
-        Your output Spark DataFrame's schema should be:
-            - Year: integer
-            - France_TotalEmissions: float
-            - France_PerCapitaEmissions: float
-            - Germany_TotalEmissions: float
-            - Germany_PerCapitaEmissions: float
-            - UnitedKingdom_TotalEmissions: float
-            - UnitedKingdom_PerCapitaEmissions: float
-        """
-        # TODO: exercise
-        modern_era_df = country_emissions.filter(F.col("Year") >= F.lit(1900))
-        europe_big_three_emissions = modern_era_df \
-            .groupBy("Year") \
-            .pivot("Country", values=["France", "Germany", "United Kingdom"]) \
-            .agg(
-            F.first("TotalEmissions").alias("TotalEmissions"),
-            F.first("PerCapitaEmissions").alias("PerCapitaEmissions")
-        )
-        # You might've noticed that "United Kingdom" has a space.
-        # If you recall, spaces are not permitted in Apache Parquet column names. Let's address that:
-        friendly_columns = [F.col(x).alias(x.replace(" ", "")) for x in europe_big_three_emissions.columns]
-        europe_big_three_emissions = europe_big_three_emissions.select(friendly_columns)
-        return europe_big_three_emissions
-
-    @staticmethod # doesn't rely on self.spark nor self.parameters
-    def boss_battle(country_emissions: DataFrame) -> DataFrame:
-        """
-        Topics: when (switch statements), udf/pandas_udf, Window functions, coalesce (filling nulls with a priority order)
-
-        The CO2 data provider for Australia and New Zealand informs you that there's a massive bug in their TotalEmissions estimations for LEAP YEARS only.
-        As a result, your team will have to produce an edited dataset for Australia and New Zealand only.
-        Using the result of get_country_emissions, disregard the TotalEmissions estimates for leap years, the replace them using the following PRIORITY:
-            1. nearest non-null value from the past 3 years (i.e. 'forward fill')
-            2. nearest non-null value from the future 3 years (i.e. 'backward fill')
-            3. nullify the value (i.e. DO NOT accept the original TotalEmissions value for any leap year under any circumstance)
-        Recap:
-            - DISCARD all rows for countries other than Australia or New Zealand
-            - KEEP rows from all years (including non-leap years) for Australia or New Zealand
-            - KEEP only the following columns: Year, Country, and TotalEmissions
-            * DEFINITION of past 3 years = [2017, 2018, 2019] if the year is 2020
-            * DEFINITION of future 3 years = [2021, 2022, 2023] if the year is 2020
-
-        Your output Spark DataFrame's schema should be:
-            - Year: integer
-            - Country: string
-            - TotalEmissions: float
-        """
-        oceania_emissions = country_emissions.filter(F.col("Country").isin(["Australia", "New Zealand"]))
-
-        # HINT: Python UDFs allow you to import external libraries
-        from calendar import isleap
-        def check_leap(year: int) -> bool:
-            return isleap(year)
-
-        leap_year_udf = F.udf(check_leap, returnType=BooleanType())
-        is_leap_year = leap_year_udf(F.col("Year"))
-
-        # HINT: Carefully look up the Spark Window semantics
-        # (partitionBy, orderBy, rowsBetween, rangeBetween)
-        # Look carefully for the right Window functions to apply as well.
-        # TODO: Exercise
-        w_past = Window().partitionBy("Country").orderBy(F.col("Year")).rangeBetween(-3, -1)
-        w_future = Window().partitionBy("Country").orderBy(F.col("Year")).rangeBetween(1, 3)
-        # TODO: Exercise
-        nearest_before = F.last(F.col("TotalEmissions"), ignorenulls=True).over(w_past)
-        nearest_after = F.first(F.col("TotalEmissions"), ignorenulls=True).over(w_future)
-
-        if any(x is NotImplemented for x in [w_past, w_future, nearest_before, nearest_after]):
-            raise NotImplemented("DO YOUR HOMEWORK OR NO CHIPS")
-
-        # HINT: how do you choose the first column that is non-null in Spark (or SQL)?
-        emissions_prioritized = F.coalesce(
-            nearest_before, # TODO: Exercise
-            nearest_after, # TODO: Exercise
-            F.lit(None)
-        )
-        # HINT: how do you do perform case-switch statements in Spark?
-        emissions_case = F.when(is_leap_year, emissions_prioritized).otherwise(F.col("TotalEmissions"))
-        if any(x is NotImplemented for x in [emissions_prioritized, emissions_case]):
-            raise NotImplemented("DO YOUR HOMEWORK OR NO NACHOS")
-
-        emissions_expr = emissions_case.cast(FloatType())
-        oceania_emissions_edited = oceania_emissions.select(
-            "Year",
-            "Country",
-            emissions_expr.alias("TotalEmissions")
-        )
-        return oceania_emissions_edited
-
-    def run(self):
-        """
-        BEFORE writing out any Spark DataFrame to S3:
-            - coalesce to 1 partition
-            - orderBy("Year")
-        This is just for convenience in our testing functions :)
-        """
-        # Setup: read all input DataFrames
-        co2_input_df: DataFrame = self.spark.read.format("parquet").load(self.parameters["co2_input_path"])
-        temperatures_global_input_df: DataFrame = self.spark.read.format("parquet").load(self.parameters["temperatures_global_input_path"])
-        temperatures_country_input_df: DataFrame = self.spark.read.format("parquet").load(self.parameters["temperatures_country_input_path"])
-
-        # Task 1:
-        country_emissions: DataFrame = self.get_country_emissions(co2_input_df)
-        global_emissions: DataFrame = self.aggregate_global_emissions(country_emissions)
-        global_temperatures: DataFrame = self.aggregate_global_temperatures(temperatures_global_input_df)
-        global_emissions_temperatures: DataFrame = self.join_global_emissions_temperatures(
-            global_emissions,
-            global_temperatures
-        )
-        global_emissions_temperatures.coalesce(1).orderBy("Year") \
-            .write.format("parquet").mode("overwrite") \
-            .save(self.parameters["co2_temperatures_global_output_path"])
-
-        # Task 2:
-        country_temperatures: DataFrame = self.aggregate_country_temperatures(temperatures_country_input_df)
-        country_emissions_temperatures: DataFrame = self.join_country_emissions_temperatures(
-            country_emissions,
-            country_temperatures
-        )
-        country_emissions_temperatures.coalesce(1).orderBy("Year") \
-            .write.format("parquet").mode("overwrite") \
-            .save(self.parameters["co2_temperatures_country_output_path"])
-
-        # Task 3:
-        europe_big_three_emissions: DataFrame = self.reshape_europe_big_three_emissions(country_emissions)
-        europe_big_three_emissions.coalesce(1).orderBy("Year") \
-            .write.format("parquet").mode("overwrite") \
-            .save(self.parameters["europe_big_3_co2_output_path"])
-
-        # Task 4:
-        oceania_emissions_edited = self.boss_battle(country_emissions)
-        oceania_emissions_edited.coalesce(1).orderBy("Year") \
-            .write.format("parquet").mode("overwrite") \
-            .save(self.parameters["co2_oceania_output_path"])
-
-        # REVIEW: Knowing that all Spark transformations are lazy and always get recomputed,
-        # do you see any opportunities for improvement in performance?
+        # Today's your lucky day! Schema Inference detects the "Date" column in global_temps_df as TimestampType
+        # You might not always be this lucky though, so passing explicit schemas to the load function might be preferred sometimes
         return
