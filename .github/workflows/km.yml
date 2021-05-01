@@ -14,30 +14,6 @@ on:
       - '.github/workflow/build-push-dev-container.yml'
 
 jobs:
-  test:
-    name: 'Test Python modules'
-    runs-on: self-hosted
-    environment: production
-    container:
-      image: ghcr.io/kelseymok/pyspark-testing-env:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Test Data Ingestion
-        env:
-          SUBDIR: data-ingestion
-        uses: ./.github/composite-actions/pytest
-
-      - name: Test Data Transformation
-        env:
-          SUBDIR: data-transformation
-        uses: ./.github/composite-actions/pytest
-
   base:
     name: 'Base Terraform'
     runs-on: self-hosted
