@@ -331,8 +331,6 @@ Resources:
           curl -o ~/CloudWatchMonitoringScripts-1.2.2.zip https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip
           unzip ~/CloudWatchMonitoringScripts-1.2.2.zip -d ~ && rm -f ~/CloudWatchMonitoringScripts-1.2.2.zip
           (crontab -l || true; echo "*/2 * * * * ~/aws-scripts-mon/mon-put-instance-data.pl --mem-used-incl-cache-buff --mem-util --mem-used --mem-avail --disk-space-used --disk-space-avail --disk-space-util --disk-path=/ --from-cron") | crontab -
-          (crontab -l || true; echo "0 * * * * docker system prune -a -f") | crontab -
-          (crontab -l || true; echo "1 * * * * docker volume prune -f") | crontab -
 
           sudo amazon-linux-extras enable docker
           sudo yum install -y docker jq
