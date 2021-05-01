@@ -1,22 +1,39 @@
 # Data Derp
 This repository contains the practical exercise of the Data Derp training. It contains the following relevant modules:
+* base
 * data-ingestion
 * data-transformation
 * data-analytics  
 * data-streaming
 
+It also contains a Cloudformation template that creates a VPC, Githubrunner (requires a Github Personal Access Token), Terraform Remote State S3 bucket
+
 ## Quickstart
-1. Set up your [Development Environment](./development-environment.md)
-2. Access your [AWS Account](./aws.md)
-3. Pick a team. Your team name is the combination of your first and last initials (`ab-cd-ef`). Run `./go setup-workflow <TEAMNAME>`. This will switch you to a new branch and will create a workflow in your branch (and auto-commits). You will work off this branch for the remainder of the practical exercise.
+1. [Duplicate this repo](#mirror-the-repository) in your account as a PRIVATE repo (since you're running your own self-hosted GithubRunners)
+2. Set up your [Development Environment](./development-environment.md)
+3. Pick a Project Name and Module Name (used in (3) and (4)). Project Name could simply be `data-derp` and your Module Name could be your favourite animal. This combination must be globally unique (step (3) bootstraps some s3 buckets whose names are globally unique.)   
+3. [Bootstrap the Infrastructure](./bootstrap/README.md)
+4. Create a Github workflow (`./go setup-workflow <project-name> <module-name> -- the project-name and module-name must be the same as the bootstrapping step) 
 
-## Executing Python Code
-You generally have **three** options:
-- Open any .py file and use the green Play button towards the top-right corner
-- From your terminal run `python <your_path.py>`
-- Create a new .ipynb file and start experimenting with an interactive notebook
+## Mirror the Repository
+1. Create a Private repo called `data-derp` in your Github account
+![mirror-repo](./assets/mirror-repo.png)
+   
+2. Duplicate this repo and push to your new private repo:
+```bash
+git clone --bare git@github.com:kelseymok/data-derp.git
+cd data-derp.git
+git push --mirror git@github.com:<your-username>/data-derp.git
+git remote set-url origin git@github.com:<your-username>/data-derp.git
+```
 
-## Testing
+## Working in Python
+In VS with the Remote Container (see [Development Environment](./development-environment.md)), there are **three** options to running Python code:
+1. Open any .py file and use the green Play button towards the top-right corner
+2. From your terminal run `python <your_path.py>`
+3. Create a new .ipynb file and start experimenting with an interactive notebook
+
+## Testing in Python
 1. `python -m pytest` from the root of the repository if you want to test all modules/exercises
 2. Otherwise, cd into the relevant directory and run `python -m pytest`
 3. You can also open any of the test_xxx.py files (e.g. `test_transformation.py`) and hit the Play button
