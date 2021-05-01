@@ -18,7 +18,6 @@ jobs:
     name: 'Base Terraform'
     runs-on: self-hosted
     environment: production
-    needs: ["test"]
     env:
       SUBDIR: base
     container:
