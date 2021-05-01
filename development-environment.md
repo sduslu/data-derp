@@ -8,12 +8,13 @@ In order to reduce the amount of effort of setting up development environments a
 ## Install
 1. **Important:** from the root of this Git repo, run the following command in your terminal: `./data-derp build-dev-container`
 2. In VS Code's top menu: **View** > **Extensions**. Install the following Extensions on VS Code:
-   - **Remote - Containers** (author: Microsoft)
-   - **Python** (author: Microsoft)
-   - **Jupyter** (author: Microsoft)
-   - **Pylance** (author: Microsoft)
+    - **Remote - Containers** (author: Microsoft)
+    - **Python** (author: Microsoft)
+    - **Jupyter** (author: Microsoft)
+    - **Pylance** (author: Microsoft) 
 3. In VS Code's top menu: **View** > **Command Palette...**. Type **Remote-Containers: Open Folder in Container**
 4. Navigate to the root of this repository (**data-derp**), then click 'Open'. 
+5. Open the **Extensions** pane (bottom-most chicklet on the left) and check that Python, Jupyter, and Pylance all have been installed in your **Dev Container**. If not, click **Install** on each of them.
 
 ## Executing Python Code
 You have two options:
