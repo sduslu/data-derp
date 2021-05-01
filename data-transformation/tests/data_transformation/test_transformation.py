@@ -4,11 +4,10 @@ import os
 
 from shutil import rmtree
 from pytest_mock.plugin import MockerFixture
-from twdu_test_utils.pyspark import TestPySpark
+from test_utils.pyspark import TestPySpark
 
 from typing import List, Union
 
-from pyspark.sql import SparkSession
 import pyspark.sql.functions as F
 from pyspark.sql.types import *
 
@@ -18,7 +17,7 @@ from datetime import datetime
 
 from data_transformation.transformation import Transformer
 from debugger import debug
-from twdu_transformation_expected import get_expected_metadata
+from transformation_expected import get_expected_metadata
 
 class TestTransformation(TestPySpark):
 
@@ -46,10 +45,10 @@ class TestTransformation(TestPySpark):
         for path in output_paths:
             if ("/tmp/" in path) and os.path.exists(path):
                 rmtree(path.rsplit("/", 1)[0])
-        
+
     @staticmethod
     def prepare_frame(
-        df: pd.DataFrame, column_order: List[str] = None, sort_keys: List[str] = None, 
+        df: pd.DataFrame, column_order: List[str] = None, sort_keys: List[str] = None,
         ascending: Union[bool, List[bool]] = True, reset_index: bool = True):
         """Prepare Pandas DataFrame for equality check"""
         if column_order is not None: df = df.loc[:, column_order]
@@ -79,20 +78,20 @@ class TestTransformation(TestPySpark):
         expected_pandas = pd.DataFrame({
             "Year": pd.Series([2020, 2021], dtype=np.dtype("int32")),
             "Country" : pd.Series(["Fiji", "Argentina"], dtype=str),
-            "TotalEmissions": pd.Series([4.0, 5.0], dtype=np.dtype("float32")), 
+            "TotalEmissions": pd.Series([4.0, 5.0], dtype=np.dtype("float32")),
             "PerCapitaEmissions": pd.Series([4.0, 5.0], dtype=np.dtype("float32")),
             "ShareOfGlobalEmissions": pd.Series([0.5, 0.5], dtype=np.dtype("float32"))
         })
         expected_pandas = self.prepare_frame(
-            expected_pandas, 
-            column_order=expected_columns, # ensure column order 
+            expected_pandas,
+            column_order=expected_columns, # ensure column order
             sort_keys=["Year", "Country"], # ensure row order
         )
         output_df = self.transformer.get_country_emissions(input_df)
         output_pandas: pd.DataFrame = output_df.toPandas()
         output_pandas = self.prepare_frame(
-            output_pandas, 
-            column_order=expected_columns, # ensure column order 
+            output_pandas,
+            column_order=expected_columns, # ensure column order
             sort_keys=["Year", "Country"], # ensure row order
         )
         print("Schemas:")
@@ -130,15 +129,15 @@ class TestTransformation(TestPySpark):
             "TotalEmissions": pd.Series([6.0, 9.0, 6.0], dtype=np.dtype("float32"))
         })
         expected_pandas = self.prepare_frame(
-            expected_pandas, 
-            column_order=expected_columns, # ensure column order 
+            expected_pandas,
+            column_order=expected_columns, # ensure column order
             sort_keys=["Year"], # ensure row order
         )
         output_df = self.transformer.aggregate_global_emissions(input_df)
         output_pandas: pd.DataFrame = output_df.toPandas()
         output_pandas = self.prepare_frame(
-            output_pandas, 
-            column_order=expected_columns, # ensure column order 
+            output_pandas,
+            column_order=expected_columns, # ensure column order
             sort_keys=["Year"], # ensure row order
         )
         print("Schemas:")
@@ -173,20 +172,20 @@ class TestTransformation(TestPySpark):
         expected_pandas = pd.DataFrame({
             "Year": pd.Series([1999, 2020], dtype=np.dtype("int32")),
             "LandAverageTemperature": pd.Series([0.5, 2.0], dtype=np.dtype("float32")),
-            "LandMaxTemperature": pd.Series([9.0, 6.9420], dtype=np.dtype("float32")),      
-            "LandMinTemperature": pd.Series([-9.0, -6.9420], dtype=np.dtype("float32")),            
+            "LandMaxTemperature": pd.Series([9.0, 6.9420], dtype=np.dtype("float32")),
+            "LandMinTemperature": pd.Series([-9.0, -6.9420], dtype=np.dtype("float32")),
             "LandAndOceanAverageTemperature": pd.Series([0.5, 2.0], dtype=np.dtype("float32")),
         })
         expected_pandas = self.prepare_frame(
-            expected_pandas, 
-            column_order=expected_columns, # ensure column order 
+            expected_pandas,
+            column_order=expected_columns, # ensure column order
             sort_keys=["Year"], # ensure row order
         )
         output_df = self.transformer.aggregate_global_temperatures(input_df)
         output_pandas: pd.DataFrame = output_df.toPandas()
         output_pandas = self.prepare_frame(
-            output_pandas, 
-            column_order=expected_columns, # ensure column order 
+            output_pandas,
+            column_order=expected_columns, # ensure column order
             sort_keys=["Year"], # ensure row order
         )
         print("Schemas:")
@@ -214,8 +213,8 @@ class TestTransformation(TestPySpark):
         temperatures_input_pandas = pd.DataFrame({
             "Year": [1999, 2020],
             "LandAverageTemperature": [0.5, 2.0],
-            "LandMaxTemperature": [9.0, 6.9420],      
-            "LandMinTemperature": [-9.0, -6.9420],            
+            "LandMaxTemperature": [9.0, 6.9420],
+            "LandMinTemperature": [-9.0, -6.9420],
             "LandAndOceanAverageTemperature": [0.5, 2.0],
         })
         temperatures_input_schema = StructType([
@@ -232,20 +231,20 @@ class TestTransformation(TestPySpark):
             "Year": pd.Series([1999, 2020], dtype=np.dtype("int32")),
             "TotalEmissions": pd.Series([6.0, 9.0], dtype=np.dtype("float32")),
             "LandAverageTemperature": pd.Series([0.5, 2.0], dtype=np.dtype("float32")),
-            "LandMaxTemperature": pd.Series([9.0, 6.9420], dtype=np.dtype("float32")),      
-            "LandMinTemperature": pd.Series([-9.0, -6.9420], dtype=np.dtype("float32")),            
+            "LandMaxTemperature": pd.Series([9.0, 6.9420], dtype=np.dtype("float32")),
+            "LandMinTemperature": pd.Series([-9.0, -6.9420], dtype=np.dtype("float32")),
             "LandAndOceanAverageTemperature": pd.Series([0.5, 2.0], dtype=np.dtype("float32")),
         })
         expected_pandas = self.prepare_frame(
-            expected_pandas, 
-            column_order=expected_columns, # ensure column order 
+            expected_pandas,
+            column_order=expected_columns, # ensure column order
             sort_keys=["Year"], # ensure row order
         )
         output_df = self.transformer.join_global_emissions_temperatures(emissions_input_df, temperatures_input_df)
         output_pandas: pd.DataFrame = output_df.toPandas()
         output_pandas = self.prepare_frame(
-            output_pandas, 
-            column_order=expected_columns, # ensure column order 
+            output_pandas,
+            column_order=expected_columns, # ensure column order
             sort_keys=["Year"], # ensure row order
         )
         print("Schemas:")
@@ -256,7 +255,7 @@ class TestTransformation(TestPySpark):
         print(output_pandas)
 
         assert list(output_pandas.columns) == expected_columns # check column names and order
-        assert output_pandas.equals(expected_pandas) # check contents and data types     
+        assert output_pandas.equals(expected_pandas) # check contents and data types
 
     def test_fix_country(self):
         """Tests the fix_country method"""
@@ -309,15 +308,15 @@ class TestTransformation(TestPySpark):
             "AverageTemperature": pd.Series([0.5, np.nan, 3.0], dtype=np.dtype("float32"))
         })
         expected_pandas = self.prepare_frame(
-            expected_pandas, 
-            column_order=expected_columns, # ensure column order 
+            expected_pandas,
+            column_order=expected_columns, # ensure column order
             sort_keys=["Year", "Country"], # ensure row order
         )
         output_df = self.transformer.aggregate_country_temperatures(input_df)
         output_pandas: pd.DataFrame = output_df.toPandas()
         output_pandas = self.prepare_frame(
-            output_pandas, 
-            column_order=expected_columns, # ensure column order 
+            output_pandas,
+            column_order=expected_columns, # ensure column order
             sort_keys=["Year", "Country"], # ensure row order
         )
         print("Schemas:")
@@ -365,20 +364,20 @@ class TestTransformation(TestPySpark):
             "Year": pd.Series([1999, 2020], dtype=np.dtype("int32")),
             "Country": pd.Series(["Brazil", "Oman"], dtype=np.dtype("O")),
             "TotalEmissions": pd.Series([1.0, 4.0], dtype=np.dtype("float32")),
-            "PerCapitaEmissions": pd.Series([0.1, 0.4], dtype=np.dtype("float32")),      
-            "ShareOfGlobalEmissions": pd.Series([0.1, 0.4], dtype=np.dtype("float32")),            
+            "PerCapitaEmissions": pd.Series([0.1, 0.4], dtype=np.dtype("float32")),
+            "ShareOfGlobalEmissions": pd.Series([0.1, 0.4], dtype=np.dtype("float32")),
             "AverageTemperature": pd.Series([0.5, 3.0], dtype=np.dtype("float32")),
         })
         expected_pandas = self.prepare_frame(
-            expected_pandas, 
-            column_order=expected_columns, # ensure column order 
+            expected_pandas,
+            column_order=expected_columns, # ensure column order
             sort_keys=["Year", "Country"], # ensure row order
         )
         output_df = self.transformer.join_country_emissions_temperatures(emissions_input_df, temperatures_input_df)
         output_pandas: pd.DataFrame = output_df.toPandas()
         output_pandas = self.prepare_frame(
-            output_pandas, 
-            column_order=expected_columns, # ensure column order 
+            output_pandas,
+            column_order=expected_columns, # ensure column order
             sort_keys=["Year", "Country"], # ensure row order
         )
         print("Schemas:")
@@ -389,7 +388,7 @@ class TestTransformation(TestPySpark):
         print(output_pandas)
 
         assert list(output_pandas.columns) == expected_columns # check column names and order
-        assert output_pandas.equals(expected_pandas) # check contents and data types         
+        assert output_pandas.equals(expected_pandas) # check contents and data types
 
     def test_reshape_europe_big_three_emissions(self):
         """Tests the reshape_europe_big_three_emissions method"""
@@ -410,7 +409,7 @@ class TestTransformation(TestPySpark):
         input_df = self.spark.createDataFrame(input_pandas, input_schema)
 
         expected_columns = [
-            "Year", 
+            "Year",
             "France_TotalEmissions", "France_PerCapitaEmissions",
             "Germany_TotalEmissions", "Germany_PerCapitaEmissions",
             "UnitedKingdom_TotalEmissions", "UnitedKingdom_PerCapitaEmissions",
@@ -425,15 +424,15 @@ class TestTransformation(TestPySpark):
             "UnitedKingdom_PerCapitaEmissions": pd.Series([0.3, np.nan, 0.6], dtype=np.dtype("float32"))
         })
         expected_pandas = self.prepare_frame(
-            expected_pandas, 
-            column_order=expected_columns, # ensure column order 
+            expected_pandas,
+            column_order=expected_columns, # ensure column order
             sort_keys=["Year"], # ensure row order
         )
         output_df = self.transformer.reshape_europe_big_three_emissions(input_df)
         output_pandas: pd.DataFrame = output_df.toPandas()
         output_pandas = self.prepare_frame(
-            output_pandas, 
-            column_order=expected_columns, # ensure column order 
+            output_pandas,
+            column_order=expected_columns, # ensure column order
             sort_keys=["Year"], # ensure row order
         )
         print("Schemas:")
@@ -451,8 +450,8 @@ class TestTransformation(TestPySpark):
         input_pandas = pd.DataFrame({
             "Year": [1997, 1998, 2000, 2001, 2016, 2020, 2023, 2024],
             "Country" : [
-                "United States", 
-                "Australia", "Australia", "Australia", 
+                "United States",
+                "Australia", "Australia", "Australia",
                 "New Zealand", "New Zealand", "New Zealand", "New Zealand"],
             "TotalEmissions": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0],
             "PerCapitaEmissions": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
@@ -465,26 +464,26 @@ class TestTransformation(TestPySpark):
             StructField("PerCapitaEmissions", FloatType(), True),
             StructField("ShareOfGlobalEmissions", FloatType(), True)
         ])
-        input_df = self.spark.createDataFrame(input_pandas, input_schema)        
+        input_df = self.spark.createDataFrame(input_pandas, input_schema)
 
         expected_columns = ["Year", "Country", "TotalEmissions"]
         expected_pandas = pd.DataFrame({
             "Year": pd.Series([1998, 2000, 2001, 2016, 2020, 2023, 2024], dtype=np.dtype("int32")),
             "Country": pd.Series([
-                "Australia", "Australia", "Australia", 
-                "New Zealand", "New Zealand", "New Zealand", "New Zealand"], dtype=np.dtype("O")), 
+                "Australia", "Australia", "Australia",
+                "New Zealand", "New Zealand", "New Zealand", "New Zealand"], dtype=np.dtype("O")),
             "TotalEmissions": pd.Series([2.0, 2.0, 4.0, np.nan, 7.0, 7.0, 7.0], dtype=np.dtype("float32"))
         })
         expected_pandas = self.prepare_frame(
-            expected_pandas, 
-            column_order=expected_columns, # ensure column order 
+            expected_pandas,
+            column_order=expected_columns, # ensure column order
             sort_keys=["Year", "Country"], # ensure row order
         )
         output_df = self.transformer.boss_battle(input_df)
         output_pandas: pd.DataFrame = output_df.toPandas()
         output_pandas = self.prepare_frame(
-            output_pandas, 
-            column_order=expected_columns, # ensure column order 
+            output_pandas,
+            column_order=expected_columns, # ensure column order
             sort_keys=["Year", "Country"], # ensure row order
         )
         print("Schemas:")
@@ -509,8 +508,8 @@ class TestTransformation(TestPySpark):
         self.transformer.run()
 
         output_path_keys = [
-            "co2_temperatures_global_output_path", 
-            "co2_temperatures_country_output_path", 
+            "co2_temperatures_global_output_path",
+            "co2_temperatures_country_output_path",
             "europe_big_3_co2_output_path",
             "co2_oceania_output_path"
             ]

@@ -1,15 +1,12 @@
 import pytest
-import sys
-import os
-
 import logging
+import sys
+
 from pyspark.sql import SparkSession
 
-import sys
-from time import sleep
 
 class TestPySpark:
-    """TWDU Base Class for PySpark testing and SparkSession management"""
+    """Base Class for PySpark testing and SparkSession management"""
 
     @classmethod
     def suppress_py4j_logging(cls):

@@ -6,17 +6,17 @@ from data_transformation.config import job_parameters
 from data_transformation.transformation import Transformer
 
 # By sticking with standard Spark, we can avoid having to deal with Glue dependencies locally
-# If developing outside of twdu-dev-container, don't forget to set the environment variable: ENVIRONMENT=local
+# If developing outside of dev-container, don't forget to set the environment variable: ENVIRONMENT=local
 ENVIRONMENT = os.getenv(key="ENVIRONMENT", default="aws")
 
 # ---------- Part III: Run Da Ting (for Part II, see data_transformation/transformation.py) ---------- #
 
-print("TWDU: Starting Spark Job")
+print("Starting Spark Job")
 print()
 
 spark = SparkSession \
     .builder \
-    .appName("TWDU Glue Data Transformation") \
+    .appName("Glue Data Transformation") \
     .config("spark.some.config.option", "some-value") \
     .getOrCreate()
 
@@ -29,4 +29,4 @@ spark.conf.set("spark.sql.execution.arrow.enabled", "true")
 Transformer(spark, job_parameters).run()
 
 print()
-print("TWDU: Spark Job Complete")
+print("Spark Job Complete")

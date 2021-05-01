@@ -1,7 +1,7 @@
 import os
 from s3fs import S3FileSystem
 
-def download_twdu_dataset(s3_uri: str, destination: str):
+def download_dataset(s3_uri: str, destination: str):
     """Anonymously downloads a dataset from S3 to a custom destination.
        If any parent directories do not exist, this function will create them.
     """

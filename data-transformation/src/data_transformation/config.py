@@ -6,7 +6,7 @@ from s3fs import S3FileSystem
 # ---------- Part I: Job Setup ---------- #
 
 # By sticking with standard Spark, we can avoid having to deal with Glue dependencies locally
-# If developing outside of the TWDU Dev Container, don't forget to set the environment variable: ENVIRONMENT=local
+# If developing outside of the Dev Container, don't forget to set the environment variable: ENVIRONMENT=local
 ENVIRONMENT = os.getenv(key="ENVIRONMENT", default="aws")
 
 if ENVIRONMENT not in ["local", "aws"]:
@@ -33,7 +33,7 @@ elif ENVIRONMENT == "aws":
         raise ModuleNotFoundError("""
         No module named 'awsglue' 
         ********
-        Hello ThoughtWorker! Are you developing outside of the TWDU Dev Container? 
+        Are you developing outside of the Dev Container? 
         If so, don't forget to set the environment variable: ENVIRONMENT=local
         ********
         """)

@@ -12,8 +12,8 @@
         "jupyter.alwaysTrustNotebooks": true,
         "jupyter.ignoreVscodeTheme": true,
         "editor.acceptSuggestionOnEnter": "off",
-        "files.autoSave": "afterDelay",
+        "filetalls.autoSave": "afterDelay",
         "python.analysis.useImportHeuristic": true
     }, 
-    "postCreateCommand": "pip install -e ./test-helpers/ ./data-ingestion/ ./data-transformation/"
+    "postCreateCommand": "pip install -e ./test-utils/ ./data-ingestion/ ./data-transformation/"
 }

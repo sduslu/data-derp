@@ -4,13 +4,12 @@ import os
 
 from shutil import rmtree
 from pytest_mock.plugin import MockerFixture
-from twdu_test_utils.pyspark import TestPySpark
+from test_utils.pyspark import TestPySpark
 
 import pandas as pd
-import numpy as np
 
 from data_ingestion.ingestion import Ingester
-from twdu_ingestion_expected import get_expected_metadata
+from ingestion_expected import get_expected_metadata
 
 class TestIngestion(TestPySpark):
 
@@ -39,9 +38,9 @@ class TestIngestion(TestPySpark):
                 rmtree(path.rsplit("/", 1)[0])
 
     def test_replace_invalid_chars(self):
-        # BEWARE: dictionaries do not necessarily enforce order. 
+        # BEWARE: dictionaries do not necessarily enforce order.
         # To check column names, always use sorted()
-        INVALID_CHARS = [" ", ",", ";", "\n", "\t", "=", "-", "{", "}", "(", ")"] 
+        INVALID_CHARS = [" ", ",", ";", "\n", "\t", "=", "-", "{", "}", "(", ")"]
         df = pd.DataFrame(
             {
                 'My Awesome Column': pd.Series(["Germany", "New Zealand", "Australia", "UK"]),
@@ -62,7 +61,7 @@ class TestIngestion(TestPySpark):
         assert sorted(df.columns) == sorted(["My_Awesome_Column", "Another_Awesome_Column"])
 
     def test_fix_columns(self):
-        # BEWARE: dictionaries do not necessarily enforce order. 
+        # BEWARE: dictionaries do not necessarily enforce order.
         # To check column names, always use sorted()
         pandas_df = pd.DataFrame(
             {
