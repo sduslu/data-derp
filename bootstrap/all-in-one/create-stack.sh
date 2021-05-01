@@ -85,7 +85,7 @@ create-update-stack() {
         --template-body file://./template.yaml \
         --capabilities CAPABILITY_NAMED_IAM \
         --region eu-central-1 \
-        --parameters ParameterKey=ProjectName,ParameterValue=${project_name} ParameterKey=ModuleName,ParameterValue=${module_name} ParameterKey=InstanceType,ParameterValue=t3.small ParameterKey=GithubRepoUrl,ParameterValue=https://github.com/${REPO_NAME}
+        --parameters ParameterKey=ProjectName,ParameterValue=${project_name} ParameterKey=ModuleName,ParameterValue=${module_name} ParameterKey=InstanceType,ParameterValue=t3.medium ParameterKey=GithubRepoUrl,ParameterValue=https://github.com/${REPO_NAME}
     else
       echo "Stack (${stack_name}) exists. Creating ChangeSet..."
       now=$(date +%s)
@@ -95,7 +95,7 @@ create-update-stack() {
         --template-body file://./template.yaml \
         --capabilities CAPABILITY_NAMED_IAM \
         --region eu-central-1 \
-        --parameters ParameterKey=ProjectName,ParameterValue=${project_name} ParameterKey=ModuleName,ParameterValue=${module_name} ParameterKey=InstanceType,ParameterValue=t3.small ParameterKey=GithubRepoUrl,ParameterValue=https://github.com/${REPO_NAME}
+        --parameters ParameterKey=ProjectName,ParameterValue=${project_name} ParameterKey=ModuleName,ParameterValue=${module_name} ParameterKey=InstanceType,ParameterValue=t3.medium ParameterKey=GithubRepoUrl,ParameterValue=https://github.com/${REPO_NAME}
 
       sleep 10
       AWS_PROFILE=${aws_profile} aws cloudformation execute-change-set \
