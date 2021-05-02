@@ -9,14 +9,14 @@ This directory holds a single Cloudformation template to set up the following
 1. [Create a Github Personal Access Token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) with the Repo Scope. This will be used to generate a token to register a GithubRunner.
 ![github-repo-scope](./assets/github-repo-scope.png)
    
-2. To reduce clashing with other AWS credentials, the bootstrap script uses an AWS_PROFILE set to `data-derp`. Manually create an AWS profile named `data-derp` with relevant credentials to your AWS account. For those expected to assume a role (within the same account), there is a helper function:
+2. To reduce clashing with other AWS credentials, the bootstrap script uses an AWS_PROFILE set to `data-derp`. An AWS profile named `data-derp` with valid credentials to your AWS account must exist. For those expected to assume a role (within the same account), there is a helper function:
 ```bash
-./switch-role.sh <starting-role> <target-role>
+./switch-role -b <starting-role> -t <target-role>
 ```
    
 3. Create the Stack
 ```bash
-./bootstrap.sh -p your-project-name -m your-team-name -u your-github-username
+./aws-deps -p your-project-name -m your-team-name -u your-github-username
 ```
 
 4. When prompted, enter your Personal Access Token (created in step 1)

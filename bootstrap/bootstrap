@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -e
+
+script_dir=$(cd "$(dirname "$0")" ; pwd -P)
+
+
+goal_aws-deps() {
+  pushd "${script_dir}" > /dev/null
+    ./aws-deps "$@"
+  popd > /dev/null
+}
+
+goal_switch-role() {
+  pushd "${script_dir}" > /dev/null
+    ./switch-role "$@"
+  popd > /dev/null
+}
+
+
+TARGET=${1:-}
+if type -t "goal_${TARGET}" &>/dev/null; then
+  "goal_${TARGET}" ${@:2}
+else
+  echo "Usage: $0 <goal>
+
+goals:
+    aws-deps       - Creates AWS Deps
+    switch-role    - Switches AWS Role
+"
+  exit 1
+fi

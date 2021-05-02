@@ -1,7 +1,7 @@
 name: 'example1-example2'
 
 env:
-  PROJECT_NAME: data-derp
+  PROJECT_NAME: example-project
   MODULE_NAME: example1-example2
   TF_WORKSPACE: example1-example2
 

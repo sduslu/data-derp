@@ -6,7 +6,7 @@ In order to reduce the amount of effort of setting up development environments a
 * [Visual Studio](https://code.visualstudio.com/download)
 
 ## Install
-1. **Important:** from the root of this Git repo, run the following command in your terminal: `docker build -t data-derp .`
+1. **Important:** from the root of this Git repo, run the following command in your terminal: `./data-derp build-dev-container`
 2. In VS Code's top menu: **View** > **Command Palette...**. Type **Remote-Containers: Open Folder in Container**
 3. Navigate to the root of this repository (**data-derp**), then click 'Open'. 
 

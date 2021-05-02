@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+set -e
+script_dir=$(cd "$(dirname "$0")" ; pwd -P)
+PROJECT="data-derp"
+
+goal_setup-workflow() {
+  ./setup-workflow "$@"
+}
+
+goal_build-dev-container() {
+  pushd "${script_dir}" > /dev/null
+    docker build -t data-derp .
+  popd > /dev/null
+}
+
+goal_bootstrap() {
+  ./bootstrap/bootstrap "$@"
+}
+
+TARGET=${1:-}
+if type -t "goal_${TARGET}" &>/dev/null; then
+  "goal_${TARGET}" ${@:2}
+else
+  echo "Usage: $0 <goal>
+
+goal:
+    setup-workflow                         - Sets up Github Actions workflow
+    build-dev-container                    - Builds dev container (tagged: data-derp)
+    bootstrap                              - Bootstrapping actions
+"
+  exit 1
+fi

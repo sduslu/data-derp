@@ -26,4 +26,4 @@ if [ -z "${project}" ] || [ -z "${module}" ] || [ -z "${githubuser}" ]; then
     usage
 fi
 
-./all-in-one/create-stack.sh "${project}" "${module}" "${githubuser}"
+./aws-deps-stack/create-stack.sh "${project}" "${module}" "${githubuser}"

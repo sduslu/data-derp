@@ -1,28 +1,37 @@
 # Data Derp
 This repository contains the practical exercise of the Data Derp training. It contains the following relevant modules:
 * base
+   * .tf files for the creation of an AWS S3 bucket where ingested/transformed files will live
 * data-ingestion
+   * /src - source code
+   * /tests - tests
+   * .tf files for the creation of the AWS Glue job 
 * data-transformation
-* data-analytics  
+   * /src - source code
+   * /tests - tests
+   * .tf files for the creation of the AWS Glue job
+* data-analytics
+   * An empty Jupyter Notebook
 * data-streaming
-
-It also contains a Cloudformation template that creates a VPC, Githubrunner (requires a Github Personal Access Token), Terraform Remote State S3 bucket
+   * .dbc files for practice with streaming
+* bootstrap
+   * Cloudformation template that creates a VPC, Githubrunner (requires a Github Personal Access Token), Terraform Remote State S3 bucket
 
 ## Quickstart
-1. [Duplicate this repo](#mirror-the-repository) in your account as a PRIVATE repo (since you're running your own self-hosted GithubRunners)
+1. [Duplicate this repo](#mirror-the-repository) in your account as a *PRIVATE* repo (since you're running your own self-hosted GithubRunners, you'll want to ensure your project is Private)
 2. Set up your [Development Environment](./development-environment.md)
 3. Pick a Project Name and Module Name (used in (3) and (4)). Project Name could simply be `data-derp` and your Module Name could be your favourite animal. This combination must be globally unique (step (3) bootstraps some s3 buckets whose names are globally unique.)   
-3. [Bootstrap the Infrastructure](./bootstrap/README.md)
-4. Create a Github workflow (`./go setup-workflow <project-name> <module-name> -- the project-name and module-name must be the same as the bootstrapping step) 
+3. [Bootstrap the AWS Dependencies](./bootstrap/README.md): `./data-derp aws-deps -p <project-name> -m <module-name> -u <github-username>` (:bulb: you will need valid AWS credentials. See the [README](./bootstrap/README.md).)
+4. Create a Github workflow (`./data-derp setup-workflow -p <project-name> -m <module-name>` -- the project-name and module-name must be the same as step (3)) 
 
 ## Mirror the Repository
-1. Create a Private repo called `data-derp` in your Github account
+1. Create a *PRIVATE* repo called `data-derp` in your Github account
 ![mirror-repo](./assets/mirror-repo.png)
    
 2. Duplicate this repo and push to your new private repo:
 ```bash
 git clone --bare git@github.com:kelseymok/data-derp.git
-cd data-derp.git
+cd data-derp.git # Yes, with the .git
 git push --mirror git@github.com:<your-username>/data-derp.git
 git remote set-url origin git@github.com:<your-username>/data-derp.git
 ```
