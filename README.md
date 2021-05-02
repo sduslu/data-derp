@@ -20,9 +20,11 @@ This repository contains the practical exercise of the Data Derp training. It co
 ## Quickstart
 1. [Duplicate this repo](#mirror-the-repository) in your account as a *PRIVATE* repo (since you're running your own self-hosted GithubRunners, you'll want to ensure your project is Private)
 2. Set up your [Development Environment](./development-environment.md)
-3. Pick a Project Name and Module Name (used in (3) and (4)). Project Name could simply be `data-derp` and your Module Name could be your favourite animal. This combination must be globally unique (step (3) bootstraps some s3 buckets whose names are globally unique.)   
-3. [Bootstrap the AWS Dependencies](./bootstrap/README.md): `./data-derp aws-deps -p <project-name> -m <module-name> -u <github-username>` (:bulb: you will need valid AWS credentials. See the [README](./bootstrap/README.md).)
-4. Create a Github workflow (`./data-derp setup-workflow -p <project-name> -m <module-name>` -- the project-name and module-name must be the same as step (3)) 
+3. [Bootstrap the AWS Dependencies](./bootstrap/README.md): `./data-derp aws-deps -p <project-name> -m <module-name> -u <github-username>`
+   * :bulb: you will need valid AWS credentials. See the [README](./bootstrap/README.md).
+   * the `project-name` and `module-name` must be globally unique as an AWS S3 bucket is created (this resource is globally unique) 
+4. Create a Github workflow: `./data-derp setup-workflow -p <project-name> -m <module-name>`
+   * The `project-name` and `module-name` must be the same as step (3)
 
 ## Mirror the Repository
 1. Create a *PRIVATE* repo called `data-derp` in your Github account
