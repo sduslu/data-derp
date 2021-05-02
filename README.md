@@ -18,7 +18,7 @@ This repository contains the practical exercise of the Data Derp training. It co
    * Cloudformation template that creates a VPC, Githubrunner (requires a Github Personal Access Token), Terraform Remote State S3 bucket
 
 ## Quickstart
-1. [Duplicate this repo](#mirror-the-repository) in your account as a *PRIVATE* repo (since you're running your own self-hosted GithubRunners, you'll want to ensure your project is Private)
+1. [Duplicate this repo](#mirror-the-repository) in your account as a **PRIVATE** repo (since you're running your own self-hosted GithubRunners, you'll want to ensure your project is Private)
 2. Set up your [Development Environment](./development-environment.md)
 3. [Bootstrap the AWS Dependencies](./bootstrap/README.md): `./data-derp aws-deps -p <project-name> -m <module-name> -u <github-username>`
    * :bulb: you will need valid AWS credentials. See the [README](./bootstrap/README.md).
@@ -27,7 +27,7 @@ This repository contains the practical exercise of the Data Derp training. It co
    * The `project-name` and `module-name` must be the same as step (3)
 
 ## Mirror the Repository
-1. Create a *PRIVATE* repo called `data-derp` in your Github account
+1. Create a **PRIVATE** repo called `data-derp` in your Github account
 ![mirror-repo](./assets/mirror-repo.png)
    
 2. Duplicate this repo and push to your new private repo:
