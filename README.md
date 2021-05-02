@@ -25,6 +25,7 @@ This repository contains the practical exercise of the Data Derp training. It co
    * the `project-name` and `module-name` must be globally unique as an AWS S3 bucket is created (this resource is globally unique) 
 4. Create a Github workflow: `./data-derp setup-workflow -p <project-name> -m <module-name>`
    * The `project-name` and `module-name` must be the same as step (3)
+5. Fix the tests in `data-ingestion/` and `data-transformation` (in that order)
 
 ## Mirror the Repository
 1. Create a **PRIVATE** repo called `data-derp` in your Github account
