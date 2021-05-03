@@ -2,6 +2,7 @@
 
 set -e
 
+script_dir=$(cd "$(dirname "$0")" ; pwd -P)
 usage() { echo "Usage: $0 [-p <project name: string>] [-m <module name: string>]" 1>&2; exit 1; }
 
 while getopts ":p:m:" o; do
@@ -23,8 +24,10 @@ if [ -z "${project}" ] || [ -z "${module}" ]; then
     usage
 fi
 
-echo "Creating workflow"
-cp .github/workflows/example.yml.tpl ".github/workflows/${module}.yml"
-sed -i '' -e s/example1\-example2/${module}/g ./.github/workflows/${module}.yml
-sed -i '' -e s/example\-project/${project}/g ./.github/workflows/${module}.yml
-echo "Workflow created"
+pushd "${script_dir}" > /dev/null
+  echo "Creating workflow"
+  cp .github/workflows/example.yml.tpl ".github/workflows/${module}.yml"
+  sed -i '' -e s/example1\-example2/${module}/g ./.github/workflows/${module}.yml
+  sed -i '' -e s/example\-project/${project}/g ./.github/workflows/${module}.yml
+  echo "Workflow created"
+popd > /dev/null

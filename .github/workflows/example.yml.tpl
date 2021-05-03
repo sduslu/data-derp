@@ -9,9 +9,6 @@ on:
   push:
     branches:
       - master
-    paths-ignore:
-      - 'Dockerfile'
-      - '.github/workflow/build-push-dev-container.yml'
 
 jobs:
   base:

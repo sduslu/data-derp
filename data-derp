@@ -2,7 +2,6 @@
 
 set -e
 script_dir=$(cd "$(dirname "$0")" ; pwd -P)
-PROJECT="data-derp"
 
 goal_setup-workflow() {
   ./setup-workflow "$@"
@@ -15,7 +14,9 @@ goal_build-dev-container() {
 }
 
 goal_bootstrap() {
-  ./bootstrap/bootstrap "$@"
+  pushd "${script_dir}" > /dev/null
+    ./bootstrap/bootstrap "$@"
+  popd > /dev/null
 }
 
 TARGET=${1:-}
