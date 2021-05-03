@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+script_dir=$(cd "$(dirname "$0")" ; pwd -P)
 
 usage() { echo "Usage: $0 [-p <project name: string>] [-m <module name: string>] [-u <github username: string>]" 1>&2; exit 1; }
 
@@ -27,3 +28,8 @@ if [ -z "${project}" ] || [ -z "${module}" ] || [ -z "${githubuser}" ]; then
 fi
 
 ./aws-deps-stack/create-stack.sh "${project}" "${module}" "${githubuser}"
+echo "Waiting for 120 seconds for the stack to come up"
+sleep 120
+AWS_PROFILE=data-derp aws s3 cp "${script_dir}/../datasets/ingestion/inputs/EmissionsByCountry.csv" "s3://${project}-${module}-data-source/EmissionsByCountry.csv"
+AWS_PROFILE=data-derp aws s3 cp "${script_dir}/../datasets/ingestion/inputs/TemperaturesByCountry.csv" "s3://${project}-${module}-data-source/TemperaturesByCountry.csv"
+AWS_PROFILE=data-derp aws s3 cp "${script_dir}/../datasets/ingestion/inputs/GlobalTemperatures.csv" "s3://${project}-${module}-data-source/GlobalTemperatures.csv"
