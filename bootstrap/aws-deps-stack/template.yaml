@@ -654,11 +654,11 @@ Resources:
   DataSourceBucket:
     Type: AWS::S3::Bucket
     Properties:
-      AccessControl: "PublicRead"
-      # BucketEncryption:
-      #   ServerSideEncryptionConfiguration:
-      #     - ServerSideEncryptionByDefault:
-      #         SSEAlgorithm: "aws:kms"
+      AccessControl: "Private"
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: "aws:kms"
       BucketName: !Sub "${ProjectName}-${ModuleName}-data-source"
       Tags:
         - Key: Project
@@ -666,24 +666,7 @@ Resources:
       VersioningConfiguration:
         Status: "Enabled"
       PublicAccessBlockConfiguration:
-        BlockPublicPolicy: false
-        BlockPublicAcls: false
-        IgnorePublicAcls: false
-        RestrictPublicBuckets: false
-  BucketPolicy:
-    Type: 'AWS::S3::BucketPolicy'
-    Properties:
-      Bucket: !Sub "${ProjectName}-${ModuleName}-data-source"
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Action:
-              - 's3:GetObject'
-            Sid: 'PublicReadGetObject'
-            Effect: Allow
-            Resource: !Join
-              - ''
-              - - 'arn:aws:s3:::'
-                - !Sub "${ProjectName}-${ModuleName}-data-source"
-                - /*
-            Principal: '*'
+        BlockPublicPolicy: true
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true

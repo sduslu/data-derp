@@ -57,11 +57,13 @@ resource "aws_iam_role_policy_attachment" "glue-service-role" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
 }
 
+// TODO: This should be further locked down
 resource "aws_iam_role_policy_attachment" "s3-full-access" {
   role       = aws_iam_role.this.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 
+// TODO: This should be further locked down
 data "aws_iam_policy_document" "kms" {
   statement {
     actions = [
