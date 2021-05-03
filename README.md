@@ -30,11 +30,20 @@ This repository contains the practical exercise of the Data Derp training. It co
 ## Mirror the Repository
 1. Create a **PRIVATE** repo called `data-derp` in your Github account
 ![mirror-repo](./assets/mirror-repo.png)
-   
+
 2. Duplicate this repo and push to your new private repo:
 ```bash
 git clone --bare git@github.com:kelseymok/data-derp.git
 cd data-derp.git # Yes, with the .git
 git push --mirror git@github.com:<your-username>/data-derp.git
-git remote set-url origin git@github.com:<your-username>/data-derp.git
+cd ..
+rm -rf data-derp.git
+git clone git@github.com:<your-username>/data-derp.git
+git remote add source git@github.com:kelseymok/data-derp.git
+```
+
+3. To pull in new changes:
+```bash
+git fetch source
+git rebase source/master
 ```
