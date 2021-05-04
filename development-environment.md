@@ -3,7 +3,7 @@ In order to reduce the amount of effort of setting up development environments a
 
 ## Prerequisites
 * [Docker](https://www.docker.com/products/docker-desktop)
-* [Visual Studio](https://code.visualstudio.com/download)
+* [Visual Studio Code](https://code.visualstudio.com/download)
 
 ## Install
 1. **Important:** from the root of this Git repo, run the following command in your terminal: `./data-derp build-dev-container`
