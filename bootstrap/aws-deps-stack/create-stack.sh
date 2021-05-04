@@ -22,6 +22,10 @@ create-update() {
 
 
     token=$(fetch-github-registration-token ${github_username})
+    if [ "${token}" == null ]; then
+      echo "Token is NULL. Are you sure you entered your Personal Access Token correctly?"
+      exit 1
+    fi
     create-update-ssm-parameter ${project_name} ${module_name} "${token}"
     create-update-stack ${project_name} ${module_name}
   popd > /dev/null
