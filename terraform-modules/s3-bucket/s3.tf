@@ -3,14 +3,14 @@ resource "aws_s3_bucket" "this" {
   acl           = var.bucket-acl
   force_destroy = var.force-destroy
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        kms_master_key_id = aws_kms_key.this.arn
-        sse_algorithm     = "aws:kms"
-      }
-    }
-  }
+//  server_side_encryption_configuration {
+//    rule {
+//      apply_server_side_encryption_by_default {
+//        kms_master_key_id = aws_kms_key.this.arn
+//        sse_algorithm     = "aws:kms"
+//      }
+//    }
+//  }
 
   versioning {
     enabled = var.enable-versioning
