@@ -49,6 +49,7 @@ class TestIngestion(TestPySpark):
         )
         df.columns = [self.ingester.replace_invalid_chars(x) for x in df.columns]
 
+        print(df.columns)
         all_columns_valid = True
         for column in df.columns:
             if not all_columns_valid:
