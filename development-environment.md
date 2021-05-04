@@ -22,7 +22,7 @@ You have two options:
 - Create a new .ipynb file and start experimenting with an interactive notebook
 
 ## Testing
-1. `python -m pytest` from the root of the repository if you want to test all modules/exercises
+1. From a terminal **inside VS Code**, run `python -m pytest` from the root of the repository if you want to test all modules/exercises
 2. Otherwise, cd into the relevant directory and run `python -m pytest`
 3. You can also open any of the test_xxx.py files (e.g. `test_transformation.py`) and hit the Play button
 4. To test an individual test function run `python -m pytest <path_to_test_xxx.py> -k <name_of_test_function>`
