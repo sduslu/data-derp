@@ -1,3 +1,5 @@
+import re
+
 from pyspark.sql import DataFrame
 from pyspark.sql.session import SparkSession
 from pyspark.sql.types import *
@@ -18,17 +20,22 @@ class Ingester:
         INVALID_CHARS = [" ", ",", ";", "\n", "\t", "=", "-", "{", "}", "(", ")"]
         UNDERSCORE_CANDIDATES = [" ", ",", ";", "\n", "\t", "=", "-"] # let's replace these with underscores
 
-        column_name = NotImplemented # TODO: Exercise (modify however necessary, no need to be a one-liner)
-        if column_name is NotImplemented:
-            raise NotImplementedError("DO YOUR HOMEWORK OR NO CHEESECAKE")
-        return column_name
+        s = ""
+        for c in column_name:
+            if c in UNDERSCORE_CANDIDATES:
+                s += "_"
+            elif c in INVALID_CHARS:
+                s += ""
+            else:
+                s += c
+
+        return s
 
     def fix_columns(self, df: DataFrame) -> DataFrame:
         """Clean up a Spark DataFrame's column names"""
         # HINT: you don't need to do use .withColumnRenamed a dozen times - one-liner solution possible ;)
-        fixed_df = NotImplemented # TODO: Exercise (modify however necessary, no need to be a one-liner)
-        if fixed_df is NotImplemented:
-            raise NotImplementedError("DO YOUR HOMEWORK OR NO BREZE")
+        # df.select(df.name, (df.age + 10).alias('age')).collect()
+        fixed_df = df.select([df[c].alias(self.replace_invalid_chars(c)) for c in df.columns])
         return fixed_df
 
     def run(self) -> None:
