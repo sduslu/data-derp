@@ -117,9 +117,7 @@ class Transformer:
         e.g. "   cAnAdA " -> "Canada"
         Don't forget about those annoying leading/trailing spaces.
         """
-        fixed_country = NotImplemented # TODO: Exercise
-        if fixed_country is NotImplemented:
-            raise NotImplemented("DO YOUR HOMEWORK OR NO TV")
+        fixed_country = F.initcap(F.trim(col))
         return fixed_country
 
     @staticmethod # doesn't rely on self.spark nor self.parameters    
