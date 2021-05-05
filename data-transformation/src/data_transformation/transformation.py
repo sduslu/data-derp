@@ -132,9 +132,7 @@ class Transformer:
         The point is to demonstrate that you can write arbitrary Python logic as a UDF 
         if Spark doesn't have the built-in function you need.
         """
-        fixed_temperature_string = NotImplemented # TODO: Exercise
-        if fixed_temperature_string is NotImplemented:
-            raise NotImplemented("DO YOUR HOMEWORK OR NO CHOCOLATE")
+        fixed_temperature_string = temperature.replace("( ͡° ͜ʖ ͡°)", "")
         return fixed_temperature_string
 
     def aggregate_country_temperatures(self, temperatures_country_df: DataFrame) -> DataFrame:
