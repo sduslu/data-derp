@@ -448,14 +448,14 @@ class TestTransformation(TestPySpark):
     def test_boss_battle(self):
         """Tests the boss_battle method"""
         input_pandas = pd.DataFrame({
-            "Year": [1997, 1998, 2000, 2001, 2016, 2020, 2023, 2024],
+            "Year": [1997, 1998, 2000, 2001, 2016, 2020, 2022, 2023, 2024],
             "Country" : [
                 "United States",
                 "Australia", "Australia", "Australia",
-                "New Zealand", "New Zealand", "New Zealand", "New Zealand"],
-            "TotalEmissions": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0],
-            "PerCapitaEmissions": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
-            "ShareOfGlobalEmissions": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
+                "New Zealand", "New Zealand", "New Zealand", "New Zealand", "New Zealand"],
+            "TotalEmissions": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 6.5, 7.0, 8.0],
+            "PerCapitaEmissions": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.65, 0.7, 0.8],
+            "ShareOfGlobalEmissions": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.65, 0.7, 0.8]
         })
         input_schema = StructType([
             StructField("Year", IntegerType(), True),
@@ -468,11 +468,11 @@ class TestTransformation(TestPySpark):
 
         expected_columns = ["Year", "Country", "TotalEmissions"]
         expected_pandas = pd.DataFrame({
-            "Year": pd.Series([1998, 2000, 2001, 2016, 2020, 2023, 2024], dtype=np.dtype("int32")),
+            "Year": pd.Series([1998, 2000, 2001, 2016, 2020, 2022, 2023, 2024], dtype=np.dtype("int32")),
             "Country": pd.Series([
                 "Australia", "Australia", "Australia",
-                "New Zealand", "New Zealand", "New Zealand", "New Zealand"], dtype=np.dtype("O")),
-            "TotalEmissions": pd.Series([2.0, 2.0, 4.0, np.nan, 7.0, 7.0, 7.0], dtype=np.dtype("float32"))
+                "New Zealand", "New Zealand", "New Zealand", "New Zealand", "New Zealand"], dtype=np.dtype("O")),
+            "TotalEmissions": pd.Series([2.0, 2.0, 4.0, np.nan, 6.5, 6.5, 7.0, 7.0], dtype=np.dtype("float32"))
         })
         expected_pandas = self.prepare_frame(
             expected_pandas,
