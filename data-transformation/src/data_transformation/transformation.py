@@ -77,7 +77,10 @@ class Transformer:
         temps_global_df = temperatures_global_df.withColumn("Year", F.year(F.col("Date")))
 
         global_temperatures = temps_global_df.groupBy("Year").agg(
-            # TODO: Exercise
+            F.avg(F.col("LandAverageTemperature")).cast(FloatType()).alias("LandAverageTemperature"),
+            F.max(F.col("LandMaxTemperature")).cast(FloatType()).alias("LandMaxTemperature"),
+            F.min(F.col("LandMinTemperature")).cast(FloatType()).alias("LandMinTemperature"),
+            F.avg(F.col("LandAndOceanAverageTemperature")).cast(FloatType()).alias("LandAndOceanAverageTemperature")
         )
         return global_temperatures
 
