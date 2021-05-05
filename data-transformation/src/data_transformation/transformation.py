@@ -104,7 +104,9 @@ class Transformer:
             - LandAndOceanAverageTemperature: floats
         """
         global_emissions_temperatures = global_emissions.join(
-            # TODO: Exercise
+            global_temperatures,
+            on="Year",
+            how="inner"
         ) 
         return global_emissions_temperatures
 
