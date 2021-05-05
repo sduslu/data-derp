@@ -156,12 +156,17 @@ class Transformer:
 
         # Unlike the Global Temperatures dataset...Spark couldn't automatically parse the "Date" column as a timestamp
         # You'll have to find a built-in function to perform the conversion then extract the year
-        year_expr = F.year(F.to_timestamp(F.col("Date"), format="MM-dd-yyyy")) # TODO: Exercise
-        country_expr = self.fix_country(F.col("Country")) # TODO: Exercise
+        year_expr = F.year(F.to_timestamp(F.col("Date"), format="MM-dd-yyyy")) 
+        country_expr = self.fix_country(F.col("Country"))
 
-        country_temperatures = NotImplemented # TODO: Exercise
-        if country_temperatures is NotImplemented:
-            raise NotImplemented("DO YOUR HOMEWORK OR NO ICE CREAM")
+        monthly_country_temperatures = temperatures_country_df.select(
+            year_expr.alias("Year"),
+            country_expr.alias("Country"),
+            temperature_expr.alias("AverageTemperature")
+        )
+        country_temperatures = monthly_country_temperatures.groupBy("Year", "Country").agg(
+            F.avg(F.col("AverageTemperature")).cast(FloatType()).alias("AverageTemperature")
+        )
         return country_temperatures
 
     @staticmethod # doesn't rely on self.spark nor self.parameters
