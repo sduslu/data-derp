@@ -190,7 +190,7 @@ class Transformer:
         # In the real world, you should always make sure that the country names have been standardized.
         # However, for our exercise, just assume that a no-match is truly no-match.
         country_emissions_temperatures = country_emissions.join(
-            # TODO: Exercise
+            country_temperatures, on=["Year", "Country"], how="inner"
         )
         return country_emissions_temperatures
 
@@ -211,11 +211,10 @@ class Transformer:
             - UnitedKingdom_TotalEmissions: float
             - UnitedKingdom_PerCapitaEmissions: float
         """
-        # TODO: exercise
         modern_era_df = country_emissions.filter(F.col("Year") >= F.lit(1900))
-        europe_big_three_emissions = NotImplemented
-        if europe_big_three_emissions is NotImplemented:
-            raise NotImplemented("DO YOUR HOMEWORK OR NO PIZZA")
+        europe_big_three_emissions = modern_era_df.groupBy("Year")\
+          .pivot("Country", values=["France", "Germany", "United Kingdom"])\
+            .agg(F.first("TotalEmissions").alias("TotalEmissions"), F.first("PerCapitaEmissions").alias("PerCapitaEmissions"))
 
         # You might've noticed that "United Kingdom" has a space. 
         # If you recall, spaces are not permitted in Apache Parquet column names. Let's address that:
