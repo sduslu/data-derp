@@ -123,7 +123,8 @@ class Transformer:
         HINT: only temperature entries with Lenny's face are valid measurements
         There are multiple ways to tackle this: udf, pandas_udf, regexp_extract, regexp_replace, etc.
         Normally, we'd recommend a pandas_udf as it's a nice transferrable skill with good performance.
-        However, to keep this job simple, let's use a normal udf.
+        However, to keep this job simple, let's use a standard Python function.
+        We will later convert this function (remove_lenny_face) to a UDF in the aggregate_country_temperatures function.
 
         The point is to demonstrate that you can write arbitrary Python logic as a UDF 
         if Spark doesn't have the built-in function you need.
@@ -224,7 +225,7 @@ class Transformer:
 
         The CO2 data provider for Australia and New Zealand informs you that there's a massive bug in their TotalEmissions estimations for LEAP YEARS only.
         As a result, your team will have to produce an edited dataset for Australia and New Zealand only.
-        Using the result of get_country_emissions, disregard the TotalEmissions estimates for leap years, the replace them using the following PRIORITY:
+        Using the result of get_country_emissions, disregard the TotalEmissions estimates for leap years, then replace them using the following PRIORITY:
             1. nearest non-null value from the past 3 years (i.e. 'forward fill')
             2. nearest non-null value from the future 3 years (i.e. 'backward fill')
             3. nullify the value (i.e. DO NOT accept the original TotalEmissions value for any leap year under any circumstance)
@@ -255,18 +256,18 @@ class Transformer:
         # HINT: Carefully look up the Spark Window semantics
         # (partitionBy, orderBy, rowsBetween, rangeBetween)
         # Look carefully for the right Window functions to apply as well.
-        w_past = NotImplemented # TODO: Exercise
-        w_future = NotImplemented # TODO: Exercise
-        nearest_before = NotImplemented # TODO: Exercise
-        nearest_after = NotImplemented # TODO: Exercise
+        w_past = NotImplemented # TODO: should be a Window (from pyspark.sql.window import Window)
+        w_future = NotImplemented # TODO: should be a Window (from pyspark.sql.window import Window)
+        nearest_before = NotImplemented # TODO: should be a Column Expression
+        nearest_after = NotImplemented # TODO: should be a Column Expression
         
         if any(x is NotImplemented for x in [w_past, w_future, nearest_before, nearest_after]):
             raise NotImplemented("DO YOUR HOMEWORK OR NO CHIPS")
 
         # HINT: how do you choose the first column that is non-null in Spark (or SQL)? 
-        emissions_prioritized = NotImplemented # TODO: Exercise
+        emissions_prioritized = NotImplemented # TODO: should be a Column Expression (please read the HINT above)
         # HINT: how do you do perform case-switch statements in Spark?
-        emissions_case = NotImplemented # TODO: Exercise
+        emissions_case = NotImplemented # TODO: should be a Column Expression (please read the HINT above)
         if any(x is NotImplemented for x in [emissions_prioritized, emissions_case]):
             raise NotImplemented("DO YOUR HOMEWORK OR NO NACHOS")
         
