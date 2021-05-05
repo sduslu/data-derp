@@ -313,7 +313,6 @@ class TestTransformation(TestPySpark):
             sort_keys=["Year", "Country"], # ensure row order
         )
         output_df = self.transformer.aggregate_country_temperatures(input_df)
-        print("OUTPUT_DF: " + str(output_df))
         output_pandas: pd.DataFrame = output_df.toPandas()
         output_pandas = self.prepare_frame(
             output_pandas,
