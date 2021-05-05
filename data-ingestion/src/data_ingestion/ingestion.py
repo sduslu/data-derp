@@ -14,7 +14,7 @@ class Ingester:
 
     @staticmethod
     def replace_invalid_chars(column_name: str) -> str:
-        """Replace prohibited characters in column names to be compatiable with Apache Parquet"""
+        """Replace prohibited characters in column names to be compatible with Apache Parquet"""
         INVALID_CHARS = [" ", ",", ";", "\n", "\t", "=", "-", "{", "}", "(", ")"]
         UNDERSCORE_CANDIDATES = [" ", ",", ";", "\n", "\t", "=", "-"] # let's replace these with underscores
 
