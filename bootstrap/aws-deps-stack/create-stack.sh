@@ -101,11 +101,14 @@ create-update-stack() {
         --region eu-central-1 \
         --parameters ParameterKey=ProjectName,ParameterValue=${project_name} ParameterKey=ModuleName,ParameterValue=${module_name} ParameterKey=InstanceType,ParameterValue=t3.medium ParameterKey=GithubRepoUrl,ParameterValue=https://github.com/${REPO_NAME}
 
-      sleep 10
+      echo "Waiting 20 seconds for the ChangeSet to create..."
+      sleep 20
+      echo "Executing ChangeSet..."
       AWS_PROFILE=${aws_profile} aws cloudformation execute-change-set \
         --change-set-name "update-${now}" \
         --stack-name "${stack_name}" \
         --region eu-central-1
+      echo "ChangeSet execution complete."
     fi
   popd > /dev/null
 

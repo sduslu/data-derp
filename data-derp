@@ -19,6 +19,12 @@ goal_bootstrap() {
   popd > /dev/null
 }
 
+goal_aws-spark-ui() {
+  pushd "${script_dir}" > /dev/null
+    ./open-aws-spark-ui.sh "$@"
+  popd > /dev/null
+}
+
 TARGET=${1:-}
 if type -t "goal_${TARGET}" &>/dev/null; then
   "goal_${TARGET}" ${@:2}
@@ -29,6 +35,7 @@ goal:
     setup-workflow                         - Sets up Github Actions workflow
     build-dev-container                    - Builds dev container (tagged: data-derp)
     bootstrap                              - Bootstrapping actions
+    aws-spark-ui                           - Port forwards SparkUI to localhost:18080a
 "
   exit 1
 fi

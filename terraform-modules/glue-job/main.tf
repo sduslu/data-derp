@@ -18,7 +18,7 @@ resource "aws_glue_job" "this" {
     "--enable-metrics"                   = ""
     "--TempDir"                          = "s3://${data.aws_s3_bucket.this.bucket}/${var.submodule-name}/temp/"
     "--enable-spark-ui"                  = "true"
-    "--spark-event-logs-path"            = "s3://${data.aws_s3_bucket.this.bucket}/${var.submodule-name}/spark-event-logs-path/"
+    "--spark-event-logs-path"            = "s3://${var.project-name}-${var.module-name}-spark-logs/"
   },var.additional-params)
 }
 
