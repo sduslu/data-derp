@@ -1,5 +1,7 @@
+import calendar
+
 from typing import Dict
-from pyspark.sql import DataFrame, Column
+from pyspark.sql import DataFrame, Column, Window
 import pyspark.sql.functions as F
 from pyspark.sql.session import SparkSession
 from pyspark.sql.types import *
@@ -250,9 +252,7 @@ class Transformer:
 
         # HINT: Python UDFs allow you to import external libraries
         def check_leap(year: int) -> bool:
-            leap_bool = NotImplemented # TODO: Exercise
-            if leap_bool is NotImplemented:
-                raise NotImplemented("DO YOUR HOMEWORK OR NO CAKE")
+            leap_bool = calendar.isleap(year)
             return leap_bool
 
         leap_year_udf = F.udf(check_leap, returnType=BooleanType())
@@ -261,18 +261,21 @@ class Transformer:
         # HINT: Carefully look up the Spark Window semantics
         # (partitionBy, orderBy, rowsBetween, rangeBetween)
         # Look carefully for the right Window functions to apply as well.
-        w_past = NotImplemented # TODO: should be a Window (from pyspark.sql.window import Window)
-        w_future = NotImplemented # TODO: should be a Window (from pyspark.sql.window import Window)
-        nearest_before = NotImplemented # TODO: should be a Column Expression
-        nearest_after = NotImplemented # TODO: should be a Column Expression
+
+        w_past = Window.partitionBy("Country").orderBy("Year").rangeBetween(-3, -1)
+        w_future = Window.partitionBy("Country").orderBy("Year").rangeBetween(1, 3)
+        nearest_before = F.last("TotalEmissions", ignorenulls=True).over(w_past)
+        nearest_after = F.first("TotalEmissions", ignorenulls=True).over(w_future)
         
         if any(x is NotImplemented for x in [w_past, w_future, nearest_before, nearest_after]):
             raise NotImplemented("DO YOUR HOMEWORK OR NO CHIPS")
 
         # HINT: how do you choose the first column that is non-null in Spark (or SQL)? 
-        emissions_prioritized = NotImplemented # TODO: should be a Column Expression (please read the HINT above)
+        emissions_prioritized = F.coalesce(nearest_before, nearest_after) # should be a Column Expression (please read the HINT above)
+
         # HINT: how do you do perform case-switch statements in Spark?
-        emissions_case = NotImplemented # TODO: should be a Column Expression (please read the HINT above)
+        emissions_case = F.when(is_leap_year, emissions_prioritized).otherwise(F.col("TotalEmissions")) # should be a Column Expression (please read the HINT above)
+
         if any(x is NotImplemented for x in [emissions_prioritized, emissions_case]):
             raise NotImplemented("DO YOUR HOMEWORK OR NO NACHOS")
         
