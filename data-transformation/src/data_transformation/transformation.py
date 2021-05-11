@@ -271,10 +271,9 @@ class Transformer:
             raise NotImplemented("DO YOUR HOMEWORK OR NO CHIPS")
 
         # HINT: how do you choose the first column that is non-null in Spark (or SQL)? 
-        emissions_prioritized = F.coalesce(nearest_before, nearest_after) # should be a Column Expression (please read the HINT above)
-
+        emissions_prioritized = F.coalesce(nearest_before, nearest_after)
         # HINT: how do you do perform case-switch statements in Spark?
-        emissions_case = F.when(is_leap_year, emissions_prioritized).otherwise(F.col("TotalEmissions")) # should be a Column Expression (please read the HINT above)
+        emissions_case = F.when(is_leap_year, emissions_prioritized).otherwise(F.col("TotalEmissions"))
 
         if any(x is NotImplemented for x in [emissions_prioritized, emissions_case]):
             raise NotImplemented("DO YOUR HOMEWORK OR NO NACHOS")
