@@ -1,0 +1,303 @@
+Year,Country,TotalEmissions
+1860,Australia,0.509296
+1861,Australia,0.509296
+1862,Australia,0.355408
+1863,Australia,0.399376
+1864,Australia,0.399376
+1865,Australia,0.42136
+1866,Australia,0.69616
+1867,Australia,0.894016
+1868,Australia,0.894016
+1869,Australia,0.6412
+1870,Australia,0.600896
+1871,Australia,0.692496
+1872,Australia,0.692496
+1873,Australia,0.868368
+1874,Australia,0.890352
+1875,Australia,0.828064
+1876,Australia,0.828064
+1877,Australia,1.066224
+1878,New Zealand,0.355408
+1878,Australia,0.967296
+1879,New Zealand,0.505632
+1879,Australia,1.454608
+1880,New Zealand,0.505632
+1880,Australia,1.454608
+1881,New Zealand,0.736464
+1881,Australia,1.766048
+1882,New Zealand,0.828064
+1882,Australia,2.011536
+1883,New Zealand,0.926992
+1883,Australia,2.425568
+1884,New Zealand,0.926992
+1884,Australia,2.425568
+1885,New Zealand,1.128512
+1885,Australia,2.905552
+1886,New Zealand,1.179808
+1886,Australia,2.887232
+1887,New Zealand,1.238432
+1887,Australia,3.033792
+1888,New Zealand,1.238432
+1888,Australia,3.033792
+1889,New Zealand,1.311712
+1889,Australia,3.42584
+1890,New Zealand,1.421632
+1890,Australia,3.546752
+1891,New Zealand,1.491248
+1891,Australia,4.008416
+1892,New Zealand,1.491248
+1892,Australia,4.008416
+1893,New Zealand,1.542544
+1893,Australia,3.964448
+1894,New Zealand,1.608496
+1894,Australia,4.36016
+1895,New Zealand,1.623152
+1895,Australia,4.590992
+1896,New Zealand,1.623152
+1896,Australia,4.590992
+1897,New Zealand,1.875968
+1897,Australia,4.975712
+1898,New Zealand,2.022528
+1898,Australia,5.613248
+1899,New Zealand,2.176416
+1899,Australia,5.785456
+1900,New Zealand,2.440224
+1900,Australia,10.1676
+1901,New Zealand,2.740672
+1901,Australia,11.439008
+1902,New Zealand,3.04112
+1902,Australia,11.39504
+1903,New Zealand,3.16936
+1903,Australia,11.219168
+1904,New Zealand,3.16936
+1904,Australia,11.219168
+1905,New Zealand,3.539424
+1905,Australia,12.047232
+1906,New Zealand,3.861856
+1906,Australia,14.359216
+1907,New Zealand,4.08536
+1907,Australia,15.476736
+1908,New Zealand,4.08536
+1908,Australia,15.476736
+1909,New Zealand,4.264896
+1909,Australia,14.553408
+1910,New Zealand,4.902432
+1910,Australia,17.436975
+1911,New Zealand,4.609312
+1911,Australia,19.239664
+1912,New Zealand,4.609312
+1912,Australia,19.239664
+1913,New Zealand,4.2136
+1913,Australia,22.390703
+1914,New Zealand,5.081968
+1914,Australia,24.479183
+1915,New Zealand,4.931744
+1915,Australia,21.793472
+1916,New Zealand,4.931744
+1916,Australia,21.793472
+1917,New Zealand,4.61664
+1917,Australia,20.760223
+1918,New Zealand,4.54336
+1918,Australia,22.940304
+1919,New Zealand,4.129328
+1919,Australia,21.738512
+1920,New Zealand,4.129328
+1920,Australia,21.738512
+1921,New Zealand,3.49912
+1921,Australia,23.152817
+1922,New Zealand,3.561408
+1922,Australia,24.343616
+1923,New Zealand,3.836208
+1923,Australia,24.849249
+1924,New Zealand,3.836208
+1924,Australia,24.849249
+1925,New Zealand,4.089024
+1925,Australia,28.234783
+1926,New Zealand,4.272224
+1926,Australia,27.853727
+1927,New Zealand,4.495728
+1927,Australia,28.894304
+1928,New Zealand,4.495728
+1928,Australia,28.894304
+1929,New Zealand,4.894302
+1929,Australia,23.651873
+1930,New Zealand,4.865019
+1930,Australia,22.028778
+1931,New Zealand,4.238625
+1931,Australia,19.545835
+1932,New Zealand,4.238625
+1932,Australia,19.545835
+1933,New Zealand,3.54604
+1933,Australia,21.579653
+1934,New Zealand,3.982768
+1934,Australia,22.696787
+1935,New Zealand,4.150807
+1935,Australia,25.228046
+1936,New Zealand,4.150807
+1936,Australia,25.228046
+1937,New Zealand,4.381431
+1937,Australia,28.854692
+1938,New Zealand,4.245685
+1938,Australia,28.035473
+1939,New Zealand,4.461801
+1939,Australia,32.141506
+1940,New Zealand,4.461801
+1940,Australia,32.141506
+1941,New Zealand,5.000469
+1941,Australia,34.545063
+1942,New Zealand,5.095733
+1942,Australia,36.502144
+1943,New Zealand,5.370503
+1943,Australia,34.989597
+1944,New Zealand,5.370503
+1944,Australia,34.989597
+1945,New Zealand,5.619624
+1945,Australia,32.694683
+1946,New Zealand,5.531719
+1946,Australia,35.42058
+1947,New Zealand,5.451141
+1947,Australia,38.014038
+1948,New Zealand,5.451141
+1948,Australia,38.014038
+1949,New Zealand,5.608545
+1949,Australia,37.646927
+1950,New Zealand,8.569056
+1950,Australia,54.73865
+1951,New Zealand,8.170066
+1951,Australia,59.029377
+1952,New Zealand,8.170066
+1952,Australia,59.029377
+1953,New Zealand,8.550647
+1953,Australia,59.434624
+1954,New Zealand,9.067093
+1954,Australia,67.83856
+1955,New Zealand,9.392832
+1955,Australia,70.67417
+1956,New Zealand,9.392832
+1956,Australia,70.67417
+1957,New Zealand,10.304663
+1957,Australia,74.51637
+1958,New Zealand,10.179998
+1958,Australia,77.60825
+1959,New Zealand,10.31923
+1959,Australia,83.70816
+1960,New Zealand,10.31923
+1960,Australia,83.70816
+1961,New Zealand,11.755131
+1961,Australia,90.5039
+1962,New Zealand,11.198292
+1962,Australia,94.823456
+1963,New Zealand,12.216528
+1963,Australia,100.934265
+1964,New Zealand,12.216528
+1964,Australia,100.934265
+1965,New Zealand,13.685286
+1965,Australia,120.85267
+1966,New Zealand,14.000272
+1966,Australia,120.2193
+1967,New Zealand,13.626782
+1967,Australia,129.14421
+1968,New Zealand,13.626782
+1968,Australia,129.14421
+1969,New Zealand,14.257049
+1969,Australia,142.1238
+1970,New Zealand,14.179986
+1970,Australia,147.47977
+1971,New Zealand,15.049012
+1971,Australia,152.62953
+1972,New Zealand,15.049012
+1972,Australia,152.62953
+1973,New Zealand,18.200373
+1973,Australia,170.8274
+1974,New Zealand,18.76002
+1974,Australia,172.18939
+1975,New Zealand,18.27036
+1975,Australia,175.71393
+1976,New Zealand,18.27036
+1976,Australia,175.71393
+1977,New Zealand,20.313482
+1977,Australia,187.60486
+1978,New Zealand,18.024094
+1978,Australia,201.82018
+1979,New Zealand,16.494507
+1979,Australia,204.86957
+1980,New Zealand,16.494507
+1980,Australia,204.86957
+1981,New Zealand,16.561068
+1981,Australia,230.13264
+1982,New Zealand,18.27034
+1982,Australia,233.88864
+1983,New Zealand,17.998198
+1983,Australia,224.78502
+1984,New Zealand,17.998198
+1984,Australia,224.78502
+1985,New Zealand,21.858112
+1985,Australia,240.98798
+1986,New Zealand,22.946138
+1986,Australia,239.72221
+1987,New Zealand,24.165424
+1987,Australia,255.85022
+1988,New Zealand,24.165424
+1988,Australia,255.85022
+1989,New Zealand,25.453356
+1989,Australia,277.4856
+1990,New Zealand,25.446287
+1990,Australia,278.42465
+1991,New Zealand,26.110384
+1991,Australia,279.87265
+1992,New Zealand,26.110384
+1992,Australia,279.87265
+1993,New Zealand,27.699461
+1993,Australia,289.2352
+1994,New Zealand,27.88033
+1994,Australia,294.01495
+1995,New Zealand,28.001804
+1995,Australia,305.41016
+1996,New Zealand,28.001804
+1996,Australia,305.41016
+1997,New Zealand,31.289337
+1997,Australia,320.79507
+1998,New Zealand,29.88278
+1998,Australia,334.6845
+1999,New Zealand,31.472273
+1999,Australia,344.06375
+2000,New Zealand,31.472273
+2000,Australia,344.06375
+2001,New Zealand,34.457443
+2001,Australia,357.6692
+2002,New Zealand,34.6381
+2002,Australia,362.20953
+2003,New Zealand,36.351906
+2003,Australia,369.726
+2004,New Zealand,36.351906
+2004,Australia,369.726
+2005,New Zealand,37.571037
+2005,Australia,386.51346
+2006,New Zealand,37.466328
+2006,Australia,392.68063
+2007,New Zealand,36.559883
+2007,Australia,399.84247
+2008,New Zealand,36.559883
+2008,Australia,399.84247
+2009,New Zealand,34.762436
+2009,Australia,407.46332
+2010,New Zealand,34.957783
+2010,Australia,405.5028
+2011,New Zealand,34.249573
+2011,Australia,404.17276
+2012,New Zealand,34.249573
+2012,Australia,404.17276
+2013,New Zealand,35.240936
+2013,Australia,397.94318
+2014,New Zealand,35.457806
+2014,Australia,394.11688
+2015,New Zealand,35.839195
+2015,Australia,401.55475
+2016,New Zealand,35.839195
+2016,Australia,401.55475
+2017,New Zealand,36.15333
+2017,Australia,415.09744
+2018,New Zealand,35.08034
+2018,Australia,415.95395
+2019,New Zealand,36.540962
+2019,Australia,411.01566
